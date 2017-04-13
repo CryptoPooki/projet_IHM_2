@@ -4,7 +4,8 @@ TO DO List:
  -> https://www.qt.io/download-open-source/
 
 - Client
-	-> Coder l'interface
+	-> Coder l'interface //fait
+	-> Insérer les images
 	-> Définir et coder la machine à états
 	-> Synchroniser la machine à états avec l'interface
 
