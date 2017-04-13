@@ -1,0 +1,25 @@
+TO DO List:
+
+- Installer Qt Creator 5.8
+ -> https://www.qt.io/download-open-source/
+
+- Client
+	-> Coder l'interface
+	-> Définir et coder la machine à états
+	-> Synchroniser la machine à états avec l'interface
+
+- Serveur
+	-> Coder l'interface
+	-> Définir et coder la machine à états
+	-> Synchroniser la machine à états avec l'interface
+
+- Communication
+	-> Définir les messages échangés
+	-> Créer la communication entre le client et les serveurs
+	-> Tester l'exclusion mutuelle
+
+- Rapport
+	-> Rédiger le rapport
+
+- Autres
+	-> Commenter les programmes
