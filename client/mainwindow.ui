@@ -55,6 +55,9 @@
       <layout class="QHBoxLayout" name="Infos_musique">
        <item>
         <widget class="QLabel" name="Image">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>TextLabel</string>
          </property>
@@ -98,42 +101,42 @@
        <item>
         <widget class="QPushButton" name="Rewind">
          <property name="text">
-          <string>rewind</string>
+          <string/>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="Back">
+        <widget class="QPushButton" name="Previous">
          <property name="text">
-          <string>back</string>
+          <string/>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="Play_pause">
          <property name="text">
-          <string>Play</string>
+          <string/>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="Next">
          <property name="text">
-          <string>next</string>
+          <string/>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="Foward">
          <property name="text">
-          <string>foward</string>
+          <string/>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="Mute">
          <property name="text">
-          <string>Mute</string>
+          <string/>
          </property>
         </widget>
        </item>
