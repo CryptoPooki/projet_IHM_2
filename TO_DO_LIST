@@ -1,18 +1,19 @@
 TO DO List:
 
-- Installer Qt Creator 5.8
- -> https://www.qt.io/download-open-source/
-
 - Client
 	-> Coder l'interface //fait
 	-> Insérer les images //Fait
-	-> Définir et coder la machine à états
+	-> Améliorer la gestion d'images avec des Qresources
+	-> Définir la machine à états
+	-> Coder la machine à états
 	-> Synchroniser la machine à états avec l'interface
 
 - Serveur
-	-> Coder l'interface
-	-> Définir et coder la machine à états
-	-> Synchroniser la machine à états avec l'interface
+	-> Coder l'interface ?
+	-> Copier la machine à états
+	-> Synchroniser la machine à états avec l'interface ?
+	-> Etudier le parcours de fichiers avec Qt
+	-> Etudier la lecture de fichiers audio sur Qt
 
 - Communication
 	-> Définir les messages échangés
