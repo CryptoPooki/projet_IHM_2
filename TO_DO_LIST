@@ -9,11 +9,10 @@ TO DO List:
 	-> Synchroniser la machine à états avec l'interface
 
 - Serveur
-	-> Coder l'interface ?
-	-> Copier la machine à états
-	-> Synchroniser la machine à états avec l'interface ?
-	-> Etudier le parcours de fichiers avec Qt
-	-> Etudier la lecture de fichiers audio sur Qt
+	-> Examiner le code source de mpv
+	-> Etudier l'accès aux fichers par Qt 
+	-> Etudier comment se fait la lecture de fichiers audio
+	-> Construire le serveur
 
 - Communication
 	-> Définir les messages échangés
@@ -25,3 +24,4 @@ TO DO List:
 
 - Autres
 	-> Commenter les programmes
+	-> QWidget de chargement
