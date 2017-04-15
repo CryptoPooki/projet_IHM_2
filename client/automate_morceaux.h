@@ -20,6 +20,8 @@ enum signalType {
 enum phase {
   kPhasePlay,
   kPhasePause,
+  kPhaseMute,
+  kPhaseSound,
   KPhaseEndCycle
 };
 

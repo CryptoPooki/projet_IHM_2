@@ -20,10 +20,10 @@ Automate_morceaux::Automate_morceaux(QObject *parent) : QObject(parent)
 
 
   // Nos transitions (BUG)
-  Play_to_Pause = play->addTransition(pause);
-  Pause_to_Play = pause->addTransition(play);
-  Play_to_Deconnecte = play->addTransition(deconnecte);
-  Pause_to_Deconnecte = pause->addTransition(deconnecte);
+  play->addTransition(pause);
+  pause->addTransition(play);
+  play->addTransition(deconnecte);
+  pause->addTransition(deconnecte);
 
 
   QObject::connect(deconnecte, &QState::entered, [this](){

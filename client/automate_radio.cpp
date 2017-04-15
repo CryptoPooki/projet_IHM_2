@@ -19,15 +19,15 @@ Automate_radio::Automate_radio(QObject *parent) : QObject(parent)
 
 
   // Nos transitions
-  Play_to_Pause=play->addTransition(pause);
-  Pause_to_Play=pause->addTransition(play);
-  Play_to_Deconnecte=play->addTransition(deconnecte);
-  Pause_to_Deconnecte=pause->addTransition(deconnecte);
+  play->addTransition(pause);
+  pause->addTransition(play);
+  play->addTransition(deconnecte);
+  pause->addTransition(deconnecte);
 
 
   QObject::connect(deconnecte, &QState::entered, [this](){
       qDebug()<<"Déconnection";
-      emit signalMachine(kSignalPhase, false, kPhaseEndCycle);
+      emit signalMachine(kSignalPhase, false, KPhaseEndCycle);
       cleanup();
     });
 

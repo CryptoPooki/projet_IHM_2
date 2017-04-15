@@ -1,11 +1,20 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "automate_morceaux.h"
+#include "automate_radio.h"
+#include "automate_son.h"
+
+#include "unistd.h"
+#include "stdio.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    //Définition d'une norme (arbitraire) de taille de boutons : 70x50 pixels
+    size.setWidth(50); size.setHeight(70);
 
     //Redimensionnement des boutons
     pix_rewind.load(":/pics/rewind.png");
@@ -46,27 +55,14 @@ MainWindow::MainWindow(QWidget *parent) :
     flag_mute = false;
     flag_radio = false;
 
-    Automate_morceaux *automate_morceaux = new Automate_morceaux();
+    /*Automate_morceaux *automate_morceaux = new Automate_morceaux();
     Automate_radio *automate_radio = new Automate_radio();
-    Automate_son *automate_son = new Automate_son();
+    Automate_son *automate_son = new Automate_son();*/ //Inutile pour l'instant
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-//Gestion de la connexion au serveur
-void MainWindow::on_connect_toggled(bool checked)
-{
-    if (checked)                      // Si l'utilisateur est déjà connecté
-    {
-        MainWindow::deconnexion();    //On interrompt la connexion avec le serveur
-    } else                            // Si l'utilisateur n'est pas connecté
-    {
-        MainWindow::connexion();      //On lance la connexion
-    }
-     return NULL;
 }
 
 //Gestion de la barre de lecture
@@ -81,23 +77,21 @@ void MainWindow::slider_lecture_moved(int valeur)
 
     //Lancement de la lecture
     MainWindow::play();
-
-    return NULL;
 }
 
 void MainWindow::on_rewind_pressed()
 {
     int speed_factors[7] = {1,2,5,10,20,30,60}; int i = 0;
-    while(ui->Rewind->pressed()) //Pas sûr
+    while(ui->Rewind->isChecked()) //Pas sûr
     {
-        MainWindow::rewind(times[i]);
-        sleep(speed_factors[id]);         //Attente de speed_factors[id] secondes avant d'augmenter la vitesse
-        if (id < 6) id++;
+        MainWindow::rewind(speed_factors[i]);
+        sleep(speed_factors[i]); //Attente de speed_factors[id] secondes avant d'augmenter la vitesse
+        if (i < 6) i++;
+
     }
-    return NULL;
 }
 
-void on_previous_clicked()
+void MainWindow::on_previous_clicked()
 {
     //Pause de la lecture
     MainWindow::pause();
@@ -107,8 +101,6 @@ void on_previous_clicked()
 
     //Lancement de la lecture du morceau précédent
     MainWindow::play();
-
-    return NULL;
 }
 
 void MainWindow::on_play_pause_clicked()
@@ -140,7 +132,6 @@ void MainWindow::on_play_pause_clicked()
         ui->Play_pause->setIcon(icon_play);
         ui->Play_pause->setIconSize(size);
     }
-    return NULL;
 }
 
 void MainWindow::on_next_clicked()
@@ -153,20 +144,17 @@ void MainWindow::on_next_clicked()
 
     //Lancement de la lecture du morceau précédent
     MainWindow::play();
-
-    return NULL;
 }
 
 void MainWindow::on_foward_clicked()
 {
     int speed_factors[7] = {1,2,5,10,20,30,60}; int i = 0;
-    while(ui->Foward->pressed()) //Pas sûr
+    while(ui->Foward->isChecked()) //Pas sûr
     {
-        MainWindow::foward(times[i]);
-        sleep(speed_factors[id]);         //Attente de speed_factors[id] secondes avant d'augmenter la vitesse
-        if (id < 6) id++;
+        MainWindow::foward(speed_factors[i]);
+        sleep(speed_factors[i]);         //Attente de speed_factors[i] secondes avant d'augmenter la vitesse
+        if (i < 6) i++;
     }
-    return NULL;
 }
 
 void MainWindow::on_mute_clicked()
@@ -208,7 +196,6 @@ void MainWindow::on_mute_clicked()
         //Repositionnement de la barre
         ui->Volume->setValue(0);
     }
-    return NULL;
 }
 
 void MainWindow::slider_sound_moved(int val)
@@ -234,7 +221,6 @@ void MainWindow::slider_sound_moved(int val)
         //Modification du volume
         MainWindow::change_sound(val);
     }
-    return NULL;
 }
 
 void MainWindow::change_languages(int language_id)
@@ -249,7 +235,7 @@ void MainWindow::change_languages(int language_id)
             ui->menuLangues->setTitle(QString::fromStdString("Sprachen"));
             //Noms des langues non modifiées
 
-            ui->Connexion->setText(QString::fromStdString("Verbindung"));
+            ui->Connexion->setText(QString::fromStdString("Verbindet"));
         break;
         case 2: //English
             ui->menuModes->setTitle(QString::fromStdString("Modes"));
@@ -259,7 +245,7 @@ void MainWindow::change_languages(int language_id)
             ui->menuLangues->setTitle(QString::fromStdString("Languages"));
             //Noms des langues non modifiées
 
-            ui->Connexion->setText(QString::fromStdString("Connection"));
+            ui->Connexion->setText(QString::fromStdString("Connected"));
         break;
         case 3: //Français
             ui->menuModes->setTitle(QString::fromStdString("Modes"));
@@ -269,7 +255,7 @@ void MainWindow::change_languages(int language_id)
             ui->menuLangues->setTitle(QString::fromStdString("Langues"));
             //Noms des langues non modifiées
 
-            ui->Connexion->setText(QString::fromStdString("Connexion"));
+            ui->Connexion->setText(QString::fromStdString("Connecté"));
         break;
         case 4: //Occitan
             ui->menuModes->setTitle(QString::fromStdString("Mòu"));
@@ -281,7 +267,6 @@ void MainWindow::change_languages(int language_id)
 
             ui->Connexion->setText(QString::fromStdString("Noselança"));
     }
-    return NULL;
 }
 
 void MainWindow::change_mode()
@@ -315,37 +300,128 @@ void MainWindow::change_mode()
         //Récupération de l'état précédent
         //Fonction à définir
     }
-    retrun NULL;
 }
 
-void connexion();                         //Fonction de connexion au serveur
-QString user_name();                      //Fonction qui revoit le nom de l'utilisateur inscrit dans le LineEdit
-void get_list_metadata();                 //Fonction qui demande les métadonnées des listes proposées
-void get_music_metadata();                //Finction qui demande les métadonnées d'un morceau
-void show_list_metadata();                //Fonction qui affiche les métadonnées d'une liste
-void show_music_metadata();               //Fonction qui affiche les métadonnées d'un morceau
-// Gestion des menus déroulants ???
-void rewind(int speed_factor);            //Fonction qui fait un retour en arrière sur le morceau avec un facteur de vitesse égal à speed_factor
-void previous();                          //Fonction qui joue le morceau précédent au morceau actuellement lu dans la liste
-                                          //         qui joue la chaine de radio précédente dans la liste
-void play();                              //Fonction qui joue un morceau sélectionné
-void pause();                             //Fonction qui arrête de jouer le morceau actuellement joué
-void next();                              //Fonction qui joue le morceau suivant au morceau actuellement lu dans la liste
-                                          //         qui joue la chaine de radio suivante
-/*Remarque : Si on clique sur Next et que le morceau est le dernier de la liste, est-ce que:
-1) on revient au début de la liste ?
-2) on passe au premier morceau de la liste suivante ?
-3) La lecture s'arrête ?
-4) on définit d'autres boutons pour gérer cette ambiguité ?
+void MainWindow::connexion()
+{
+    //A définir une fois que la question du serveur est résolue
+}
 
-Si tu penses avoir la réponse, envoie le numéro de ta réponse suivi de "jeu concours" au 0648525442 (75.0 € + prix du sms) pour tenter de gagner
-une fantastique figurine de mouton en plastique d'une valeur de 3 Pokédollars
-(jeu sans obligation d'achat, conditions de remboursement floues à l'avantage de l'entreprise)
-*/
-void foward();                            //Fonction qui fait une avance rapide sur le morceau
-void mute();                              //Fonction qui mute
-void change_sound(int pourcentage);       //Fonctoin qui modifie le son en fonction de sa puissance maximale
+void MainWindow::deconnexion()
+{
+    //A définir une fois que la question du serveur est résolue
+}
 
-public slots:
-// Messages reçus de l'automate
-void message(signalType, bool, int param1, int param2);
+QString MainWindow::user_name()
+{
+    return ui->Nom_utilisateur->text();
+}
+
+void MainWindow::get_list_metadata()
+{
+    //A définir une fois que la structure des métadatas sont comprises
+}
+
+void MainWindow::get_music_metadata()
+{
+    //A définir une fois que la structure des métadatas sont comprises
+}
+
+void MainWindow::show_list_metadata()
+{
+    //A définir une fois que la structure des métadatas sont comprises
+}
+
+void MainWindow::show_music_metadata()
+{
+    //A définir une fois que la structure des métadatas sont comprises
+}
+
+void MainWindow::rewind(int speed)
+{
+    //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
+}
+
+void MainWindow::previous()
+{
+    //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
+}
+
+void MainWindow::play()
+{
+    //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
+}
+
+void MainWindow::pause()
+{
+    //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
+}
+
+void MainWindow::next()
+{
+    //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
+}
+
+void MainWindow::foward(int speed)
+{
+    //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
+}
+
+int MainWindow::mute(int vol)
+{
+    //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
+    /* Fonctionnnement global :
+     * mute prend comme argument le volume enregistré (ex: 42 "pourcents") quand on passe en mute et revoie -1
+     * mute prend -1 comme argument quand on sort du mute et renvoie le pourcentage du volume enregistré
+     * J'ai choisi -1 plutôt que 0 (qui semble un meilleur choix à première vue) pour éviter un conflit entre la barre de son, qui devient automatiquement mute
+     * quand on la diminue à 0, et le mute
+     */
+    return -1; //Retour par défaut tant que la fonction n'est pas programmée et pour éviter les bugs de compilation
+}
+
+void MainWindow::change_sound(int pourcentage)
+{
+    //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
+}
+
+void MainWindow::setPhase(phase p, bool on, int param)
+{
+  switch(p)
+  {
+    case kPhasePlay:
+
+      break;
+    case kPhasePause:
+
+      break;
+    case kPhaseMute:
+
+      break;
+    case kPhaseSound:
+
+      break;
+  }
+}
+
+void MainWindow::message(signalType sig, bool switchOn, int param1, int param2) //A revoir
+{
+    switch(sig)
+    {
+      case kSignalPhase:
+        MainWindow::setPhase((phase)param1, switchOn, param2);
+        break;
+      default:
+        break;
+      }
+}
+
+void MainWindow::on_Connexion_toggled(bool checked)
+{
+    if (checked)                      // Si l'utilisateur est déjà connecté
+    {
+        MainWindow::deconnexion();    //On interrompt la connexion avec le serveur
+    } else                            // Si l'utilisateur n'est pas connecté
+    {
+        MainWindow::connexion();      //On lance la connexion
+    }
+}

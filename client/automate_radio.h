@@ -9,13 +9,16 @@
 #include <QSignalTransition>
 #include <QDebug>
 
-class Automate_radio
+#include "automate_morceaux.h"
+
+class Automate_radio : public QObject
 {
     Q_OBJECT
 public:
     explicit Automate_radio(QObject *parent = 0);
 
-private:
+private:  
+
   // La machine
   QStateMachine *machine;
 

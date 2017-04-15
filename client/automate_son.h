@@ -5,10 +5,13 @@
 #include <QStateMachine>
 #include <QState>
 #include <QHistoryState>
+#include <QFinalState>
 #include <QSignalTransition>
 #include <QDebug>
 
-class Automate_son
+#include "automate_radio.h"
+
+class Automate_son : public QObject
 {
     Q_OBJECT
 public:

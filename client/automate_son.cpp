@@ -1,4 +1,5 @@
 #include "automate_son.h"
+#include "automate_morceaux.h"
 
 
 Automate_son::Automate_son(QObject *parent) : QObject(parent)
@@ -15,9 +16,9 @@ Automate_son::Automate_son(QObject *parent) : QObject(parent)
   mute = new QState(machine);
 
 
-  // Nos transitions
-  mute_to_sound = mute->addTransition(sound);
-  sound_to_mute = sound->addTransition(mute);
+  // Nos transitions (BUG)
+  mute->addTransition(sound);
+  sound->addTransition(mute);
 
   // J'enverrai des messages à l'UI
   setupMessages();
@@ -28,7 +29,7 @@ Automate_son::Automate_son(QObject *parent) : QObject(parent)
 /*
  * Messages pour l'UI
  */
-void Automate_morceaux::setupMessages()
+void Automate_son::setupMessages()
 {
   QObject::connect(sound, &QState::entered, [this](){
       emit signalMachine(kSignalPhase, true, kPhaseSound);
