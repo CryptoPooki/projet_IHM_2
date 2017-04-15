@@ -45,7 +45,7 @@
        <item>
         <widget class="QRadioButton" name="Connexion">
          <property name="text">
-          <string>Connecté</string>
+          <string>Connexion</string>
          </property>
         </widget>
        </item>

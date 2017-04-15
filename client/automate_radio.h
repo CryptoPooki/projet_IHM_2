@@ -9,19 +9,6 @@
 #include <QSignalTransition>
 #include <QDebug>
 
-// Types de signaux envoyés à l'UI
-enum signalType {
-  //kSignalAction,
-  kSignalPhase,
-  kSignalEndOfPhase
-};
-
-// Phases, communiquées à l'UI
-enum phase {
-  kPhasePlay,
-  kPhasePause,
-};
-
 class Automate_radio
 {
     Q_OBJECT

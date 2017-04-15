@@ -19,16 +19,16 @@ Automate_morceaux::Automate_morceaux(QObject *parent) : QObject(parent)
   deconnecte = new QFinalState(machine);
 
 
-  // Nos transitions
-  Play_to_Pause=play->addTransition(pause);
-  Pause_to_Play=pause->addTransition(play);
-  Play_to_Deconnecte=play->addTransition(deconnecte);
-  Pause_to_Deconnecte=pause->addTransition(deconnecte);
+  // Nos transitions (BUG)
+  Play_to_Pause = play->addTransition(pause);
+  Pause_to_Play = pause->addTransition(play);
+  Play_to_Deconnecte = play->addTransition(deconnecte);
+  Pause_to_Deconnecte = pause->addTransition(deconnecte);
 
 
   QObject::connect(deconnecte, &QState::entered, [this](){
       qDebug()<<"Déconnection";
-      emit signalMachine(kSignalPhase, false, kPhaseEndCycle);
+      emit signalMachine(kSignalPhase, false, KPhaseEndCycle);
       cleanup();
     });
 

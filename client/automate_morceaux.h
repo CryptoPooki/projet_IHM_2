@@ -20,9 +20,10 @@ enum signalType {
 enum phase {
   kPhasePlay,
   kPhasePause,
+  KPhaseEndCycle
 };
 
-class Automate_morceaux
+class Automate_morceaux : public QObject
 {
     Q_OBJECT
 public:

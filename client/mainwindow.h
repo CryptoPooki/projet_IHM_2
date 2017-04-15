@@ -36,13 +36,20 @@ private slots:
 
 private:
   Ui::MainWindow *ui;
+  QPixmap pix_rewind, pix_previous, pix_play, pix_next, pix_foward, pix_sound;
+  QIcon icon_rewind, icon_previous, icon_play, icon_next, icon_foward, icon_sound;
+  //Définition d'une norme (arbitraire) de taille de boutons : 70x50 pixels
+  QSize size; size.setHeight(50); size.setWidth(70);
+
   Automate_morceaux *automate_morceaux;
   Automate_radio *automate_radio;
   Automate_son *automate_son;
 
   void change_languages(int language_id);   //Fonction qui change le langage d'affichage
-  void change_mode(int mode);               //Fonction que change le mode de lecture et d'affichage
+  void change_mode();                       //Fonction que change le mode de lecture et d'affichage
+  bool flag_radio;                          //Booléen permettant de savoir si l'interface est en mode radio
   void connexion();                         //Fonction de connexion au serveur
+  void deconnexion();                       //Fonction qui déconnecte le client de serveur
   QString user_name();                      //Fonction qui revoit le nom de l'utilisateur inscrit dans le LineEdit
   void get_list_metadata();                 //Fonction qui demande les métadonnées des listes proposées
   void get_music_metadata();                //Finction qui demande les métadonnées d'un morceau
@@ -54,6 +61,7 @@ private:
                                             //         qui joue la chaine de radio précédente dans la liste
   void play();                              //Fonction qui joue un morceau sélectionné
   void pause();                             //Fonction qui arrête de jouer le morceau actuellement joué
+  bool flag_play;                           //Booléen permettant de savoir si l'interface est dans l'état play ou pause
   void next();                              //Fonction qui joue le morceau suivant au morceau actuellement lu dans la liste
                                             //         qui joue la chaine de radio suivante
   /*Remarque : Si on clique sur Next et que le morceau est le dernier de la liste, est-ce que:
@@ -66,7 +74,8 @@ private:
   une fantastique figurine de mouton en plastique d'une valeur de 3 Pokédollars (jeu sans obligation d'achat, pas de remboursement possible)
   */
   void foward();                            //Fonction qui fait une avance rapide sur le morceau
-  void mute();                              //Fonction qui mute
+  int mute(int vol);                        //Fonction gère le mute
+  bool flag_mute;                           //Booléen permettant de savoir si l'interface est en mode mute
   void change_sound(int pourcentage);       //Fonctoin qui modifie le son en fonction de sa puissance maximale
 
 public slots:
