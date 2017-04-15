@@ -3,7 +3,7 @@ TO DO List:
 - Client
 	-> Coder l'interface //fait
 	-> Insérer les images //Fait
-	-> Améliorer la gestion d'images avec des Qresources
+	-> Améliorer la gestion d'images avec des Qresources // Fait
 	-> Définir la machine à états
 	-> Coder la machine à états
 	-> Synchroniser la machine à états avec l'interface
