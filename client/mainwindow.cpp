@@ -1,11 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "automate_morceaux.h"
-#include "automate_radio.h"
-#include "automate_son.h"
 
 #include "unistd.h"
-#include "stdio.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -65,50 +61,64 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-//Gestion de la barre de lecture
-//==> Checker le comportement de la valeur
-void MainWindow::slider_lecture_moved(int valeur)
+void MainWindow::on_Connexion_toggled(bool checked)
+{
+    if (checked)                      // Si l'utilisateur est déjà connecté
+    {
+        deconnexion();                //On interrompt la connexion avec le serveur
+    } else                            // Si l'utilisateur n'est pas connecté
+    {
+        connexion();                  //On lance la connexion
+    }
+}
+
+void MainWindow::on_Progression_sliderMoved(int position)
 {
     //Pause de la lecture
-    MainWindow::pause();
+    pause();
 
     //Déplacement de la lecture
     //Fonction avec le serveur et la valeur
 
     //Lancement de la lecture
-    MainWindow::play();
+    play();
 }
 
-void MainWindow::on_rewind_pressed()
+void MainWindow::on_Rewind_pressed()
 {
     int speed_factors[7] = {1,2,5,10,20,30,60}; int i = 0;
     while(ui->Rewind->isChecked()) //Pas sûr
     {
-        MainWindow::rewind(speed_factors[i]);
+        rewind(speed_factors[i]);
         sleep(speed_factors[i]); //Attente de speed_factors[id] secondes avant d'augmenter la vitesse
         if (i < 6) i++;
-
+        //Déplacement de la barre
     }
 }
 
-void MainWindow::on_previous_clicked()
+void MainWindow::on_Rewind_released()
 {
-    //Pause de la lecture
-    MainWindow::pause();
 
-    //Envoi de la demande de previous au serveur
-    MainWindow::previous();
-
-    //Lancement de la lecture du morceau précédent
-    MainWindow::play();
 }
 
-void MainWindow::on_play_pause_clicked()
+void MainWindow::on_Previous_clicked()
+{
+    //Pause de la lecture
+    pause();
+
+    //Envoi de la demande de previous au serveur
+    previous();
+
+    //Lancement de la lecture du morceau précédent
+    play();
+}
+
+void MainWindow::on_Play_pause_clicked()
 {
     if (flag_play)                      //Si un morceau est joué
     {
         //Arrêt de la lecture
-        MainWindow::pause();
+        pause();
 
         //MAJ de l'état de lecture
         flag_play = false;
@@ -121,7 +131,7 @@ void MainWindow::on_play_pause_clicked()
     } else                              //Le lecteur est en pause
     {
         //Lancement de la lecture
-        MainWindow::play();
+        play();
 
         //MAJ de l'état de lecture
         flag_play = true;
@@ -134,35 +144,40 @@ void MainWindow::on_play_pause_clicked()
     }
 }
 
-void MainWindow::on_next_clicked()
+void MainWindow::on_Next_clicked()
 {
     //Pause de la lecture
-    MainWindow::pause();
+    pause();
 
     //Envoi de la demande de next au serveur
-    MainWindow::next();
+    next();
 
     //Lancement de la lecture du morceau précédent
-    MainWindow::play();
+    play();
 }
 
-void MainWindow::on_foward_clicked()
+void MainWindow::on_Foward_pressed()
 {
     int speed_factors[7] = {1,2,5,10,20,30,60}; int i = 0;
     while(ui->Foward->isChecked()) //Pas sûr
     {
-        MainWindow::foward(speed_factors[i]);
+        foward(speed_factors[i]);
         sleep(speed_factors[i]);         //Attente de speed_factors[i] secondes avant d'augmenter la vitesse
         if (i < 6) i++;
     }
 }
 
-void MainWindow::on_mute_clicked()
+void MainWindow::on_Foward_released()
+{
+
+}
+
+void MainWindow::on_Mute_clicked()
 {
     if (flag_mute)                      //Si le mode mute est activé
     {
         //Déclenchement de la fonction mute et récupération du pourcentage de son max enregistré
-        int volume_memorise = MainWindow::mute(-1);
+        int volume_memorise = mute(-1);
 
         //MAJ de l'état de lecture
         flag_mute = false;
@@ -174,15 +189,15 @@ void MainWindow::on_mute_clicked()
         ui->Mute->setIconSize(size);
 
         //Restauration du volume
-        MainWindow::change_sound(volume_memorise);
+        change_sound(volume_memorise);
 
         //Repositionnement de la barre
         ui->Volume->setValue(volume_memorise);
 
-    } else                              //Le lecteur est en pause
+    } else //Le lecteur est en pause
     {
         //Déclenchement de la fonction mute et stockage du pourcentage de son max enregistré
-        MainWindow::mute(ui->Volume->value());
+        mute(ui->Volume->value());
 
         //MAJ de l'état de lecture
         flag_mute = true;
@@ -198,12 +213,12 @@ void MainWindow::on_mute_clicked()
     }
 }
 
-void MainWindow::slider_sound_moved(int val)
+void MainWindow::on_Volume_sliderMoved(int position)
 {
     if (flag_mute)                        //Si le mode mute est activé, il devient désactivé automatiquement
     {
         //Déclenchement de la fonction mute
-        MainWindow::mute(-1);             //Désactivation du mute
+        mute(-1);             //Désactivation du mute
 
         //MAJ de l'état de lecture
         flag_mute = false;
@@ -215,11 +230,11 @@ void MainWindow::slider_sound_moved(int val)
         ui->Mute->setIconSize(size);
 
         //Modification du volume
-        MainWindow::change_sound(val);
+        change_sound(position);
     } else                                //Si le mode mute n'est pas activé
     {
         //Modification du volume
-        MainWindow::change_sound(val);
+        change_sound(position);
     }
 }
 
@@ -367,6 +382,8 @@ void MainWindow::foward(int speed)
     //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
 }
 
+
+
 int MainWindow::mute(int vol)
 {
     //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
@@ -384,7 +401,7 @@ void MainWindow::change_sound(int pourcentage)
     //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
 }
 
-void MainWindow::setPhase(phase p, bool on, int param)
+/*void MainWindow::setPhase(phase p, bool on, int param)
 {
   switch(p)
   {
@@ -408,20 +425,9 @@ void MainWindow::message(signalType sig, bool switchOn, int param1, int param2) 
     switch(sig)
     {
       case kSignalPhase:
-        MainWindow::setPhase((phase)param1, switchOn, param2);
+        setPhase((phase)param1, switchOn, param2);
         break;
       default:
         break;
       }
-}
-
-void MainWindow::on_Connexion_toggled(bool checked)
-{
-    if (checked)                      // Si l'utilisateur est déjà connecté
-    {
-        MainWindow::deconnexion();    //On interrompt la connexion avec le serveur
-    } else                            // Si l'utilisateur n'est pas connecté
-    {
-        MainWindow::connexion();      //On lance la connexion
-    }
-}
+}*/

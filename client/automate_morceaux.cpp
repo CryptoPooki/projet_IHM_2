@@ -127,3 +127,8 @@ void Automate_morceaux::setPlay(bool play)
 {
   emit signalMachine(kSignalPhase);
 }
+
+void Automate_morceaux::setMode(bool radio)
+{
+
+}

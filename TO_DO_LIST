@@ -4,9 +4,9 @@ TO DO List:
 	-> Coder l'interface //fait
 	-> Insérer les images //Fait
 	-> Améliorer la gestion d'images avec des Qresources // Fait
-	-> Définir la machine à états
-	-> Coder la machine à états
-	-> Synchroniser la machine à états avec l'interface
+	-> Définir la machine à états // Fait
+	-> Coder la machine à états // Presque Fait
+	-> Synchroniser la machine à états avec l'interface //A Faire
 
 - Serveur
 	-> Examiner le code source de mpv

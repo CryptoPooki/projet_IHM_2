@@ -99,7 +99,8 @@ void Automate_radio::initDebug()
     });
 }
 
-void Automate_radio::cleanup(){
+void Automate_radio::cleanup()
+{
   // On remet tout à zéro
   // A revoir
 }
@@ -126,4 +127,9 @@ void Automate_radio::setConnect(bool on)
 void Automate_radio::setPlay(bool play)
 {
   emit signalMachine(kSignalPhase);
+}
+
+void Automate_radio::setMode(bool radio)
+{
+
 }
