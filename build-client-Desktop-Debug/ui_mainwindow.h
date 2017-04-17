@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 4.8.7
+** Created by: Qt User Interface Compiler version 5.2.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,24 +10,24 @@
 #define UI_MAINWINDOW_H
 
 #include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QListView>
-#include <QtGui/QMainWindow>
-#include <QtGui/QMenu>
-#include <QtGui/QMenuBar>
-#include <QtGui/QPushButton>
-#include <QtGui/QRadioButton>
-#include <QtGui/QSlider>
-#include <QtGui/QSpacerItem>
-#include <QtGui/QStatusBar>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QWidget>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QListView>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QStatusBar>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
 
@@ -71,44 +71,44 @@ public:
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
-            MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
+            MainWindow->setObjectName(QStringLiteral("MainWindow"));
         MainWindow->resize(1005, 618);
         actionMorceaux = new QAction(MainWindow);
-        actionMorceaux->setObjectName(QString::fromUtf8("actionMorceaux"));
+        actionMorceaux->setObjectName(QStringLiteral("actionMorceaux"));
         actionRadio = new QAction(MainWindow);
-        actionRadio->setObjectName(QString::fromUtf8("actionRadio"));
+        actionRadio->setObjectName(QStringLiteral("actionRadio"));
         actionAnglais = new QAction(MainWindow);
-        actionAnglais->setObjectName(QString::fromUtf8("actionAnglais"));
+        actionAnglais->setObjectName(QStringLiteral("actionAnglais"));
         actionEnglish = new QAction(MainWindow);
-        actionEnglish->setObjectName(QString::fromUtf8("actionEnglish"));
+        actionEnglish->setObjectName(QStringLiteral("actionEnglish"));
         actionFran_ais = new QAction(MainWindow);
-        actionFran_ais->setObjectName(QString::fromUtf8("actionFran_ais"));
+        actionFran_ais->setObjectName(QStringLiteral("actionFran_ais"));
         actionOccitan = new QAction(MainWindow);
-        actionOccitan->setObjectName(QString::fromUtf8("actionOccitan"));
+        actionOccitan->setObjectName(QStringLiteral("actionOccitan"));
         centralWidget = new QWidget(MainWindow);
-        centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
+        centralWidget->setObjectName(QStringLiteral("centralWidget"));
         verticalLayoutWidget = new QWidget(centralWidget);
-        verticalLayoutWidget->setObjectName(QString::fromUtf8("verticalLayoutWidget"));
+        verticalLayoutWidget->setObjectName(QStringLiteral("verticalLayoutWidget"));
         verticalLayoutWidget->setGeometry(QRect(0, 10, 985, 481));
         verticalLayout = new QVBoxLayout(verticalLayoutWidget);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
         Infos_connexion = new QHBoxLayout();
         Infos_connexion->setSpacing(6);
-        Infos_connexion->setObjectName(QString::fromUtf8("Infos_connexion"));
+        Infos_connexion->setObjectName(QStringLiteral("Infos_connexion"));
         horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         Infos_connexion->addItem(horizontalSpacer);
 
         Nom_utilisateur = new QLineEdit(verticalLayoutWidget);
-        Nom_utilisateur->setObjectName(QString::fromUtf8("Nom_utilisateur"));
+        Nom_utilisateur->setObjectName(QStringLiteral("Nom_utilisateur"));
 
         Infos_connexion->addWidget(Nom_utilisateur);
 
         Connexion = new QRadioButton(verticalLayoutWidget);
-        Connexion->setObjectName(QString::fromUtf8("Connexion"));
+        Connexion->setObjectName(QStringLiteral("Connexion"));
 
         Infos_connexion->addWidget(Connexion);
 
@@ -117,20 +117,20 @@ public:
 
         Infos_musique = new QHBoxLayout();
         Infos_musique->setSpacing(6);
-        Infos_musique->setObjectName(QString::fromUtf8("Infos_musique"));
+        Infos_musique->setObjectName(QStringLiteral("Infos_musique"));
         Image = new QLabel(verticalLayoutWidget);
-        Image->setObjectName(QString::fromUtf8("Image"));
+        Image->setObjectName(QStringLiteral("Image"));
         Image->setEnabled(true);
 
         Infos_musique->addWidget(Image);
 
         Liste = new QListView(verticalLayoutWidget);
-        Liste->setObjectName(QString::fromUtf8("Liste"));
+        Liste->setObjectName(QStringLiteral("Liste"));
 
         Infos_musique->addWidget(Liste);
 
         Morceaux = new QListView(verticalLayoutWidget);
-        Morceaux->setObjectName(QString::fromUtf8("Morceaux"));
+        Morceaux->setObjectName(QStringLiteral("Morceaux"));
 
         Infos_musique->addWidget(Morceaux);
 
@@ -139,20 +139,20 @@ public:
 
         Infos_temps_lecture = new QHBoxLayout();
         Infos_temps_lecture->setSpacing(6);
-        Infos_temps_lecture->setObjectName(QString::fromUtf8("Infos_temps_lecture"));
+        Infos_temps_lecture->setObjectName(QStringLiteral("Infos_temps_lecture"));
         Temps_restant = new QLabel(verticalLayoutWidget);
-        Temps_restant->setObjectName(QString::fromUtf8("Temps_restant"));
+        Temps_restant->setObjectName(QStringLiteral("Temps_restant"));
 
         Infos_temps_lecture->addWidget(Temps_restant);
 
         Progression = new QSlider(verticalLayoutWidget);
-        Progression->setObjectName(QString::fromUtf8("Progression"));
+        Progression->setObjectName(QStringLiteral("Progression"));
         Progression->setOrientation(Qt::Horizontal);
 
         Infos_temps_lecture->addWidget(Progression);
 
         Temps_lu = new QLabel(verticalLayoutWidget);
-        Temps_lu->setObjectName(QString::fromUtf8("Temps_lu"));
+        Temps_lu->setObjectName(QStringLiteral("Temps_lu"));
 
         Infos_temps_lecture->addWidget(Temps_lu);
 
@@ -161,39 +161,39 @@ public:
 
         Commandes = new QHBoxLayout();
         Commandes->setSpacing(6);
-        Commandes->setObjectName(QString::fromUtf8("Commandes"));
+        Commandes->setObjectName(QStringLiteral("Commandes"));
         Rewind = new QPushButton(verticalLayoutWidget);
-        Rewind->setObjectName(QString::fromUtf8("Rewind"));
+        Rewind->setObjectName(QStringLiteral("Rewind"));
 
         Commandes->addWidget(Rewind);
 
         Previous = new QPushButton(verticalLayoutWidget);
-        Previous->setObjectName(QString::fromUtf8("Previous"));
+        Previous->setObjectName(QStringLiteral("Previous"));
 
         Commandes->addWidget(Previous);
 
         Play_pause = new QPushButton(verticalLayoutWidget);
-        Play_pause->setObjectName(QString::fromUtf8("Play_pause"));
+        Play_pause->setObjectName(QStringLiteral("Play_pause"));
 
         Commandes->addWidget(Play_pause);
 
         Next = new QPushButton(verticalLayoutWidget);
-        Next->setObjectName(QString::fromUtf8("Next"));
+        Next->setObjectName(QStringLiteral("Next"));
 
         Commandes->addWidget(Next);
 
         Foward = new QPushButton(verticalLayoutWidget);
-        Foward->setObjectName(QString::fromUtf8("Foward"));
+        Foward->setObjectName(QStringLiteral("Foward"));
 
         Commandes->addWidget(Foward);
 
         Mute = new QPushButton(verticalLayoutWidget);
-        Mute->setObjectName(QString::fromUtf8("Mute"));
+        Mute->setObjectName(QStringLiteral("Mute"));
 
         Commandes->addWidget(Mute);
 
         Volume = new QSlider(verticalLayoutWidget);
-        Volume->setObjectName(QString::fromUtf8("Volume"));
+        Volume->setObjectName(QStringLiteral("Volume"));
         Volume->setOrientation(Qt::Horizontal);
 
         Commandes->addWidget(Volume);
@@ -203,15 +203,15 @@ public:
 
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
-        menuBar->setObjectName(QString::fromUtf8("menuBar"));
+        menuBar->setObjectName(QStringLiteral("menuBar"));
         menuBar->setGeometry(QRect(0, 0, 1005, 28));
         menuModes = new QMenu(menuBar);
-        menuModes->setObjectName(QString::fromUtf8("menuModes"));
+        menuModes->setObjectName(QStringLiteral("menuModes"));
         menuLangues = new QMenu(menuBar);
-        menuLangues->setObjectName(QString::fromUtf8("menuLangues"));
+        menuLangues->setObjectName(QStringLiteral("menuLangues"));
         MainWindow->setMenuBar(menuBar);
         statusBar = new QStatusBar(MainWindow);
-        statusBar->setObjectName(QString::fromUtf8("statusBar"));
+        statusBar->setObjectName(QStringLiteral("statusBar"));
         MainWindow->setStatusBar(statusBar);
 
         menuBar->addAction(menuModes->menuAction());
@@ -235,25 +235,25 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0, QApplication::UnicodeUTF8));
-        actionMorceaux->setText(QApplication::translate("MainWindow", "Morceaux", 0, QApplication::UnicodeUTF8));
-        actionRadio->setText(QApplication::translate("MainWindow", "Radio", 0, QApplication::UnicodeUTF8));
-        actionAnglais->setText(QApplication::translate("MainWindow", "Deutsch", 0, QApplication::UnicodeUTF8));
-        actionEnglish->setText(QApplication::translate("MainWindow", "English", 0, QApplication::UnicodeUTF8));
-        actionFran_ais->setText(QApplication::translate("MainWindow", "Fran\303\247ais", 0, QApplication::UnicodeUTF8));
-        actionOccitan->setText(QApplication::translate("MainWindow", "Occitan", 0, QApplication::UnicodeUTF8));
-        Connexion->setText(QApplication::translate("MainWindow", "Connect\303\251", 0, QApplication::UnicodeUTF8));
-        Image->setText(QApplication::translate("MainWindow", "TextLabel", 0, QApplication::UnicodeUTF8));
-        Temps_restant->setText(QApplication::translate("MainWindow", "--:--:--", 0, QApplication::UnicodeUTF8));
-        Temps_lu->setText(QApplication::translate("MainWindow", "--:--:--", 0, QApplication::UnicodeUTF8));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
+        actionMorceaux->setText(QApplication::translate("MainWindow", "Morceaux", 0));
+        actionRadio->setText(QApplication::translate("MainWindow", "Radio", 0));
+        actionAnglais->setText(QApplication::translate("MainWindow", "Deutsch", 0));
+        actionEnglish->setText(QApplication::translate("MainWindow", "English", 0));
+        actionFran_ais->setText(QApplication::translate("MainWindow", "Fran\303\247ais", 0));
+        actionOccitan->setText(QApplication::translate("MainWindow", "Occitan", 0));
+        Connexion->setText(QApplication::translate("MainWindow", "Connect\303\251", 0));
+        Image->setText(QApplication::translate("MainWindow", "TextLabel", 0));
+        Temps_restant->setText(QApplication::translate("MainWindow", "--:--:--", 0));
+        Temps_lu->setText(QApplication::translate("MainWindow", "--:--:--", 0));
         Rewind->setText(QString());
         Previous->setText(QString());
         Play_pause->setText(QString());
         Next->setText(QString());
         Foward->setText(QString());
         Mute->setText(QString());
-        menuModes->setTitle(QApplication::translate("MainWindow", "Modes", 0, QApplication::UnicodeUTF8));
-        menuLangues->setTitle(QApplication::translate("MainWindow", "Langues", 0, QApplication::UnicodeUTF8));
+        menuModes->setTitle(QApplication::translate("MainWindow", "Modes", 0));
+        menuLangues->setTitle(QApplication::translate("MainWindow", "Langues", 0));
     } // retranslateUi
 
 };
