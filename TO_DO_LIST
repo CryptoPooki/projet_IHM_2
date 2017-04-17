@@ -1,18 +1,25 @@
 TO DO List:
 
-- Installer Qt Creator 5.8
- -> https://www.qt.io/download-open-source/
-
 - Client
 	-> Coder l'interface //fait
 	-> Insérer les images //Fait
-	-> Définir et coder la machine à états
-	-> Synchroniser la machine à états avec l'interface
+	-> Améliorer la gestion d'images avec des Qresources // Fait
+	-> Définir la machine à états // Fait
+	-> Coder la machine à états // Presque Fait
+	-> Synchroniser la machine à états avec l'interface //A Faire
+		==> Pas prioritaire
 
 - Serveur
-	-> Coder l'interface
-	-> Définir et coder la machine à états
-	-> Synchroniser la machine à états avec l'interface
+	-> Examiner le code source de mpv
+	-> Etudier l'accès aux fichers par Qt 	
+		==> Ca dépend de quel type d'objet on traite  (mp3, .png, ...)
+	-> Etudier comment se fait la lecture de fichiers audio // Fait
+		==> Ajouter multimedia dans Qt du fichier .pro
+		==> #include <QMultimedia> dans le .h
+		==> QAudioPlayer* player = new QAudioPlayer
+		==> player->play(); player->pause(); player->setVolume(); etc.
+	-> Construire le serveur
+		==> Voir remarques.txt
 
 - Communication
 	-> Définir les messages échangés
@@ -24,3 +31,6 @@ TO DO List:
 
 - Autres
 	-> Commenter les programmes
+	-> QWidget de chargement
+	-> Créer une base de musique avec les tags // Fait
+		==> J'ai utilisé easyTag sur Ubuntu
