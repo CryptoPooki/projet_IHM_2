@@ -7,17 +7,19 @@ TO DO List:
 	-> Définir la machine à états // Fait
 	-> Coder la machine à états // Presque Fait
 	-> Synchroniser la machine à états avec l'interface //A Faire
+		==> Pas prioritaire
 
 - Serveur
 	-> Examiner le code source de mpv
 	-> Etudier l'accès aux fichers par Qt 	
-		==> Ca dépend de quel type d'objet (mp3, .png, ...) on traite
+		==> Ca dépend de quel type d'objet on traite  (mp3, .png, ...)
 	-> Etudier comment se fait la lecture de fichiers audio // Fait
 		==> Ajouter multimedia dans Qt du fichier .pro
 		==> #include <QMultimedia> dans le .h
 		==> QAudioPlayer* player = new QAudioPlayer
-		==> player->play(); player->pause(); player->setVolume();
+		==> player->play(); player->pause(); player->setVolume(); etc.
 	-> Construire le serveur
+		==> Voir remarques.txt
 
 - Communication
 	-> Définir les messages échangés

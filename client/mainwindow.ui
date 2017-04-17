@@ -173,11 +173,11 @@
     <property name="title">
      <string>Langues</string>
     </property>
-    <addaction name="actionAnglais"/>
+    <addaction name="actionDeutsch"/>
     <addaction name="separator"/>
     <addaction name="actionEnglish"/>
     <addaction name="separator"/>
-    <addaction name="actionFran_ais"/>
+    <addaction name="actionFrancais"/>
     <addaction name="separator"/>
     <addaction name="actionOccitan"/>
     <addaction name="separator"/>
@@ -187,31 +187,55 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionMorceaux">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Morceaux</string>
    </property>
   </action>
   <action name="actionRadio">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Radio</string>
    </property>
   </action>
-  <action name="actionAnglais">
+  <action name="actionDeutsch">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Deutsch</string>
    </property>
   </action>
   <action name="actionEnglish">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>English</string>
    </property>
   </action>
-  <action name="actionFran_ais">
+  <action name="actionFrancais">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Français</string>
    </property>
   </action>
   <action name="actionOccitan">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Occitan</string>
    </property>

@@ -54,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->Image->setPixmap(pix_music);
     ui->Image->setFixedSize(main_size);
 
+    //Définition initiale du volume
     memVolume = 50;
     ui->Volume->setValue(memVolume);
 
@@ -64,10 +65,15 @@ MainWindow::MainWindow(QWidget *parent) :
     Automate_morceaux *automate_morceaux = new Automate_morceaux();
     Automate_radio *automate_radio = new Automate_radio();
     Automate_son *automate_son = new Automate_son();
+
+
 }
 
 MainWindow::~MainWindow()
 {
+    delete automate_morceaux;
+    delete automate_radio;
+    delete automate_son;
     delete ui;
 }
 
@@ -76,6 +82,7 @@ void MainWindow::on_Connexion_toggled(bool checked)
     if (checked)                      // Si l'utilisateur est déjà connecté
     {
         deconnexion();                //On interrompt la connexion avec le serveur
+
     } else                            // Si l'utilisateur n'est pas connecté
     {
         connexion();                  //On lance la connexion
@@ -96,14 +103,15 @@ void MainWindow::on_Progression_sliderMoved(int position)
 
 void MainWindow::on_Rewind_pressed()
 {
-    int speed_factors[7] = {1,2,5,10,20,30,60}; int i = 0;
+    /*int speed_factors[7] = {1,2,5,10,20,30,60}; int i = 0;
     while(ui->Rewind->isChecked()) //Pas sûr
     {
         rewind(speed_factors[i]);
         sleep(speed_factors[i]); //Attente de speed_factors[id] secondes avant d'augmenter la vitesse
         if (i < 6) i++;
         //Déplacement de la barre
-    }
+    }*/
+    rewind(1);
 }
 
 void MainWindow::on_Rewind_released()
@@ -168,13 +176,14 @@ void MainWindow::on_Next_clicked()
 
 void MainWindow::on_Foward_pressed()
 {
-    int speed_factors[7] = {1,2,5,10,20,30,60}; int i = 0;
+    /*int speed_factors[7] = {1,2,5,10,20,30,60}; int i = 0;
     while(ui->Foward->isChecked()) //Pas sûr
     {
         foward(speed_factors[i]);
         sleep(speed_factors[i]);         //Attente de speed_factors[i] secondes avant d'augmenter la vitesse
         if (i < 6) i++;
-    }
+    }*/
+    foward(1);
 }
 
 void MainWindow::on_Foward_released()
@@ -204,7 +213,7 @@ void MainWindow::on_Mute_clicked()
         //Repositionnement de la barre
         ui->Volume->setValue(memVolume);
 
-    } else //Le lecteur est en pause
+    } else                          //Le mute est désactivé
     {
         //Déclenchement de la fonction mute et stockage du pourcentage de son max enregistré
         mute(ui->Volume->value());
@@ -218,9 +227,8 @@ void MainWindow::on_Mute_clicked()
         ui->Mute->setIcon(icon_sound);
         ui->Mute->setIconSize(size);
 
+        //Stockage de la valeur du volume
         memVolume = ui->Volume->value();
-        ui->Nom_utilisateur->setText(QString::fromStdString(std::to_string(memVolume)));
-
 
         //Repositionnement de la barre
         ui->Volume->setValue(0);
@@ -265,6 +273,11 @@ void MainWindow::change_languages(int language_id)
             //Noms des langues non modifiées
 
             ui->Connexion->setText(QString::fromStdString("Verbindet"));
+
+            ui->actionDeutsch->setChecked(true);
+            ui->actionEnglish->setChecked(false);
+            ui->actionFrancais->setChecked(false);
+            ui->actionOccitan->setChecked(false);
         break;
         case 2: //English
             ui->menuModes->setTitle(QString::fromStdString("Modes"));
@@ -275,6 +288,11 @@ void MainWindow::change_languages(int language_id)
             //Noms des langues non modifiées
 
             ui->Connexion->setText(QString::fromStdString("Connected"));
+
+            ui->actionDeutsch->setChecked(false);
+            ui->actionEnglish->setChecked(true);
+            ui->actionFrancais->setChecked(false);
+            ui->actionOccitan->setChecked(false);
         break;
         case 3: //Français
             ui->menuModes->setTitle(QString::fromStdString("Modes"));
@@ -285,6 +303,11 @@ void MainWindow::change_languages(int language_id)
             //Noms des langues non modifiées
 
             ui->Connexion->setText(QString::fromStdString("Connecté"));
+
+            ui->actionDeutsch->setChecked(false);
+            ui->actionEnglish->setChecked(false);
+            ui->actionFrancais->setChecked(true);
+            ui->actionOccitan->setChecked(false);
         break;
         case 4: //Occitan
             ui->menuModes->setTitle(QString::fromStdString("Mòu"));
@@ -295,6 +318,11 @@ void MainWindow::change_languages(int language_id)
             //Noms des langues non modifiées
 
             ui->Connexion->setText(QString::fromStdString("Noselança"));
+
+            ui->actionDeutsch->setChecked(false);
+            ui->actionEnglish->setChecked(false);
+            ui->actionFrancais->setChecked(false);
+            ui->actionOccitan->setChecked(true);
     }
 }
 
@@ -443,3 +471,4 @@ void MainWindow::message(signalType sig, bool switchOn, int param1, int param2) 
         break;
       }
 }*/
+
