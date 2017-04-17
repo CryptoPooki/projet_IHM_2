@@ -45,10 +45,10 @@ private:
   QHistoryState *pauseHistory;
 
   // Et puis nous avons des transitions.
-  QSignalTransition *Play_to_Pause;
-  QSignalTransition *Pause_to_Play;
-  QSignalTransition *Play_to_Deconnecte;
-  QSignalTransition *Pause_to_Deconnecte;
+  QSignalTransition* Play_to_Pause;
+  QSignalTransition* Pause_to_Play;
+  QSignalTransition* Play_to_Deconnecte;
+  QSignalTransition* Pause_to_Deconnecte;
 
   // Les messages envoyés à l'UI
   void setupMessages();
@@ -62,15 +62,15 @@ signals:
 
   // Internal
   void signalPause();
-
-private slots:
-  void setupPlayState();
-  void setupPauseState();
+  void signalPlay();
+  void signalConnect();
+  void signalDeconnect();
+  void signalModeRadio();
 
 public slots:
   void setPlay(bool play);
   void setConnect(bool on);
-  void setMode(bool);
+  void setMode(bool radio);
 };
 
 #endif // AUTOMATE_MORCEAUX_H

@@ -9,6 +9,16 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    //Connexion des langues
+    QObject::connect (ui->actionDeutsch, &QAction::triggered, this, [this] { change_languages(1); });
+    QObject::connect (ui->actionEnglish, &QAction::triggered, this, [this] { change_languages(2); });
+    QObject::connect (ui->actionFrancais, &QAction::triggered, this, [this]{ change_languages(3); });
+    QObject::connect (ui->actionOccitan, &QAction::triggered, this, [this] { change_languages(4); });
+
+    QObject::connect(ui->actionMorceaux, &QAction::triggered, this, [this] { change_mode(false); });
+    QObject::connect(ui->actionRadio, &QAction::triggered, this, [this] { change_mode(true); });
+
+
     //Définition d'une norme (arbitraire) de taille de boutons : 70x50 pixels
     size.setWidth(50); size.setHeight(70);
 
@@ -66,14 +76,17 @@ MainWindow::MainWindow(QWidget *parent) :
     Automate_radio *automate_radio = new Automate_radio();
     Automate_son *automate_son = new Automate_son();
 
-
+    // On se connecte à l'automate morceaux
+    QObject::connect(automate_morceaux, SIGNAL(signalMachine(signalType,bool,int,int)), this, SLOT(message(signalType,bool,int,int)));
+    // On se connecte à l'automate radio
+    QObject::connect(automate_radio, SIGNAL(signalMachine(signalType,bool,int,int)), this, SLOT(message(signalType,bool,int,int)));
+    // On se connecte à l'automate son
+    QObject::connect(automate_son, SIGNAL(signalMachine(signalType,bool,int,int)), this, SLOT(message(signalType,bool,int,int)));
 }
 
 MainWindow::~MainWindow()
 {
-    delete automate_morceaux;
-    delete automate_radio;
-    delete automate_son;
+    //SegFault quand on delete les automates
     delete ui;
 }
 
@@ -82,7 +95,6 @@ void MainWindow::on_Connexion_toggled(bool checked)
     if (checked)                      // Si l'utilisateur est déjà connecté
     {
         deconnexion();                //On interrompt la connexion avec le serveur
-
     } else                            // Si l'utilisateur n'est pas connecté
     {
         connexion();                  //On lance la connexion
@@ -103,14 +115,14 @@ void MainWindow::on_Progression_sliderMoved(int position)
 
 void MainWindow::on_Rewind_pressed()
 {
-    /*int speed_factors[7] = {1,2,5,10,20,30,60}; int i = 0;
+    int speed_factors[7] = {1,2,5,10,20,30,60}; int i = 0;
     while(ui->Rewind->isChecked()) //Pas sûr
     {
         rewind(speed_factors[i]);
-        sleep(speed_factors[i]); //Attente de speed_factors[id] secondes avant d'augmenter la vitesse
+        QThread::sleep(speed_factors[i]); //Attente de speed_factors[id] secondes avant d'augmenter la vitesse
         if (i < 6) i++;
         //Déplacement de la barre
-    }*/
+    }
     rewind(1);
 }
 
@@ -155,7 +167,7 @@ void MainWindow::on_Play_pause_clicked()
         flag_play = true;
 
         //Changement de l'icône du bouton
-        pix_play.load(":/pics/pause.jpg");
+        pix_play.load(":/pics/pause.jpg");      //Bug : Ne s'affiche pas
         icon_play.addPixmap(pix_play);
         ui->Play_pause->setIcon(icon_play);
         ui->Play_pause->setIconSize(size);
@@ -176,13 +188,13 @@ void MainWindow::on_Next_clicked()
 
 void MainWindow::on_Foward_pressed()
 {
-    /*int speed_factors[7] = {1,2,5,10,20,30,60}; int i = 0;
+    int speed_factors[7] = {1,2,5,10,20,30,60}; int i = 0;
     while(ui->Foward->isChecked()) //Pas sûr
     {
         foward(speed_factors[i]);
-        sleep(speed_factors[i]);         //Attente de speed_factors[i] secondes avant d'augmenter la vitesse
+        QThread::sleep(speed_factors[i]);         //Attente de speed_factors[i] secondes avant d'augmenter la vitesse
         if (i < 6) i++;
-    }*/
+    }
     foward(1);
 }
 
@@ -326,9 +338,9 @@ void MainWindow::change_languages(int language_id)
     }
 }
 
-void MainWindow::change_mode()
+void MainWindow::change_mode(bool radio)
 {
-    if(flag_radio) // Si le mode radio est activé
+    if(!radio) // Si le mode radio doit être désactivé
     {
         //Affichage ce qui a été caché
         ui->Progression->show();
@@ -342,6 +354,9 @@ void MainWindow::change_mode()
 
         //Récupération de l'état précédent
         //Fonction à définir
+
+        ui->actionMorceaux->setChecked(true);
+        ui->actionRadio->setChecked(false);
     } else
     {
         //Cache
@@ -356,6 +371,9 @@ void MainWindow::change_mode()
 
         //Récupération de l'état précédent
         //Fonction à définir
+
+        ui->actionMorceaux->setChecked(false);
+        ui->actionRadio->setChecked(true);
     }
 }
 

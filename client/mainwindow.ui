@@ -44,8 +44,14 @@
        </item>
        <item>
         <widget class="QRadioButton" name="Connexion">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
          <property name="text">
           <string>Connexion</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
          </property>
         </widget>
        </item>

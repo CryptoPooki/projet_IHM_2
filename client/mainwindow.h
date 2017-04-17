@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QThread>
+#include <QSignalMapper>
 #include "string.h"
 
 #include "automate_morceaux.h"
@@ -46,7 +48,7 @@ private:
   Automate_son *automate_son;
 
   void change_languages(int language_id);   //Fonction qui change le langage d'affichage
-  void change_mode();                       //Fonction que change le mode de lecture et d'affichage
+  void change_mode(bool radio);             //Fonction que change le mode de lecture et d'affichage
   bool flag_radio;                          //Booléen permettant de savoir si l'interface est en mode radio
   void connexion();                         //Fonction de connexion au serveur
   void deconnexion();                       //Fonction qui déconnecte le client de serveur

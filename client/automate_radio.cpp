@@ -19,10 +19,10 @@ Automate_radio::Automate_radio(QObject *parent) : QObject(parent)
 
 
   // Nos transitions
-  play->addTransition(pause);
-  pause->addTransition(play);
-  play->addTransition(deconnecte);
-  pause->addTransition(deconnecte);
+  Play_to_Pause = (QSignalTransition*) play->addTransition(pause);
+  Pause_to_Play = (QSignalTransition*) pause->addTransition(play);
+  Play_to_Deconnecte = (QSignalTransition*) play->addTransition(deconnecte);
+  Pause_to_Deconnecte = (QSignalTransition*) pause->addTransition(deconnecte);
 
 
   QObject::connect(deconnecte, &QState::entered, [this](){
@@ -54,18 +54,6 @@ void Automate_radio::setupMessages()
   QObject::connect(pause, &QState::exited, [this](){
       emit signalMachine(kSignalPhase, false, kPhasePause);
     });
-}
-
-//Déclenchement de la lecture
-void Automate_radio::setupPlayState()
-{
-    //Lecture de la musique
-}
-
-//Arrêt de la lecture
-void Automate_radio::setupPauseState()
-{
-    //Arrêt de la musique
 }
 
 /*
@@ -123,13 +111,21 @@ void Automate_radio::setConnect(bool on)
   //A coder
 }
 
-//?
 void Automate_radio::setPlay(bool play)
 {
-  emit signalMachine(kSignalPhase);
+  if (play)
+  {
+      emit signalPlay();
+  } else
+  {
+      emit signalPause();
+  }
 }
 
 void Automate_radio::setMode(bool radio)
 {
-
+    if (!radio)
+    {
+        emit signalModeMorceaux();
+    }
 }

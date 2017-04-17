@@ -9,7 +9,7 @@
 #include <QSignalTransition>
 #include <QDebug>
 
-#include "automate_morceaux.h"
+#include "automate_morceaux.h" //Pour les enums
 
 class Automate_radio : public QObject
 {
@@ -49,15 +49,15 @@ signals:
 
   // Internal
   void signalPause();
-
-private slots:
-  void setupPlayState();
-  void setupPauseState();
+  void signalPlay();
+  void signalConnect();
+  void signalDeconnect();
+  void signalModeMorceaux();
 
 public slots:
   void setPlay(bool play);
   void setConnect(bool on);
-  void setMode(bool);
+  void setMode(bool mode);
 };
 
 #endif // AUTOMATE_RADIO_H

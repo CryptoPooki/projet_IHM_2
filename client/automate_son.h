@@ -45,11 +45,8 @@ signals:
   void signalMachine(signalType, bool on=true, int param1=0, int param2=0);
 
   // Internal
-  void signalPause();
-
-private slots:
-  void setupSoundState();
-  void setupMuteState();
+  void signalSound();
+  void signalMute();
 
 public slots:
   void setMute(bool mute);

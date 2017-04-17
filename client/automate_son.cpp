@@ -45,18 +45,6 @@ void Automate_son::setupMessages()
     });
 }
 
-//Déclenchement du mute
-void Automate_son::setupMuteState()
-{
-    //Couper le son
-}
-
-//Arrêt du mute
-void Automate_son::setupSoundState()
-{
-    //Arrêt de la musique
-}
-
 /*
  * Quelques debugs utiles
  */
@@ -89,6 +77,12 @@ void Automate_son::initDebug()
 
 void Automate_son::setMute(bool mute)
 {
-  //Mute
+  if(mute)
+  {
+      emit signalMute();
+  } else
+  {
+      emit signalSound();
+  }
 }
 

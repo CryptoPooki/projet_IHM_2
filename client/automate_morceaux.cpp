@@ -18,12 +18,11 @@ Automate_morceaux::Automate_morceaux(QObject *parent) : QObject(parent)
   // Un état final "déconnecté"
   deconnecte = new QFinalState(machine);
 
-
-  // Nos transitions (BUG)
-  play->addTransition(pause);
-  pause->addTransition(play);
-  play->addTransition(deconnecte);
-  pause->addTransition(deconnecte);
+  // Nos transitions
+  Play_to_Pause = (QSignalTransition*) play->addTransition(pause);
+  Pause_to_Play = (QSignalTransition*) pause->addTransition(play);
+  Play_to_Deconnecte = (QSignalTransition*) play->addTransition(deconnecte);
+  Pause_to_Deconnecte = (QSignalTransition*) pause->addTransition(deconnecte);
 
 
   QObject::connect(deconnecte, &QState::entered, [this](){
@@ -57,18 +56,6 @@ void Automate_morceaux::setupMessages()
     });
 }
 
-//Déclenchement de la lecture
-void Automate_morceaux::setupPlayState()
-{
-    //Lecture de la musique
-}
-
-//Arrêt de la lecture
-void Automate_morceaux::setupPauseState()
-{
-    //Arrêt de la musique
-}
-
 /*
  * Quelques debugs utiles
  */
@@ -100,7 +87,8 @@ void Automate_morceaux::initDebug()
     });
 }
 
-void Automate_morceaux::cleanup(){
+void Automate_morceaux::cleanup()
+{
   // On remet tout à zéro
   // A revoir
 }
@@ -125,10 +113,19 @@ void Automate_morceaux::setConnect(bool on)
 
 void Automate_morceaux::setPlay(bool play)
 {
-  emit signalMachine(kSignalPhase);
+  if (play)
+  {
+      emit signalPlay();
+  } else
+  {
+      emit signalPause();
+  }
 }
 
 void Automate_morceaux::setMode(bool radio)
 {
-
+    if(radio)
+    {
+        emit signalModeRadio();
+    }
 }
