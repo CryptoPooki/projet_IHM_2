@@ -54,6 +54,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->Image->setPixmap(pix_music);
     ui->Image->setFixedSize(main_size);
 
+    memVolume = 50;
+    ui->Volume->setValue(memVolume);
+
     flag_play = false;
     flag_mute = false;
     flag_radio = false;
@@ -131,7 +134,7 @@ void MainWindow::on_Play_pause_clicked()
         flag_play = false;
 
         //Changement de l'icône du bouton
-        pix_play.load(":/pics/pause.png");
+        pix_play.load(":/pics/play.png");
         icon_play.addPixmap(pix_play);
         ui->Play_pause->setIcon(icon_play);
         ui->Play_pause->setIconSize(size);
@@ -144,7 +147,7 @@ void MainWindow::on_Play_pause_clicked()
         flag_play = true;
 
         //Changement de l'icône du bouton
-        pix_play.load(":/pics/play.png");
+        pix_play.load(":/pics/pause.jpg");
         icon_play.addPixmap(pix_play);
         ui->Play_pause->setIcon(icon_play);
         ui->Play_pause->setIconSize(size);
@@ -184,7 +187,7 @@ void MainWindow::on_Mute_clicked()
     if (flag_mute)                      //Si le mode mute est activé
     {
         //Déclenchement de la fonction mute et récupération du pourcentage de son max enregistré
-        int volume_memorise = mute(-1);
+        //mute(-1);
 
         //MAJ de l'état de lecture
         flag_mute = false;
@@ -196,10 +199,10 @@ void MainWindow::on_Mute_clicked()
         ui->Mute->setIconSize(size);
 
         //Restauration du volume
-        setVolume(volume_memorise);
+        setVolume(memVolume);
 
         //Repositionnement de la barre
-        ui->Volume->setValue(volume_memorise);
+        ui->Volume->setValue(memVolume);
 
     } else //Le lecteur est en pause
     {
@@ -210,10 +213,14 @@ void MainWindow::on_Mute_clicked()
         flag_mute = true;
 
         //Changement de l'icône du bouton
-        pix_sound.load(":/pics/mute.png");
+        pix_sound.load(":/pics/mute.jpg");
         icon_sound.addPixmap(pix_sound);
         ui->Mute->setIcon(icon_sound);
         ui->Mute->setIconSize(size);
+
+        memVolume = ui->Volume->value();
+        ui->Nom_utilisateur->setText(QString::fromStdString(std::to_string(memVolume)));
+
 
         //Repositionnement de la barre
         ui->Volume->setValue(0);

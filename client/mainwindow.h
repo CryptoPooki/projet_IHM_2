@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "string.h"
+
 #include "automate_morceaux.h"
 #include "automate_radio.h"
 #include "automate_son.h"
@@ -75,6 +77,7 @@ private:
   int mute(int vol);                        //Fonction gère le mute
   void setVolume(int volume);               //Fonction qui change le volume
   bool flag_mute;                           //Booléen permettant de savoir si l'interface est en mode mute
+  int memVolume;
   void change_sound(int pourcentage);       //Fonctoin qui modifie le son en fonction de sa puissance maximale
 
 /*public slots:
