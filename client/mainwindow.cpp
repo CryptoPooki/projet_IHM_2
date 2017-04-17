@@ -47,13 +47,20 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->Mute->setIcon(icon_sound);
     ui->Mute->setIconSize(size);
 
+    QSize main_size; main_size.setHeight(330); main_size.setWidth(330);
+    ui->Image->setFixedSize(size);
+    pix_music.load(":/pics/music.png");
+    pix_music = pix_music.scaled(330,330);
+    ui->Image->setPixmap(pix_music);
+    ui->Image->setFixedSize(main_size);
+
     flag_play = false;
     flag_mute = false;
     flag_radio = false;
 
-    /*Automate_morceaux *automate_morceaux = new Automate_morceaux();
+    Automate_morceaux *automate_morceaux = new Automate_morceaux();
     Automate_radio *automate_radio = new Automate_radio();
-    Automate_son *automate_son = new Automate_son();*/ //Inutile pour l'instant
+    Automate_son *automate_son = new Automate_son();
 }
 
 MainWindow::~MainWindow()
@@ -189,7 +196,7 @@ void MainWindow::on_Mute_clicked()
         ui->Mute->setIconSize(size);
 
         //Restauration du volume
-        change_sound(volume_memorise);
+        setVolume(volume_memorise);
 
         //Repositionnement de la barre
         ui->Volume->setValue(volume_memorise);
@@ -230,11 +237,11 @@ void MainWindow::on_Volume_sliderMoved(int position)
         ui->Mute->setIconSize(size);
 
         //Modification du volume
-        change_sound(position);
+        setVolume(position);
     } else                                //Si le mode mute n'est pas activé
     {
         //Modification du volume
-        change_sound(position);
+        setVolume(position);
     }
 }
 
@@ -382,8 +389,6 @@ void MainWindow::foward(int speed)
     //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
 }
 
-
-
 int MainWindow::mute(int vol)
 {
     //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
@@ -396,7 +401,7 @@ int MainWindow::mute(int vol)
     return -1; //Retour par défaut tant que la fonction n'est pas programmée et pour éviter les bugs de compilation
 }
 
-void MainWindow::change_sound(int pourcentage)
+void MainWindow::setVolume(int volume)
 {
     //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
 }

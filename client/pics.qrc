@@ -6,5 +6,7 @@
         <file>previous.png</file>
         <file>rewind.png</file>
         <file>sound.png</file>
+        <file>mainwindow.cpp</file>
+        <file>music.png</file>
     </qresource>
 </RCC>

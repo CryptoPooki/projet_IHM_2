@@ -2,9 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-//#include "automate_morceaux.h"
-//#include "automate_radio.h"
-//#include "automate_son.h"
+#include "automate_morceaux.h"
+#include "automate_radio.h"
+#include "automate_son.h"
 
 namespace Ui {
   class MainWindow;
@@ -35,13 +35,13 @@ private slots:
 
 private:
   Ui::MainWindow *ui;
-  QPixmap pix_rewind, pix_previous, pix_play, pix_next, pix_foward, pix_sound;
+  QPixmap pix_rewind, pix_previous, pix_play, pix_next, pix_foward, pix_sound, pix_music;
   QIcon icon_rewind, icon_previous, icon_play, icon_next, icon_foward, icon_sound;
   QSize size;
 
-  /*Automate_morceaux *automate_morceaux;
+  Automate_morceaux *automate_morceaux;
   Automate_radio *automate_radio;
-  Automate_son *automate_son;*/
+  Automate_son *automate_son;
 
   void change_languages(int language_id);   //Fonction qui change le langage d'affichage
   void change_mode();                       //Fonction que change le mode de lecture et d'affichage
@@ -73,6 +73,7 @@ private:
 
   void foward(int speed);                   //Fonction qui fait une avance rapide sur le morceau
   int mute(int vol);                        //Fonction gère le mute
+  void setVolume(int volume);               //Fonction qui change le volume
   bool flag_mute;                           //Booléen permettant de savoir si l'interface est en mode mute
   void change_sound(int pourcentage);       //Fonctoin qui modifie le son en fonction de sa puissance maximale
 

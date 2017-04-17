@@ -10,8 +10,13 @@ TO DO List:
 
 - Serveur
 	-> Examiner le code source de mpv
-	-> Etudier l'accès aux fichers par Qt 
-	-> Etudier comment se fait la lecture de fichiers audio
+	-> Etudier l'accès aux fichers par Qt 	
+		==> Ca dépend de quel type d'objet (mp3, .png, ...) on traite
+	-> Etudier comment se fait la lecture de fichiers audio // Fait
+		==> Ajouter multimedia dans Qt du fichier .pro
+		==> #include <QMultimedia> dans le .h
+		==> QAudioPlayer* player = new QAudioPlayer
+		==> player->play(); player->pause(); player->setVolume();
 	-> Construire le serveur
 
 - Communication
@@ -25,3 +30,5 @@ TO DO List:
 - Autres
 	-> Commenter les programmes
 	-> QWidget de chargement
+	-> Créer une base de musique avec les tags // Fait
+		==> J'ai utilisé easyTag sur Ubuntu

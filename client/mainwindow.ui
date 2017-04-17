@@ -64,10 +64,10 @@
         </widget>
        </item>
        <item>
-        <widget class="QListView" name="Liste"/>
+        <widget class="QListWidget" name="Liste"/>
        </item>
        <item>
-        <widget class="QListView" name="Morceaux"/>
+        <widget class="QListWidget" name="Morceaux"/>
        </item>
       </layout>
      </item>
