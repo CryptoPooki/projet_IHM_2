@@ -27,12 +27,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     automate_morceaux.cpp \
     automate_son.cpp \
-    automate_radio.cpp
+    automate_radio.cpp \
+    loadwidget.cpp
 
 HEADERS  += mainwindow.h \
     automate_morceaux.h \
     automate_son.h \
-    automate_radio.h
+    automate_radio.h \
+    loadwidget.h
 
 FORMS    += mainwindow.ui
 

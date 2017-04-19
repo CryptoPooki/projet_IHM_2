@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 
 #include "unistd.h"
+#include "stdio.h"
+#include "iostream"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -18,6 +20,23 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->actionMorceaux, &QAction::triggered, this, [this] { change_mode(false); });
     QObject::connect(ui->actionRadio, &QAction::triggered, this, [this] { change_mode(true); });
 
+    ui->Nom_utilisateur->setFixedWidth(400);
+    ui->Connexion->setFixedWidth(130);
+
+    Loadwidget* loading = new Loadwidget();
+    ui->LoadLayout->addWidget(loading);
+    loading->show();
+
+    /*
+     * Ajouter un thread de la forme
+     * QTransform t; t.rotate(30);
+    while(condition de chargement)
+    {
+        QThread::sleep(1);
+        image = image.transformed(t);
+        show();
+    }
+    */
 
     //Définition d'une norme (arbitraire) de taille de boutons : 70x50 pixels
     size.setWidth(50); size.setHeight(70);
@@ -33,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->Previous->setIcon(icon_previous);
     ui->Previous->setIconSize(size);
 
-    pix_play.load(":/pics/play.png");
+    pix_play.load(":/pics/play.jpg");
     icon_play.addPixmap(pix_play);
     ui->Play_pause->setIcon(icon_play);
     ui->Play_pause->setIconSize(size);
@@ -154,10 +173,12 @@ void MainWindow::on_Play_pause_clicked()
         flag_play = false;
 
         //Changement de l'icône du bouton
-        pix_play.load(":/pics/play.png");
+        pix_play.load(":/pics/play.jpg"); //Bug incompréhensible les images ne veulent plus se charger une fois que play.jpg est chargé
         icon_play.addPixmap(pix_play);
         ui->Play_pause->setIcon(icon_play);
         ui->Play_pause->setIconSize(size);
+        std::cout << "popause" << std::endl;
+
     } else                              //Le lecteur est en pause
     {
         //Lancement de la lecture
@@ -171,6 +192,8 @@ void MainWindow::on_Play_pause_clicked()
         icon_play.addPixmap(pix_play);
         ui->Play_pause->setIcon(icon_play);
         ui->Play_pause->setIconSize(size);
+        std::cout << "plplay" << std::endl;
+
     }
 }
 
@@ -451,7 +474,7 @@ int MainWindow::mute(int vol)
      * J'ai choisi -1 plutôt que 0 (qui semble un meilleur choix à première vue) pour éviter un conflit entre la barre de son, qui devient automatiquement mute
      * quand on la diminue à 0, et le mute
      */
-    return -1; //Retour par défaut tant que la fonction n'est pas programmée et pour éviter les bugs de compilation
+   return -1; //Retour par défaut tant que la fonction n'est pas programmée et pour éviter les bugs de compilation
 }
 
 void MainWindow::setVolume(int volume)
@@ -459,7 +482,7 @@ void MainWindow::setVolume(int volume)
     //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
 }
 
-/*void MainWindow::setPhase(phase p, bool on, int param)
+void MainWindow::setPhase(phase p, bool on, int param) //A revoir
 {
   switch(p)
   {
@@ -488,5 +511,5 @@ void MainWindow::message(signalType sig, bool switchOn, int param1, int param2) 
       default:
         break;
       }
-}*/
+}
 
