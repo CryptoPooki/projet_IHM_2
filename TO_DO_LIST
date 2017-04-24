@@ -1,36 +1,20 @@
-TO DO List:
+TO_DO (client)
+ -> Peaufiner les automates
+ -> Transférer les automates au serveur avec les QHistoryState
+ -> Créer l'environnement permettant un échange JSON avec le serveur
+ -> Créer les fonctions envoyant un message au serveur pour lui indiquer l'action à réaliser
+ -> Corriger le bug d'image de play/pause
+ -> Corriger le bug de son et de mémoire de l'état du son
+ -> Gérer les métadonnées (réception et traitement des métadonnées)
 
-- Client
-	-> Coder l'interface //fait
-	-> Insérer les images //Fait
-	-> Améliorer la gestion d'images avec des Qresources // Fait
-	-> Définir la machine à états // Fait
-	-> Coder la machine à états // Presque Fait
-	-> Synchroniser la machine à états avec l'interface //A Faire
-		==> Pas prioritaire
+TO_DO (serveur)
+ -> Créer les fonctions déclanchant les fonctions mpv
+ -> Gérer dynamiquement les listes de client
+ -> Créer l'environnement permettant un échange JSON avec le client
+ -> Gérer les métadonnées (extraction à partir du fichier .mp3 et envoie des métadonnées)
 
-- Serveur
-	-> Examiner le code source de mpv
-	-> Etudier l'accès aux fichers par Qt 	
-		==> Ca dépend de quel type d'objet on traite  (mp3, .png, ...)
-	-> Etudier comment se fait la lecture de fichiers audio // Fait
-		==> Ajouter multimedia dans Qt du fichier .pro
-		==> #include <QMultimedia> dans le .h
-		==> QAudioPlayer* player = new QAudioPlayer
-		==> player->play(); player->pause(); player->setVolume(); etc.
-	-> Construire le serveur
-		==> Voir remarques.txt
-
-- Communication
-	-> Définir les messages échangés
-	-> Créer la communication entre le client et les serveurs
-	-> Tester l'exclusion mutuelle
-
-- Rapport
-	-> Rédiger le rapport
-
-- Autres
-	-> Commenter les programmes
-	-> QWidget de chargement
-	-> Créer une base de musique avec les tags // Fait
-		==> J'ai utilisé easyTag sur Ubuntu
+Bonus
+ -> Commenter le code
+ -> Ajouter une interface au serveur
+ -> Implémenter l'accélérateur de vitesse pour le rewind et le foward
+ -> Améliorer la qualité des images de l'interface
