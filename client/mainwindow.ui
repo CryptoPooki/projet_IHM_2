@@ -27,31 +27,15 @@
      <item>
       <layout class="QHBoxLayout" name="Infos_connexion">
        <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
+        <layout class="QVBoxLayout" name="LoadLayout"/>
        </item>
        <item>
         <widget class="QLineEdit" name="Nom_utilisateur"/>
        </item>
        <item>
         <widget class="QRadioButton" name="Connexion">
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
          <property name="text">
-          <string>Connexion</string>
-         </property>
-         <property name="checked">
-          <bool>false</bool>
+          <string>Connecté</string>
          </property>
         </widget>
        </item>
@@ -65,15 +49,47 @@
           <bool>true</bool>
          </property>
          <property name="text">
-          <string>TextLabel</string>
+          <string/>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="Liste"/>
+        <widget class="QListWidget" name="Liste">
+         <item>
+          <property name="text">
+           <string>Liste1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Liste2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Liste3</string>
+          </property>
+         </item>
+        </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="Morceaux"/>
+        <widget class="QListWidget" name="Morceaux">
+         <item>
+          <property name="text">
+           <string>music1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>music2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>music3</string>
+          </property>
+         </item>
+        </widget>
        </item>
       </layout>
      </item>

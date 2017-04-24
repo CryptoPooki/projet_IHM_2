@@ -9,6 +9,7 @@
 #include "automate_morceaux.h"
 #include "automate_radio.h"
 #include "automate_son.h"
+#include "loadwidget.h"
 
 namespace Ui {
   class MainWindow;
@@ -82,10 +83,10 @@ private:
   int memVolume;
   void change_sound(int pourcentage);       //Fonctoin qui modifie le son en fonction de sa puissance maximale
 
-/*public slots:
+public slots:
   // Messages reçus de l'automate
   void setPhase(phase p, bool on, int param);
-  void message(signalType, bool, int param1, int param2):*/
+  void message(signalType, bool, int param1, int param2);
 };
 
 #endif // MAINWINDOW_H
