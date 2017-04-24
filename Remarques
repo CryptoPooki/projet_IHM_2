@@ -1,5 +1,0 @@
-Notes
-
-- Modifier l'alpha des images pour modifier la transparence et la luminosité afin d'enlever le fond blanc (dégueulasse) des images
-- Pour construire le serveur, il faut reprendre le code de MPV, enlever sur qui est superflu et lui ajouter des fonctions de server Qt/JSON (comme pour le TP 5)
-  
