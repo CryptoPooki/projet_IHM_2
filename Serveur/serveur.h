@@ -20,6 +20,7 @@ public:
 public slots :
     void newConnection();
     void disconnected();
+    void readyRead();
 
 
 
