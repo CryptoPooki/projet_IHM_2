@@ -122,6 +122,9 @@
       <layout class="QHBoxLayout" name="Commandes">
        <item>
         <widget class="QPushButton" name="Rewind">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 255);</string>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -129,6 +132,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="Previous">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 255);</string>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -136,6 +142,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="Play_pause">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 255);</string>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -143,6 +152,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="Next">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 255);</string>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -150,6 +162,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="Foward">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 255);</string>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -157,6 +172,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="Mute">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 255);</string>
+         </property>
          <property name="text">
           <string/>
          </property>
