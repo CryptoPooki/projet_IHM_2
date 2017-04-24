@@ -3,8 +3,11 @@
 
 #include <QObject>
 #include <QLocalServer>
+#include <QTcpSocket>
 #include <QLocalSocket>
 #include <QtConcurrent/QtConcurrent>
+#include <QVector>
+#include <QTcpServer>
 
 class Serveur: public QObject
 {
@@ -15,10 +18,26 @@ public:
     bool pause = false;
 
 public slots :
+    void newConnection();
+    void disconnected();
+
+
+
+
+
+
+
+
+
     void cible();
 
 private:
     QLocalSocket *mpv=NULL;
+    QVector<QTcpSocket*> VClient;
+    QTcpServer * m_server;
+    bool m_running;
+
+
     void sendRequestToMPV();
 };
 
