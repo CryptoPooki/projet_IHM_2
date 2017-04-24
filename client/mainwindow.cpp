@@ -84,6 +84,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->Image->setFixedSize(main_size);
 
     //Définition initiale du volume
+    //Utiliser des automates
     memVolume = 50;
     ui->Volume->setValue(memVolume);
 
@@ -134,20 +135,20 @@ void MainWindow::on_Progression_sliderMoved(int position)
 
 void MainWindow::on_Rewind_pressed()
 {
-    int speed_factors[7] = {1,2,5,10,20,30,60}; int i = 0;
+    /*int speed_factors[7] = {1,2,5,10,20,30,60}; int i = 0;
     while(ui->Rewind->isChecked()) //Pas sûr
     {
         rewind(speed_factors[i]);
         QThread::sleep(speed_factors[i]); //Attente de speed_factors[id] secondes avant d'augmenter la vitesse
         if (i < 6) i++;
         //Déplacement de la barre
-    }
+    }*/
     rewind(1);
 }
 
 void MainWindow::on_Rewind_released()
 {
-
+    play();
 }
 
 void MainWindow::on_Previous_clicked()
@@ -164,7 +165,7 @@ void MainWindow::on_Previous_clicked()
 
 void MainWindow::on_Play_pause_clicked()
 {
-    if (flag_play)                      //Si un morceau est joué
+    if (flag_play)                      //Si un morceau est joué, l'image de pause est affichée
     {
         //Arrêt de la lecture
         pause();
@@ -179,7 +180,7 @@ void MainWindow::on_Play_pause_clicked()
         ui->Play_pause->setIconSize(size);
         std::cout << "popause" << std::endl;
 
-    } else                              //Le lecteur est en pause
+    } else                              //Le lecteur est en pause, l'image de play est affichée
     {
         //Lancement de la lecture
         play();
@@ -211,19 +212,19 @@ void MainWindow::on_Next_clicked()
 
 void MainWindow::on_Foward_pressed()
 {
-    int speed_factors[7] = {1,2,5,10,20,30,60}; int i = 0;
+    /*int speed_factors[7] = {1,2,5,10,20,30,60}; int i = 0;
     while(ui->Foward->isChecked()) //Pas sûr
     {
         foward(speed_factors[i]);
         QThread::sleep(speed_factors[i]);         //Attente de speed_factors[i] secondes avant d'augmenter la vitesse
         if (i < 6) i++;
-    }
+    }*/
     foward(1);
 }
 
 void MainWindow::on_Foward_released()
 {
-
+    play();
 }
 
 void MainWindow::on_Mute_clicked()
@@ -292,6 +293,18 @@ void MainWindow::on_Volume_sliderMoved(int position)
     {
         //Modification du volume
         setVolume(position);
+
+        if (position == 0)
+        {
+            flag_mute = true;
+
+            //Changement de l'icône du bouton
+            pix_sound.load(":/pics/mute.jpg");
+            icon_sound.addPixmap(pix_sound);
+            ui->Mute->setIcon(icon_sound);
+            ui->Mute->setIconSize(size);
+        }
+
     }
 }
 

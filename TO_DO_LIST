@@ -5,6 +5,7 @@ TO_DO (client)
  -> Créer les fonctions envoyant un message au serveur pour lui indiquer l'action à réaliser
  -> Corriger le bug d'image de play/pause
  -> Corriger le bug de son et de mémoire de l'état du son
+	==> Utiliser les automates
  -> Gérer les métadonnées (réception et traitement des métadonnées)
 
 TO_DO (serveur)
@@ -17,4 +18,3 @@ Bonus
  -> Commenter le code
  -> Ajouter une interface au serveur
  -> Implémenter l'accélérateur de vitesse pour le rewind et le foward
- -> Améliorer la qualité des images de l'interface
