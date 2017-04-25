@@ -10,6 +10,7 @@
 #include "automate_radio.h"
 #include "automate_son.h"
 #include "loadwidget.h"
+#include "communication.h"
 
 namespace Ui {
   class MainWindow;
@@ -82,6 +83,12 @@ private:
   bool flag_mute;                           //Booléen permettant de savoir si l'interface est en mode mute
   int memVolume;
   void change_sound(int pourcentage);       //Fonctoin qui modifie le son en fonction de sa puissance maximale
+
+  // Connexion avec le serveur
+  Communication* C;
+  void InitConnexion();
+
+
 
 public slots:
   // Messages reçus de l'automate

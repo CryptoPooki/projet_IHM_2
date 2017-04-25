@@ -104,6 +104,15 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(automate_son, SIGNAL(signalMachine(signalType,bool,int,int)), this, SLOT(message(signalType,bool,int,int)));
 }
 
+// Fonction qui initie la connexion avec le serveur
+// Se connecte au serveur et fait que le serveur puisse se connecter au client
+// qui est également un serveur qui réceptionne des informations du serveur
+void MainWindow::InitConnexion()
+{
+    C = new Communication();
+
+}
+
 MainWindow::~MainWindow()
 {
     //SegFault quand on delete les automates

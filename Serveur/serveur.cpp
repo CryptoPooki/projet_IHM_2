@@ -71,8 +71,56 @@ void Serveur::readyRead()
     }
 }
 
+void Serveur::pause_f()
+{
+    QProcess P;
+    if( !pause)
+        P.start("sh", QStringList() << "-c" <<" echo '{ \"command\": [\"set_property\", \"pause\", true] }' | socat - /tmp/mpv-socket");
+    else
+        P.start("sh", QStringList() << "-c" <<" echo '{ \"command\": [\"set_property\", \"pause\", false] }' | socat - /tmp/mpv-socket");
+    pause = !pause;
+    P.waitForFinished();
+    qDebug() << "chgt effectué";
 
+}
 
+void Serveur::chgtVolume(int value)
+{
+    QProcess P;
+    P.start("sh", QStringList() << "-c" <<" echo '{ \"command\": [\"volume\"," << QString::number(value) << "] }' | socat - /tmp/mpv-socket");
+    P.waitForFinished();
+    qDebug() << "chgt effectué";
+}
+
+void Serveur::monterVolume()
+{
+
+}
+
+void Serveur::baisseVolume()
+{
+
+}
+
+void Serveur::chgtMusique()
+{
+
+}
+
+void Serveur::avanceMusique()
+{
+
+}
+
+void Serveur::reculeMusique()
+{
+
+}
+
+void Serveur::chgtEndroitMusique()
+{
+
+}
 
 void Serveur::cible()
 {

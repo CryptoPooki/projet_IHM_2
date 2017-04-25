@@ -22,6 +22,15 @@ public slots :
     void disconnected();
     void readyRead();
 
+    void pause_f();
+    void chgtVolume(int value);
+    void monterVolume();
+    void baisseVolume();
+    void chgtMusique();
+    void avanceMusique();
+    void reculeMusique();
+    void chgtEndroitMusique();
+
 
 
 

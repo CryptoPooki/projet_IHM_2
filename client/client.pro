@@ -6,6 +6,7 @@
 
 QT       += core gui
 QT       += widgets
+QT       += network
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = serveur
@@ -28,13 +29,15 @@ SOURCES += main.cpp\
     automate_morceaux.cpp \
     automate_son.cpp \
     automate_radio.cpp \
-    loadwidget.cpp
+    loadwidget.cpp \
+    communication.cpp
 
 HEADERS  += mainwindow.h \
     automate_morceaux.h \
     automate_son.h \
     automate_radio.h \
-    loadwidget.h
+    loadwidget.h \
+    communication.h
 
 FORMS    += mainwindow.ui
 
