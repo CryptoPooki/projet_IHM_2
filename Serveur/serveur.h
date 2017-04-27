@@ -35,6 +35,7 @@ public slots :
 
     bool writeData(QString dataString, QTcpSocket* socket);
     void supprimeClient(int id);
+    void writeEveryone(QString response);
 
 
 

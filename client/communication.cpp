@@ -3,13 +3,15 @@
 #include <QDataStream>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QMainWindow>
+#include "mainwindow.h"
 
-
-Communication::Communication():
+Communication::Communication(MainWindow * W):
     m_socket(new QTcpSocket(this))
 {
     if(!connectToHost("localhost"))
         qDebug() << "Fail connexion to serveur";
+    this->W = W;
 }
 
 bool Communication::connectToHost (QString host)
@@ -69,6 +71,16 @@ QString Communication::readyRead()
             bool ok;
             id = L[1].toInt(&ok,10);
             qDebug() << QString::fromStdString("J'ai reçu l'id ") + L[1];
+        }
+        else if( L[0].compare("play") == 0)
+        {
+            qDebug() << "play" ;
+            W->on_Connexion_toggled();
+        }
+        else if( L[0].compare("pause") == 0)
+        {
+            qDebug() << "pause" ;
+            W->pauseResponse();
         }
     }
     return jsonObject.value("txt").toString();

@@ -21,8 +21,10 @@ class MainWindow : public QMainWindow
   Q_OBJECT
 
 public:
-  explicit MainWindow(QWidget *parent = 0);
-  ~MainWindow();
+    explicit MainWindow(QWidget *parent = 0);
+    void playResponse();
+    void pauseResponse();
+    ~MainWindow();
 
 private slots:
   //"void on_mode_clicked()"; ==> On utilise des QActions
@@ -38,6 +40,7 @@ private slots:
     void on_Foward_released();
     void on_Mute_clicked();
     void on_Volume_sliderMoved(int position);
+
 
 private:
   Ui::MainWindow *ui;

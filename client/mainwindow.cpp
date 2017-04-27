@@ -188,14 +188,7 @@ void MainWindow::on_Play_pause_clicked()
         pause();
         std::cout << "J'arrête la lecture" << std::endl;
 
-        //MAJ de l'état de lecture
-        flag_play = false;
 
-        //Changement de l'icône du bouton
-        pix_play.load(":/pics/play.jpg"); //Bug incompréhensible les images ne veulent plus se charger une fois que play.jpg est chargé
-        icon_play.addPixmap(pix_play);
-        ui->Play_pause->setIcon(icon_play);
-        ui->Play_pause->setIconSize(size);
 
     } else                              //Le lecteur est en pause, l'image de play est affichée
     {
@@ -203,15 +196,32 @@ void MainWindow::on_Play_pause_clicked()
         play();
         std::cout << "Je lance la lecture" << std::endl;
 
-        //MAJ de l'état de lecture
-        flag_play = true;
 
-        //Changement de l'icône du bouton
-        pix_play.load(":/pics/pause.jpg");      //Bug : Ne s'affiche pas
-        icon_play.addPixmap(pix_play);
-        ui->Play_pause->setIcon(icon_play);
-        ui->Play_pause->setIconSize(size);
     }
+}
+
+void MainWindow::playResponse()
+{
+    //MAJ de l'état de lecture
+    flag_play = false;
+
+    //Changement de l'icône du bouton
+    pix_play.load(":/pics/play.jpg"); //Bug incompréhensible les images ne veulent plus se charger une fois que play.jpg est chargé
+    icon_play.addPixmap(pix_play);
+    ui->Play_pause->setIcon(icon_play);
+    ui->Play_pause->setIconSize(size);
+}
+
+void MainWindow::pauseResponse()
+{
+    //MAJ de l'état de lecture
+    flag_play = true;
+
+    //Changement de l'icône du bouton
+    pix_play.load(":/pics/pause.jpg");      //Bug : Ne s'affiche pas
+    icon_play.addPixmap(pix_play);
+    ui->Play_pause->setIcon(icon_play);
+    ui->Play_pause->setIconSize(size);
 }
 
 void MainWindow::on_Next_clicked()
@@ -434,7 +444,7 @@ void MainWindow::change_mode(bool radio)
 // qui est également un serveur qui réceptionne des informations du serveur
 void MainWindow::connexion()
 {
-    C = new Communication();
+    C = new Communication(this);
 }
 
 void MainWindow::deconnexion()

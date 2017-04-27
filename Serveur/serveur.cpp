@@ -80,11 +80,13 @@ void Serveur::readyRead()
         {
             qDebug() << "Demande de play";
             play_f();
+            writeEveryone("playResponse");
         }
         else if( L[0].compare("pause")== 0 )
         {
             qDebug() << "Demande de pause";
             pause_f();
+            writeEveryone("pauseResponse");
         }
 
         else if( L[0].compare("mute")== 0 )
@@ -129,6 +131,13 @@ void Serveur::supprimeClient(int id)
             return;
         }
     }
+}
+
+void Serveur::writeEveryone(QString response)
+{
+    int i;
+    for(i=0;i<VClient.size(); i++)
+        writeData( response,VClient.value(i).second);
 }
 
 bool Serveur::writeData(QString dataString, QTcpSocket *socket)
