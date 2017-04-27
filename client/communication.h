@@ -4,17 +4,21 @@
 
 #include <QTcpSocket>
 #include <QTcpServer>
-#include "mainwindow.h"
+#include <QMainWindow>
+
+
+namespace Ui {
+  class MainWindow;
+}
 
 class Communication: public QObject
 {
     Q_OBJECT
 public:
-    Communication(MainWindow * W);
+    Communication();
     bool writeData(QString dataString) ;
     int id ; // identifiant pour que le serveur puisse le virer de sa liste une fois la connexion terminée
-    QTcpSocket * m_socket; // Sert pour envoyer des données au serveur
-    QMainWindow * W;
+    QTcpSocket * m_socket; // Sert pour communiquer avec le serveur
 
 private:
 
@@ -22,6 +26,9 @@ private:
 public slots:
     QString readyRead();
     void deconnexion();
+
+signals :
+    void orderToWindow (QString);
 
 };
 

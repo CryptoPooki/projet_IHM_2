@@ -40,6 +40,7 @@ private slots:
     void on_Foward_released();
     void on_Mute_clicked();
     void on_Volume_sliderMoved(int position);
+    void orderParser(QString S);
 
 
 private:

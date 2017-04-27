@@ -6,12 +6,11 @@
 #include <QMainWindow>
 #include "mainwindow.h"
 
-Communication::Communication(MainWindow * W):
+Communication::Communication():
     m_socket(new QTcpSocket(this))
 {
     if(!connectToHost("localhost"))
         qDebug() << "Fail connexion to serveur";
-    this->W = W;
 }
 
 bool Communication::connectToHost (QString host)
@@ -75,13 +74,16 @@ QString Communication::readyRead()
         else if( L[0].compare("play") == 0)
         {
             qDebug() << "play" ;
-            W->on_Connexion_toggled();
         }
         else if( L[0].compare("pause") == 0)
         {
             qDebug() << "pause" ;
-            W->pauseResponse();
         }
+        else if( L[0].compare("setVolume") == 0)
+        {
+            qDebug() << "setVolume" ;
+        }
+        emit orderToWindow(jsonObject.value("txt").toString());
     }
     return jsonObject.value("txt").toString();
 }

@@ -195,15 +195,14 @@ void MainWindow::on_Play_pause_clicked()
         //Lancement de la lecture
         play();
         std::cout << "Je lance la lecture" << std::endl;
-
-
     }
 }
 
 void MainWindow::playResponse()
 {
+    qDebug() << "PlayResponse";
     //MAJ de l'état de lecture
-    flag_play = false;
+    flag_play = true;
 
     //Changement de l'icône du bouton
     pix_play.load(":/pics/play.jpg"); //Bug incompréhensible les images ne veulent plus se charger une fois que play.jpg est chargé
@@ -214,8 +213,9 @@ void MainWindow::playResponse()
 
 void MainWindow::pauseResponse()
 {
+    qDebug() << "PauseResponse";
     //MAJ de l'état de lecture
-    flag_play = true;
+    flag_play = false;
 
     //Changement de l'icône du bouton
     pix_play.load(":/pics/pause.jpg");      //Bug : Ne s'affiche pas
@@ -258,7 +258,7 @@ void MainWindow::on_Mute_clicked()
     if (flag_mute)                      //Si le mode mute est activé
     {
         //Déclenchement de la fonction mute et récupération du pourcentage de son max enregistré
-        //mute(-1);
+        mute(-1);
 
         //MAJ de l'état de lecture
         flag_mute = false;
@@ -299,39 +299,11 @@ void MainWindow::on_Mute_clicked()
 
 void MainWindow::on_Volume_sliderMoved(int position)
 {
-    if (flag_mute)                        //Si le mode mute est activé, il devient désactivé automatiquement
-    {
-        //Déclenchement de la fonction mute
-        mute(-1);             //Désactivation du mute
+    qDebug() << "Je change le volume";
+    QString S = QString::fromStdString("setVolume ") + QString::number(position);
+    C->writeData(S);
 
-        //MAJ de l'état de lecture
-        flag_mute = false;
 
-        //Changement de l'icône du bouton
-        pix_sound.load(":/pics/sound.png");
-        icon_sound.addPixmap(pix_sound);
-        ui->Mute->setIcon(icon_sound);
-        ui->Mute->setIconSize(size);
-
-        //Modification du volume
-        setVolume(position);
-    } else                                //Si le mode mute n'est pas activé
-    {
-        //Modification du volume
-        setVolume(position);
-
-        if (position == 0)
-        {
-            flag_mute = true;
-
-            //Changement de l'icône du bouton
-            pix_sound.load(":/pics/mute.jpg");
-            icon_sound.addPixmap(pix_sound);
-            ui->Mute->setIcon(icon_sound);
-            ui->Mute->setIconSize(size);
-        }
-
-    }
 }
 
 void MainWindow::change_languages(int language_id)
@@ -444,7 +416,21 @@ void MainWindow::change_mode(bool radio)
 // qui est également un serveur qui réceptionne des informations du serveur
 void MainWindow::connexion()
 {
-    C = new Communication(this);
+    C = new Communication();
+    // Fait le connect pour recevoir des ordres
+    connect(C,SIGNAL(orderToWindow(QString)), this,SLOT(orderParser(QString)));
+}
+
+void MainWindow::orderParser(QString S)
+{
+    QStringList L = S.split(" ");
+    qDebug() << "J'ai reçu l'ordre " +S;
+    if( L[0].compare("play") == 0)
+        playResponse();
+    else if(L[0].compare("pause") == 0)
+        pauseResponse();
+    else if(L[0].compare("setVolume") == 0)
+        setVolume( L[1].toInt());
 }
 
 void MainWindow::deconnexion()
@@ -523,9 +509,36 @@ int MainWindow::mute(int vol)
 
 void MainWindow::setVolume(int volume)
 {
-    qDebug() << "Je change le volume";
-    QString S = QString::fromStdString("setVolume ") + QString::number(volume);
-    C->writeData(S);
+    if (flag_mute)                        //Si le mode mute est activé, il devient désactivé automatiquement
+    {
+        //Déclenchement de la fonction mute
+        mute(-1);             //Désactivation du mute
+
+        //MAJ de l'état de lecture
+        flag_mute = false;
+
+        //Changement de l'icône du bouton
+        pix_sound.load(":/pics/sound.png");
+        icon_sound.addPixmap(pix_sound);
+        ui->Mute->setIcon(icon_sound);
+        ui->Mute->setIconSize(size);
+
+    } else                                //Si le mode mute n'est pas activé
+    {
+
+        if (volume == 0)
+        {
+            flag_mute = true;
+
+            //Changement de l'icône du bouton
+            pix_sound.load(":/pics/mute.jpg");
+            icon_sound.addPixmap(pix_sound);
+            ui->Mute->setIcon(icon_sound);
+            ui->Mute->setIconSize(size);
+        }
+        ui->Volume->setValue(volume);
+
+    }
 }
 
 void MainWindow::setPosition_lecture(int position)

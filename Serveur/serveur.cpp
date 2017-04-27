@@ -80,13 +80,13 @@ void Serveur::readyRead()
         {
             qDebug() << "Demande de play";
             play_f();
-            writeEveryone("playResponse");
+            writeEveryone("play");
         }
         else if( L[0].compare("pause")== 0 )
         {
             qDebug() << "Demande de pause";
             pause_f();
-            writeEveryone("pauseResponse");
+            writeEveryone("pause");
         }
 
         else if( L[0].compare("mute")== 0 )
@@ -105,6 +105,7 @@ void Serveur::readyRead()
             bool ok;
             qDebug() << "Demande de changer le volume";
             chgtVolume(L[1].toInt(&ok,10));
+            writeEveryone( QString::fromStdString("setVolume ") + QString::number(L[1].toInt(&ok,10)));
         }
         else if(L[0].compare("deconnexion") == 0)
         {
@@ -114,8 +115,6 @@ void Serveur::readyRead()
             supprimeClient(id);
         }
 
-        writeData("Resalut copain",socket);
-        qDebug() << "j'ai dit resalut au copain =)";
     }
 }
 
