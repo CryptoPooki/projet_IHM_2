@@ -26,8 +26,6 @@ public slots :
     void pause_f();
 //    void pause_f();
     void chgtVolume(int value);
-    void monterVolume();
-    void baisseVolume();
     void mute();
     void chgtMusique(QString Name);
     void avanceMusique();
@@ -50,6 +48,7 @@ private:
     QVector<QTcpSocket*> VClient;
     QTcpServer * m_server;
     bool m_running;
+    bool mute_flag;
 
 
 };

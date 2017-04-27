@@ -30,6 +30,7 @@ Serveur::Serveur(QObject *parent) :
 
     connect(m_server,SIGNAL(newConnection()), SLOT(newConnection()));
     m_server->listen(QHostAddress::Any,3000); // regarde sur toutes ses interfaces sur le port 3000
+    mute_flag = false;
 
 
     //QTimer * t = new QTimer();
@@ -74,15 +75,30 @@ void Serveur::readyRead()
         jDoc = QJsonDocument::fromJson(*buffer, &error);
         jsonObject = jDoc.object();
         qDebug() << "Le message envoyé est " + jsonObject.value("txt").toString();
-        if( jsonObject.value("txt").toString().compare("play"))
+        QStringList L = jsonObject.value("txt").toString().split(" ");
+        qDebug() << L[0].compare("play");
+        if( L[0].compare("play") == 0 )
         {
             qDebug() << "Demande de play";
             play_f();
         }
-        if( jsonObject.value("txt").toString().compare("pause"))
+        else if( L[0].compare("pause")== 0 )
         {
             qDebug() << "Demande de pause";
             pause_f();
+        }
+
+        else if( L[0].compare("mute")== 0 )
+        {
+            qDebug() << "Demande de mute";
+            mute();
+        }
+
+        else if( L[0].compare("chgtMusique")== 0 )
+        {
+            QStringList L = jsonObject.value("txt").toString().split(" ");
+            qDebug() << "Demande de Musique";
+            chgtMusique(L[1]);
         }
 
         writeData("Resalut copain",socket);
@@ -147,28 +163,20 @@ void Serveur::chgtVolume(int value)
     qDebug() << "volume changé à " +  QString::number(value);
 }
 
-void Serveur::monterVolume()
-{
-
-}
-
-void Serveur::baisseVolume()
-{
-
-}
-
 void Serveur::mute()
 {
     QProcess P;
-    P.start("sh", QStringList() << "-c" <<" echo '{ \"command\": [\"set_property\",\"mute\",\"yes\"] }' | socat - /tmp/mpv-socket"); //active mute
-    qDebug() <<" echo '{ \"command\": [\"set_property\",\"mute\",\"yes\"] }' | socat - /tmp/mpv-socket";
+    if(!mute_flag)
+    {
+        P.start("sh", QStringList() << "-c" <<" echo '{ \"command\": [\"set_property\",\"mute\",\"yes\"] }' | socat - /tmp/mpv-socket"); //active mute
+        qDebug() << "mute activé";
+    }
+    else
+    {
+        P.start("sh", QStringList() << "-c" <<"echo '{ \"command\": [\"set_property\",\"mute\",\"no\"] }' | socat - /tmp/mpv-socket"); // désactive mute
+        qDebug() << "mute désactivé";
+    }
     P.waitForFinished();
-    qDebug() << "mute activé";
-    QThread::sleep(5);
-    P.start("sh", QStringList() << "-c" <<"echo '{ \"command\": [\"set_property\",\"mute\",\"no\"] }' | socat - /tmp/mpv-socket"); // désactive mute
-    P.waitForFinished();
-    qDebug() << "mute désactivé";
-
 }
 
 void Serveur::chgtMusique(QString Name)

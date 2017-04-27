@@ -23,8 +23,6 @@ bool Communication::writeData(QString dataString)
 {
     QJsonObject jsonObject;
     jsonObject["txt"] = dataString;
-    if( ! connectToHost("localhost") )
-            qDebug() << "Connexion échouée";
     QByteArray bytes = QJsonDocument(jsonObject).toJson(QJsonDocument::Compact);
 
 

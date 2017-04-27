@@ -113,7 +113,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_Connexion_toggled(bool checked)
 {
-    if (checked)                      // Si l'utilisateur est déjà connecté
+    if (!checked)                      // Si l'utilisateur est déjà connecté
     {
         deconnexion();                //On interrompt la connexion avec le serveur
     } else                            // Si l'utilisateur n'est pas connecté
@@ -171,6 +171,7 @@ void MainWindow::on_Play_pause_clicked()
     {
         //Arrêt de la lecture
         pause();
+        std::cout << "J'arrête la lecture" << std::endl;
 
         //MAJ de l'état de lecture
         flag_play = false;
@@ -180,12 +181,12 @@ void MainWindow::on_Play_pause_clicked()
         icon_play.addPixmap(pix_play);
         ui->Play_pause->setIcon(icon_play);
         ui->Play_pause->setIconSize(size);
-        std::cout << "popause" << std::endl;
 
     } else                              //Le lecteur est en pause, l'image de play est affichée
     {
         //Lancement de la lecture
         play();
+        std::cout << "Je lance la lecture" << std::endl;
 
         //MAJ de l'état de lecture
         flag_play = true;
@@ -195,7 +196,6 @@ void MainWindow::on_Play_pause_clicked()
         icon_play.addPixmap(pix_play);
         ui->Play_pause->setIcon(icon_play);
         ui->Play_pause->setIconSize(size);
-        std::cout << "plplay" << std::endl;
 
     }
 }
@@ -250,6 +250,7 @@ void MainWindow::on_Mute_clicked()
 
         //Repositionnement de la barre
         ui->Volume->setValue(memVolume);
+        C->writeData("mute");
 
     } else                          //Le mute est désactivé
     {
@@ -270,6 +271,7 @@ void MainWindow::on_Mute_clicked()
 
         //Repositionnement de la barre
         ui->Volume->setValue(0);
+        C->writeData("mute");
     }
 }
 
@@ -472,6 +474,7 @@ void MainWindow::play()
 void MainWindow::pause()
 {
     //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
+    C->writeData("pause");
 }
 
 void MainWindow::next()
