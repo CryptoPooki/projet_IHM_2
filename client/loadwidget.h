@@ -21,7 +21,6 @@ public:
 
 //Fonctions de QPainter pour afficher les QWidget
 protected:
-    void run();
     void paintEvent(QPaintEvent *);
     QPainter* painter;
 };

@@ -118,13 +118,16 @@ void MainWindow::on_Connexion_toggled(bool checked)
     if (!checked)                      // Si l'utilisateur est déjà connecté
     {
         deconnexion();                //On interrompt la connexion avec le serveur
+<<<<<<< HEAD
         qDebug() << "Je me suis déconnecté";
+=======
         ui->Rewind->setEnabled(false);
         ui->Previous->setEnabled(false);
         ui->Play_pause->setEnabled(false);
         ui->Next->setEnabled(false);
         ui->Foward->setEnabled(false);
         //loading->hide();
+>>>>>>> 49660bcf36ae54c909f723928addb4eafcbe5c56
     } else                            // Si l'utilisateur n'est pas connecté
     {
         connexion();                  //On lance la connexion

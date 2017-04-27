@@ -41,6 +41,7 @@ private slots:
 
 private:
   Ui::MainWindow *ui;
+  Loadwidget* loading;
   QPixmap pix_rewind, pix_previous, pix_play, pix_next, pix_foward, pix_sound, pix_music;
   QIcon icon_rewind, icon_previous, icon_play, icon_next, icon_foward, icon_sound;
   QSize size;
@@ -82,7 +83,8 @@ private:
   void setVolume(int volume);               //Fonction qui change le volume
   bool flag_mute;                           //Booléen permettant de savoir si l'interface est en mode mute
   int memVolume;
-  void change_sound(int pourcentage);       //Fonctoin qui modifie le son en fonction de sa puissance maximale
+  void change_sound(int pourcentage);       //Fonction qui modifie le son en fonction de sa puissance maximale
+  void setPosition_lecture(int position);
 
   // Connexion avec le serveur
   Communication* C;

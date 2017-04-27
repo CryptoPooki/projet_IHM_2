@@ -27,7 +27,17 @@
      <item>
       <layout class="QHBoxLayout" name="Infos_connexion">
        <item>
-        <layout class="QVBoxLayout" name="LoadLayout"/>
+        <layout class="QVBoxLayout" name="LoadLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>400</number>
+         </property>
+        </layout>
        </item>
        <item>
         <widget class="QLineEdit" name="Nom_utilisateur"/>
