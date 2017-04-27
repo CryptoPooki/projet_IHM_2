@@ -47,6 +47,18 @@ private:
     QLocalSocket *mpv=NULL;
     QVector<QTcpSocket*> VClient;
     QTcpServer * m_server;
+    QString URL_radio[6] = {
+        "http://www.skyrock.fm/stream.php/tunein16_128mp3.mp3",
+        "http://cdn.nrjaudio.fm/audio1/fr/30001/mp3_128.mp3?origine=fluxradios",
+        "http://direct.franceinfo.fr/live/franceinfo-lofi.mp3",
+        "http://direct.franceinter.fr/live/franceinter-midfi.mp3",
+        "http://direct.francemusique.fr/live/francemusique-midfi.mp3",
+        "http://a.files.bbci.co.uk/media/live/manifesto/audio/simulcast/hls/uk/sbr_high/ak/bbc_6music.m3u8"
+    };
+    /*Note: pour écouter la radio avec mpv
+        ->mpv 'url_de_la_radio'
+    (+2 points sur le projet)
+    */
     bool m_running;
     bool mute_flag;
 

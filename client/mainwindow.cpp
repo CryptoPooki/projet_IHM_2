@@ -20,21 +20,18 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->actionMorceaux, &QAction::triggered, this, [this] { change_mode(false); });
     QObject::connect(ui->actionRadio, &QAction::triggered, this, [this] { change_mode(true); });
 
-    ui->Nom_utilisateur->setFixedWidth(400);
     ui->Connexion->setFixedWidth(130);
+    ui->Nom_utilisateur->setFixedWidth(400);
 
-    Loadwidget* loading = new Loadwidget();
+    loading = new Loadwidget();
     ui->LoadLayout->addWidget(loading);
-    loading->show();
-
+    //loading->hide();
     /*
-     * Ajouter un thread de la forme
-     * QTransform t; t.rotate(30);
-    while(condition de chargement)
+    QTransform t; t.rotate(30);
+    while(true)
     {
-        QThread::sleep(1);
         image = image.transformed(t);
-        show();
+        painter->drawPixmap(0,0,image);
     }
     */
 
@@ -46,16 +43,19 @@ MainWindow::MainWindow(QWidget *parent) :
     icon_rewind.addPixmap(pix_rewind);
     ui->Rewind->setIcon(icon_rewind);
     ui->Rewind->setIconSize(size);
+    ui->Rewind->setEnabled(false);
 
     pix_previous.load(":/pics/previous.png");
     icon_previous.addPixmap(pix_previous);
     ui->Previous->setIcon(icon_previous);
     ui->Previous->setIconSize(size);
+    ui->Previous->setEnabled(false);
 
     pix_play.load(":/pics/play.jpg");
     icon_play.addPixmap(pix_play);
     ui->Play_pause->setIcon(icon_play);
     ui->Play_pause->setIconSize(size);
+    ui->Play_pause->setEnabled(false);
 
     pix_next.load(":/pics/previous.png");
     //Rotation de 180° d'une flèche allant de droite à gauche = une flèche de gauche à droite
@@ -63,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
     icon_next.addPixmap(pix_next);
     ui->Next->setIcon(icon_next);
     ui->Next->setIconSize(size);
+    ui->Next->setEnabled(false);
 
     pix_foward.load(":/pics/rewind.png");
     //Rotation de 180° d'une flèche allant de droite à gauche = une flèche de gauche à droite
@@ -70,6 +71,7 @@ MainWindow::MainWindow(QWidget *parent) :
     icon_foward.addPixmap(pix_foward);
     ui->Foward->setIcon(icon_foward);
     ui->Foward->setIconSize(size);
+    ui->Foward->setEnabled(false);
 
     pix_sound.load(":/pics/sound.png");
     icon_sound.addPixmap(pix_sound);
@@ -116,9 +118,21 @@ void MainWindow::on_Connexion_toggled(bool checked)
     if (!checked)                      // Si l'utilisateur est déjà connecté
     {
         deconnexion();                //On interrompt la connexion avec le serveur
+        ui->Rewind->setEnabled(false);
+        ui->Previous->setEnabled(false);
+        ui->Play_pause->setEnabled(false);
+        ui->Next->setEnabled(false);
+        ui->Foward->setEnabled(false);
+        //loading->hide();
     } else                            // Si l'utilisateur n'est pas connecté
     {
         connexion();                  //On lance la connexion
+        ui->Rewind->setEnabled(true);
+        ui->Previous->setEnabled(true);
+        ui->Play_pause->setEnabled(true);
+        ui->Next->setEnabled(true);
+        ui->Foward->setEnabled(true);
+        //loading->show();
         qDebug() << "Je vais me connecter au serveur";
     }
 }
@@ -129,7 +143,7 @@ void MainWindow::on_Progression_sliderMoved(int position)
     pause();
 
     //Déplacement de la lecture
-    //Fonction avec le serveur et la valeur
+    setPosition_lecture(position);
 
     //Lancement de la lecture
     play();
@@ -196,7 +210,6 @@ void MainWindow::on_Play_pause_clicked()
         icon_play.addPixmap(pix_play);
         ui->Play_pause->setIcon(icon_play);
         ui->Play_pause->setIconSize(size);
-
     }
 }
 
@@ -467,13 +480,11 @@ void MainWindow::previous()
 
 void MainWindow::play()
 {
-    //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
     C->writeData("play");
 }
 
 void MainWindow::pause()
 {
-    //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
     C->writeData("pause");
 }
 
@@ -502,6 +513,11 @@ int MainWindow::mute(int vol)
 void MainWindow::setVolume(int volume)
 {
     //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
+}
+
+void MainWindow::setPosition_lecture(int position)
+{
+
 }
 
 void MainWindow::setPhase(phase p, bool on, int param) //A revoir

@@ -17,7 +17,6 @@ Loadwidget::~Loadwidget()
 void Loadwidget::paintEvent(QPaintEvent *)
 {
     painter = new QPainter(this);
-
     painter->drawPixmap(0,0,image);
     delete painter;
 }
