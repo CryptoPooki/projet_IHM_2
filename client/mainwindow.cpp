@@ -104,14 +104,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(automate_son, SIGNAL(signalMachine(signalType,bool,int,int)), this, SLOT(message(signalType,bool,int,int)));
 }
 
-// Fonction qui initie la connexion avec le serveur
-// Se connecte au serveur et fait que le serveur puisse se connecter au client
-// qui est également un serveur qui réceptionne des informations du serveur
-void MainWindow::InitConnexion()
-{
-    C = new Communication();
-
-}
 
 MainWindow::~MainWindow()
 {
@@ -127,6 +119,7 @@ void MainWindow::on_Connexion_toggled(bool checked)
     } else                            // Si l'utilisateur n'est pas connecté
     {
         connexion();                  //On lance la connexion
+        qDebug() << "Je vais me connecter au serveur";
     }
 }
 
@@ -422,9 +415,12 @@ void MainWindow::change_mode(bool radio)
     }
 }
 
+// Fonction qui initie la connexion avec le serveur
+// Se connecte au serveur et fait que le serveur puisse se connecter au client
+// qui est également un serveur qui réceptionne des informations du serveur
 void MainWindow::connexion()
 {
-    //A définir une fois que la question du serveur est résolue
+    C = new Communication();
 }
 
 void MainWindow::deconnexion()
@@ -470,6 +466,7 @@ void MainWindow::previous()
 void MainWindow::play()
 {
     //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
+    C->writeData("play");
 }
 
 void MainWindow::pause()

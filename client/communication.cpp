@@ -6,12 +6,10 @@
 
 
 Communication::Communication():
-    m_socket(new QTcpSocket(this)),
-    m_server(new QTcpServer(this))
+    m_socket(new QTcpSocket(this))
 {
-    connect(m_server,SIGNAL(newConnection()), SLOT(newConnection())); // lorsque le serveur se connecte
-    m_server->listen(QHostAddress::Any,3001); // faudra changer ça quand il y aura plusieurs clients qui se connectes / Enfin quoique on peut laisser
-
+    if(!connectToHost("localhost"))
+        qDebug() << "Fail connexion to serveur";
 }
 
 bool Communication::connectToHost (QString host)
@@ -40,21 +38,6 @@ bool Communication::writeData(QString dataString)
 }
 
 
-
-void Communication::newConnection()
-{
-    while(m_server->hasPendingConnections())
-    {
-        m_server_com = m_server->nextPendingConnection();
-        connect(m_server_com, SIGNAL(readyRead()), SLOT(readyRead()));
-        connect(m_server_com, SIGNAL(disconnected()), SLOT(disconnected()));
-        qDebug() << "J'ai ajouté un client";
-    }
-}
-
-void Communication::disconnected()
-{
-}
 
 
 QString Communication::readyRead()

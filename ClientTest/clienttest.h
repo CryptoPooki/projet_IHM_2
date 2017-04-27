@@ -14,6 +14,8 @@ public:
     QByteArray IntToArray(qint32 source);
 
     QTcpSocket *m_socket;
+public slots:
+    void readyRead();
 };
 
 #endif // CLIENTTEST_H

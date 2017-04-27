@@ -29,9 +29,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    serveur.cpp
+    serveur.cpp \
+    automate_son.cpp \
+    automate_radio.cpp \
+    automate_morceaux.cpp
 
 HEADERS  += mainwindow.h \
-    serveur.h
+    serveur.h \
+    automate_son.h \
+    automate_radio.h \
+    automate_morceaux.h
 
 FORMS    += mainwindow.ui

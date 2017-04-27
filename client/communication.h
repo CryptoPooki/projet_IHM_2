@@ -10,16 +10,12 @@ class Communication: public QObject
     Q_OBJECT
 public:
     Communication();
+    bool writeData(QString dataString) ;
 
 private:
-    QTcpServer * m_server; // Sert comme serveur pour la connexion du serveur
-    QTcpSocket * m_server_com ; // Sert pour recevoir les données du serveur
     QTcpSocket * m_socket; // Sert pour envoyer des données au serveur
 
-    bool writeData(QString dataString) ;
     bool connectToHost (QString host) ;
-    void newConnection() ;
-    void disconnected() ;
     QString readyRead() ;
 
 };

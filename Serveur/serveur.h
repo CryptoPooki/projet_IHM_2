@@ -22,15 +22,19 @@ public slots :
     void disconnected();
     void readyRead();
 
+    void play_f();
     void pause_f();
+//    void pause_f();
     void chgtVolume(int value);
     void monterVolume();
     void baisseVolume();
-    void chgtMusique();
+    void mute();
+    void chgtMusique(QString Name);
     void avanceMusique();
     void reculeMusique();
-    void chgtEndroitMusique();
+    void chgtEndroitMusique(int time);
 
+    bool writeData(QString dataString, QTcpSocket* socket);
 
 
 
@@ -48,7 +52,6 @@ private:
     bool m_running;
 
 
-    void sendRequestToMPV();
 };
 
 #endif // SERVEUR_H
