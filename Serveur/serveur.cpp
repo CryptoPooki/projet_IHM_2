@@ -6,7 +6,8 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QDataStream>
-
+#include <QString>
+#include <QPair>
 #include "serveur.h"
 
 Serveur::Serveur(QObject *parent) :
@@ -50,14 +51,12 @@ void Serveur::newConnection()
     {
         QTcpSocket * socket = m_server->nextPendingConnection();
         qDebug() << "J'ai ajouté un client";
-        VClient.append(socket);
+        VClient.append(QPair<int,QTcpSocket*>(nextId,socket));
+        qDebug() << VClient.size();
         connect(socket, SIGNAL(readyRead()), SLOT(readyRead()));
-        connect(socket, SIGNAL(disconnected()), SLOT(disconnected()));
+        writeData(QString::fromStdString("identifiant ") + QString::number(nextId),socket);
+        nextId ++;
     }
-}
-
-void Serveur::disconnected()
-{
 }
 
 
@@ -94,11 +93,23 @@ void Serveur::readyRead()
             mute();
         }
 
-        else if( L[0].compare("chgtMusique")== 0 )
+        else if( L[0].compare("chgtMusique")== 0)
         {
-            QStringList L = jsonObject.value("txt").toString().split(" ");
             qDebug() << "Demande de Musique";
             chgtMusique(L[1]);
+        }
+        else if (L[0].compare("setVolume") == 0)
+        {
+            bool ok;
+            qDebug() << "Demande de changer le volume";
+            chgtVolume(L[1].toInt(&ok,10));
+        }
+        else if(L[0].compare("deconnexion") == 0)
+        {
+            bool ok;
+            int id = L[1].toInt(&ok,10);
+            qDebug() << QString::fromStdString("Suppression du client ") + QString::number(id);
+            supprimeClient(id);
         }
 
         writeData("Resalut copain",socket);
@@ -106,6 +117,19 @@ void Serveur::readyRead()
     }
 }
 
+void Serveur::supprimeClient(int id)
+{
+    int i;
+    for(i=0; i< VClient.size() ; i++)
+    {
+        if(  VClient.value(i).first ==id )
+        {
+            qDebug() << "trouvé =)";
+            VClient.removeAt(i);
+            return;
+        }
+    }
+}
 
 bool Serveur::writeData(QString dataString, QTcpSocket *socket)
 {
@@ -116,11 +140,15 @@ bool Serveur::writeData(QString dataString, QTcpSocket *socket)
 
     if(socket->state() == QAbstractSocket::ConnectedState)
     {
+        qDebug() << dataString + " a été écrit au client" ;
         socket->write(bytes); //write the data itself
         return socket->waitForBytesWritten();
     }
     else
+    {
+        qDebug()<< "Not connected";
         return false;
+    }
 }
 
 void Serveur::play_f()
@@ -160,7 +188,7 @@ void Serveur::chgtVolume(int value)
     QProcess P;
     P.start("sh", QStringList() << "-c" <<" echo '{ \"command\": [\"set_property\",\"volume\"," + QString::number(value) + "] }' | socat - /tmp/mpv-socket");
     P.waitForFinished();
-    qDebug() << "volume changé à " +  QString::number(value);
+    qDebug() << QString::fromStdString("volume changé à ") +  QString::number(value);
 }
 
 void Serveur::mute()
@@ -170,11 +198,13 @@ void Serveur::mute()
     {
         P.start("sh", QStringList() << "-c" <<" echo '{ \"command\": [\"set_property\",\"mute\",\"yes\"] }' | socat - /tmp/mpv-socket"); //active mute
         qDebug() << "mute activé";
+        mute_flag = !mute_flag;
     }
     else
     {
         P.start("sh", QStringList() << "-c" <<"echo '{ \"command\": [\"set_property\",\"mute\",\"no\"] }' | socat - /tmp/mpv-socket"); // désactive mute
         qDebug() << "mute désactivé";
+        mute_flag = !mute_flag;
     }
     P.waitForFinished();
 }

@@ -15,9 +15,19 @@ Communication::Communication():
 bool Communication::connectToHost (QString host)
 {
     m_socket->connectToHost(host,3000);
+    connect(m_socket, SIGNAL(readyRead()), SLOT(readyRead()));
     return m_socket->waitForConnected();
 }
 
+//se deconnect du serveur
+void Communication::deconnexion()
+{
+    writeData(QString::fromStdString("deconnexion ") + QString::number(id));
+
+    m_socket->~QTcpSocket();
+    m_socket=NULL;
+
+}
 
 bool Communication::writeData(QString dataString)
 {
@@ -45,13 +55,21 @@ QString Communication::readyRead()
     QJsonParseError error;
     QJsonDocument jDoc;
     QJsonObject jsonObject;
-
+    qDebug() << "Nouveau message";
     while (socket->bytesAvailable() > 0)
     {
         buffer->append(socket->readAll());
         jDoc = QJsonDocument::fromJson(*buffer, &error);
         jsonObject = jDoc.object();
         qDebug() << "Le message envoyé est " + jsonObject.value("txt").toString();
+
+        QStringList L = jsonObject.value("txt").toString().split(" ");
+        if( L[0].compare("identifiant") == 0)
+        {
+            bool ok;
+            id = L[1].toInt(&ok,10);
+            qDebug() << QString::fromStdString("J'ai reçu l'id ") + L[1];
+        }
     }
     return jsonObject.value("txt").toString();
 }

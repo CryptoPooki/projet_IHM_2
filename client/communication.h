@@ -11,12 +11,15 @@ class Communication: public QObject
 public:
     Communication();
     bool writeData(QString dataString) ;
-
-private:
+    int id ; // identifiant pour que le serveur puisse le virer de sa liste une fois la connexion terminée
     QTcpSocket * m_socket; // Sert pour envoyer des données au serveur
 
+private:
+
     bool connectToHost (QString host) ;
-    QString readyRead() ;
+public slots:
+    QString readyRead();
+    void deconnexion();
 
 };
 

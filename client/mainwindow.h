@@ -90,6 +90,7 @@ private:
 
 
 
+
 public slots:
   // Messages reçus de l'automate
   void setPhase(phase p, bool on, int param);

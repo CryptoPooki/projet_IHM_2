@@ -8,6 +8,7 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QVector>
 #include <QTcpServer>
+#include <QPair>
 
 class Serveur: public QObject
 {
@@ -16,10 +17,10 @@ public:
     explicit Serveur(QObject *parent = 0);
     ~Serveur();
     bool pause = false;
+    int nextId = 0;
 
 public slots :
     void newConnection();
-    void disconnected();
     void readyRead();
 
     void play_f();
@@ -33,6 +34,7 @@ public slots :
     void chgtEndroitMusique(int time);
 
     bool writeData(QString dataString, QTcpSocket* socket);
+    void supprimeClient(int id);
 
 
 
@@ -45,7 +47,7 @@ public slots :
 
 private:
     QLocalSocket *mpv=NULL;
-    QVector<QTcpSocket*> VClient;
+    QVector<QPair<int ,QTcpSocket*>> VClient;
     QTcpServer * m_server;
     bool m_running;
     bool mute_flag;

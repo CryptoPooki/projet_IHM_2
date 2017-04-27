@@ -116,6 +116,7 @@ void MainWindow::on_Connexion_toggled(bool checked)
     if (!checked)                      // Si l'utilisateur est déjà connecté
     {
         deconnexion();                //On interrompt la connexion avec le serveur
+        qDebug() << "Je me suis déconnecté";
     } else                            // Si l'utilisateur n'est pas connecté
     {
         connexion();                  //On lance la connexion
@@ -250,7 +251,6 @@ void MainWindow::on_Mute_clicked()
 
         //Repositionnement de la barre
         ui->Volume->setValue(memVolume);
-        C->writeData("mute");
 
     } else                          //Le mute est désactivé
     {
@@ -271,7 +271,6 @@ void MainWindow::on_Mute_clicked()
 
         //Repositionnement de la barre
         ui->Volume->setValue(0);
-        C->writeData("mute");
     }
 }
 
@@ -427,7 +426,7 @@ void MainWindow::connexion()
 
 void MainWindow::deconnexion()
 {
-    //A définir une fois que la question du serveur est résolue
+    C->deconnexion();
 }
 
 QString MainWindow::user_name()
@@ -496,12 +495,16 @@ int MainWindow::mute(int vol)
      * J'ai choisi -1 plutôt que 0 (qui semble un meilleur choix à première vue) pour éviter un conflit entre la barre de son, qui devient automatiquement mute
      * quand on la diminue à 0, et le mute
      */
+   C->writeData("mute");
+
    return -1; //Retour par défaut tant que la fonction n'est pas programmée et pour éviter les bugs de compilation
 }
 
 void MainWindow::setVolume(int volume)
 {
-    //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
+    qDebug() << "Je change le volume";
+    QString S = QString::fromStdString("setVolume ") + QString::number(volume);
+    C->writeData(S);
 }
 
 void MainWindow::setPhase(phase p, bool on, int param) //A revoir
