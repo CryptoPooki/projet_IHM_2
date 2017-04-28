@@ -83,6 +83,10 @@ QString Communication::readyRead()
         {
             qDebug() << "setVolume" ;
         }
+        else if ( L[0].compare("mute") == 0)
+        {
+            qDebug() << "mute";
+        }
         emit orderToWindow(jsonObject.value("txt").toString());
     }
     return jsonObject.value("txt").toString();

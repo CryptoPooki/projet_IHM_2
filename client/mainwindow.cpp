@@ -250,52 +250,14 @@ void MainWindow::on_Foward_pressed()
 
 void MainWindow::on_Foward_released()
 {
-    play();
+    C->writeData("forward");
 }
 
 void MainWindow::on_Mute_clicked()
 {
-    if (flag_mute)                      //Si le mode mute est activé
-    {
-        //Déclenchement de la fonction mute et récupération du pourcentage de son max enregistré
-        mute(-1);
-
-        //MAJ de l'état de lecture
-        flag_mute = false;
-
-        //Changement de l'icône du bouton
-        pix_sound.load(":/pics/sound.png");
-        icon_sound.addPixmap(pix_sound);
-        ui->Mute->setIcon(icon_sound);
-        ui->Mute->setIconSize(size);
-
-        //Restauration du volume
-        setVolume(memVolume);
-
-        //Repositionnement de la barre
-        ui->Volume->setValue(memVolume);
-
-    } else                          //Le mute est désactivé
-    {
-        //Déclenchement de la fonction mute et stockage du pourcentage de son max enregistré
-        mute(ui->Volume->value());
-
-        //MAJ de l'état de lecture
-        flag_mute = true;
-
-        //Changement de l'icône du bouton
-        pix_sound.load(":/pics/mute.jpg");
-        icon_sound.addPixmap(pix_sound);
-        ui->Mute->setIcon(icon_sound);
-        ui->Mute->setIconSize(size);
-
-        //Stockage de la valeur du volume
-        memVolume = ui->Volume->value();
-
-        //Repositionnement de la barre
-        ui->Volume->setValue(0);
-    }
+    C->writeData("mute");
 }
+
 
 void MainWindow::on_Volume_sliderMoved(int position)
 {
@@ -431,6 +393,8 @@ void MainWindow::orderParser(QString S)
         pauseResponse();
     else if(L[0].compare("setVolume") == 0)
         setVolume( L[1].toInt());
+    else if(L[0].compare("mute") == 0)
+        mute();
 }
 
 void MainWindow::deconnexion()
@@ -493,16 +457,43 @@ void MainWindow::foward(int speed)
     //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
 }
 
-int MainWindow::mute(int vol)
+int MainWindow::mute()
 {
-    //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
-    /* Fonctionnnement global :
-     * mute prend comme argument le volume enregistré (ex: 42 "pourcents") quand on passe en mute et revoie -1
-     * mute prend -1 comme argument quand on sort du mute et renvoie le pourcentage du volume enregistré
-     * J'ai choisi -1 plutôt que 0 (qui semble un meilleur choix à première vue) pour éviter un conflit entre la barre de son, qui devient automatiquement mute
-     * quand on la diminue à 0, et le mute
-     */
-   C->writeData("mute");
+
+    if (flag_mute)                      //Si le mode mute est activé
+    {
+        //MAJ de l'état de lecture
+        flag_mute = false;
+
+        //Changement de l'icône du bouton
+        pix_sound.load(":/pics/sound.png");
+        icon_sound.addPixmap(pix_sound);
+        ui->Mute->setIcon(icon_sound);
+        ui->Mute->setIconSize(size);
+
+        //Restauration du volume
+        setVolume(memVolume);
+
+        //Repositionnement de la barre
+        ui->Volume->setValue(memVolume);
+
+    } else                          //Le mute est désactivé
+    {
+        //MAJ de l'état de lecture
+        flag_mute = true;
+
+        //Changement de l'icône du bouton
+        pix_sound.load(":/pics/mute.jpg");
+        icon_sound.addPixmap(pix_sound);
+        ui->Mute->setIcon(icon_sound);
+        ui->Mute->setIconSize(size);
+
+        //Stockage de la valeur du volume
+        memVolume = ui->Volume->value();
+
+        //Repositionnement de la barre
+        ui->Volume->setValue(0);
+    }
 
    return -1; //Retour par défaut tant que la fonction n'est pas programmée et pour éviter les bugs de compilation
 }
@@ -512,7 +503,7 @@ void MainWindow::setVolume(int volume)
     if (flag_mute)                        //Si le mode mute est activé, il devient désactivé automatiquement
     {
         //Déclenchement de la fonction mute
-        mute(-1);             //Désactivation du mute
+        on_Mute_clicked();             //Désactivation du mute
 
         //MAJ de l'état de lecture
         flag_mute = false;

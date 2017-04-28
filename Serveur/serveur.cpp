@@ -8,6 +8,11 @@
 #include <QDataStream>
 #include <QString>
 #include <QPair>
+#include <QStringList>
+
+#include <taglib/taglib.h>
+#include <taglib/fileref.h>
+#include <QDirIterator>
 #include "serveur.h"
 
 Serveur::Serveur(QObject *parent) :
@@ -33,6 +38,12 @@ Serveur::Serveur(QObject *parent) :
     m_server->listen(QHostAddress::Any,3000); // regarde sur toutes ses interfaces sur le port 3000
     mute_flag = false;
 
+    int i;
+    QStringList L = ListePLaylists();
+    for(i = 0 ; i <L.size() ; i++ )
+    {
+        ListePLaylistMusics(L.at(i));
+    }
 
     //QTimer * t = new QTimer();
     //t->start(5000);
@@ -93,6 +104,7 @@ void Serveur::readyRead()
         {
             qDebug() << "Demande de mute";
             mute();
+            writeEveryone("mute");
         }
 
         else if( L[0].compare("chgtMusique")== 0)
@@ -217,12 +229,12 @@ void Serveur::mute()
     P.waitForFinished();
 }
 
-void Serveur::chgtMusique(QString Name)
+void Serveur::chgtMusique(QString nom)
 {
     QJsonObject jsonObject ;
     QJsonArray a ;
     a.append("loadfile");
-    a.append( "/home/wilhelm/"+ Name  ); //donner le nom de fichier à lancer
+    a.append( "/home/wilhelm/"+ nom  ); //donner le nom de fichier à lancer
     jsonObject["command"]=a;
 
     QByteArray bytes = QJsonDocument(jsonObject).toJson(QJsonDocument::Compact)+"\n";
@@ -230,6 +242,9 @@ void Serveur::chgtMusique(QString Name)
       mpv->write(bytes.data(), bytes.length());
       mpv->flush();
     }
+    //TagLib::FileRef f(QFile::encodeName("/home/wilhelm/mus.mp3").constData());
+
+
 }
 
 void Serveur::avanceMusique()
@@ -251,16 +266,45 @@ void Serveur::chgtEndroitMusique(int time) // marche pas ça bug
 
 }
 
-void Serveur::cible()
+QStringList Serveur::ListePLaylists ()
 {
-    QProcess P;
-    if( !pause)
-        P.start("sh", QStringList() << "-c" <<" echo '{ \"command\": [\"set_property\", \"pause\", true] }' | socat - /tmp/mpv-socket");
-    else
-        P.start("sh", QStringList() << "-c" <<" echo '{ \"command\": [\"set_property\", \"pause\", false] }' | socat - /tmp/mpv-socket");
-    pause = !pause;
-    P.waitForFinished();
-    qDebug() << "chgt effectué";
+    QStringList L;
+    QStringList tmp;
+    QString nextList;
+    QDirIterator *it = new QDirIterator("/home/wilhelm/ProjetIHM2/projet_IHM_2/Musique");
+    while(it->hasNext())
+    {
+        nextList = it->next();
+        tmp = nextList.split("/");
+        nextList = tmp.at( tmp.size() -1 ) ;
+        if ( nextList.compare(".") != 0 && nextList.compare("..") != 0)
+        {
+            qDebug() << nextList;
+            L.append(nextList);
+        }
+    }
+    return L;
+}
+
+QStringList Serveur::ListePLaylistMusics( QString Folder)
+{
+    QStringList L;
+    QStringList tmp;
+    QString nextList;
+    QDirIterator *it = new QDirIterator(QString::fromStdString("/home/wilhelm/ProjetIHM2/projet_IHM_2/Musique/") + Folder);
+    qDebug() << QString::fromStdString("Folder : ") + Folder;
+    while(it->hasNext())
+    {
+        nextList = it->next();
+        tmp = nextList.split("/");
+        nextList = tmp.at( tmp.size() -1 ) ;
+        if ( nextList.compare(".") != 0 && nextList.compare("..") != 0)
+        {
+            qDebug() << QString::fromStdString("    ") +nextList;
+            L.append(nextList);
+        }
+    }
+    return L;
 }
 
 Serveur::~Serveur() {

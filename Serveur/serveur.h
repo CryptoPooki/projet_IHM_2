@@ -9,6 +9,7 @@
 #include <QVector>
 #include <QTcpServer>
 #include <QPair>
+#include <QStringList>
 
 class Serveur: public QObject
 {
@@ -25,10 +26,9 @@ public slots :
 
     void play_f();
     void pause_f();
-//    void pause_f();
     void chgtVolume(int value);
     void mute();
-    void chgtMusique(QString Name);
+    void chgtMusique(QString nom);
     void avanceMusique();
     void reculeMusique();
     void chgtEndroitMusique(int time);
@@ -36,15 +36,9 @@ public slots :
     bool writeData(QString dataString, QTcpSocket* socket);
     void supprimeClient(int id);
     void writeEveryone(QString response);
+    QStringList ListePLaylists();
+    QStringList ListePLaylistMusics( QString Folder);
 
-
-
-
-
-
-
-
-    void cible();
 
 private:
     QLocalSocket *mpv=NULL;

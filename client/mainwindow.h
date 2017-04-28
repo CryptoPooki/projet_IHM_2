@@ -83,7 +83,7 @@ private:
   une fantastique figurine de mouton en plastique d'une valeur de 3 Pokédollars (jeu sans obligation d'achat, pas de remboursement possible)*/
 
   void foward(int speed);                   //Fonction qui fait une avance rapide sur le morceau
-  int mute(int vol);                        //Fonction gère le mute
+  int mute();                        //Fonction gère le mute
   void setVolume(int volume);               //Fonction qui change le volume
   bool flag_mute;                           //Booléen permettant de savoir si l'interface est en mode mute
   int memVolume;
