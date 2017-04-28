@@ -59,7 +59,6 @@ private:
   bool flag_radio;                          //Booléen permettant de savoir si l'interface est en mode radio
   void connexion();                         //Fonction de connexion au serveur
   void deconnexion();                       //Fonction qui déconnecte le client de serveur
-  QString user_name();                      //Fonction qui revoit le nom de l'utilisateur inscrit dans le LineEdit
   void get_list_metadata();                 //Fonction qui demande les métadonnées des listes proposées
   void get_music_metadata();                //Finction qui demande les métadonnées d'un morceau
   void show_list_metadata();                //Fonction qui affiche les métadonnées d'une liste

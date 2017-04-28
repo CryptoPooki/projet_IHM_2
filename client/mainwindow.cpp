@@ -20,12 +20,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->actionMorceaux, &QAction::triggered, this, [this] { change_mode(false); });
     QObject::connect(ui->actionRadio, &QAction::triggered, this, [this] { change_mode(true); });
 
-    ui->Connexion->setFixedWidth(130);
-    ui->Nom_utilisateur->setFixedWidth(400);
+    //Bug
+    ui->Connexion->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
 
     loading = new Loadwidget();
     ui->LoadLayout->addWidget(loading);
-    //loading->hide();
+    loading->hide();
     /*
     QTransform t; t.rotate(30);
     while(true)
@@ -43,19 +43,17 @@ MainWindow::MainWindow(QWidget *parent) :
     icon_rewind.addPixmap(pix_rewind);
     ui->Rewind->setIcon(icon_rewind);
     ui->Rewind->setIconSize(size);
-    ui->Rewind->setEnabled(false);
 
     pix_previous.load(":/pics/previous.png");
     icon_previous.addPixmap(pix_previous);
     ui->Previous->setIcon(icon_previous);
     ui->Previous->setIconSize(size);
-    ui->Previous->setEnabled(false);
 
     pix_play.load(":/pics/play.jpg");
     icon_play.addPixmap(pix_play);
     ui->Play_pause->setIcon(icon_play);
     ui->Play_pause->setIconSize(size);
-    ui->Play_pause->setEnabled(false);
+
 
     pix_next.load(":/pics/previous.png");
     //Rotation de 180° d'une flèche allant de droite à gauche = une flèche de gauche à droite
@@ -63,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent) :
     icon_next.addPixmap(pix_next);
     ui->Next->setIcon(icon_next);
     ui->Next->setIconSize(size);
-    ui->Next->setEnabled(false);
+
 
     pix_foward.load(":/pics/rewind.png");
     //Rotation de 180° d'une flèche allant de droite à gauche = une flèche de gauche à droite
@@ -71,7 +69,6 @@ MainWindow::MainWindow(QWidget *parent) :
     icon_foward.addPixmap(pix_foward);
     ui->Foward->setIcon(icon_foward);
     ui->Foward->setIconSize(size);
-    ui->Foward->setEnabled(false);
 
     pix_sound.load(":/pics/sound.png");
     icon_sound.addPixmap(pix_sound);
@@ -93,6 +90,15 @@ MainWindow::MainWindow(QWidget *parent) :
     flag_play = false;
     flag_mute = false;
     flag_radio = false;
+
+    ui->Progression->setEnabled(false);
+    ui->Previous->setEnabled(false);
+    ui->Rewind->setEnabled(false);
+    ui->Play_pause->setEnabled(false);
+    ui->Foward->setEnabled(false);
+    ui->Next->setEnabled(false);
+    ui->Mute->setEnabled(false);
+    ui->Volume->setEnabled(false);
 
     Automate_morceaux *automate_morceaux = new Automate_morceaux();
     Automate_radio *automate_radio = new Automate_radio();
@@ -119,21 +125,27 @@ void MainWindow::on_Connexion_toggled(bool checked)
     {
         deconnexion();                //On interrompt la connexion avec le serveur
         qDebug() << "Je me suis déconnecté";
-        ui->Rewind->setEnabled(false);
+        ui->Progression->setEnabled(false);
         ui->Previous->setEnabled(false);
+        ui->Rewind->setEnabled(false);
         ui->Play_pause->setEnabled(false);
-        ui->Next->setEnabled(false);
         ui->Foward->setEnabled(false);
-        //loading->hide();
+        ui->Next->setEnabled(false);
+        ui->Mute->setEnabled(false);
+        ui->Volume->setEnabled(false);
+        loading->hide();
     } else                            // Si l'utilisateur n'est pas connecté
     {
         connexion();                  //On lance la connexion
-        ui->Rewind->setEnabled(true);
+        ui->Progression->setEnabled(true);
         ui->Previous->setEnabled(true);
+        ui->Rewind->setEnabled(true);
         ui->Play_pause->setEnabled(true);
-        ui->Next->setEnabled(true);
         ui->Foward->setEnabled(true);
-        //loading->show();
+        ui->Next->setEnabled(true);
+        ui->Mute->setEnabled(true);
+        ui->Volume->setEnabled(true);
+        loading->show();
         qDebug() << "Je vais me connecter au serveur";
     }
 }
@@ -187,9 +199,6 @@ void MainWindow::on_Play_pause_clicked()
         //Arrêt de la lecture
         pause();
         std::cout << "J'arrête la lecture" << std::endl;
-
-
-
     } else                              //Le lecteur est en pause, l'image de play est affichée
     {
         //Lancement de la lecture
@@ -264,8 +273,6 @@ void MainWindow::on_Volume_sliderMoved(int position)
     qDebug() << "Je change le volume";
     QString S = QString::fromStdString("setVolume ") + QString::number(position);
     C->writeData(S);
-
-
 }
 
 void MainWindow::change_languages(int language_id)
@@ -400,11 +407,6 @@ void MainWindow::orderParser(QString S)
 void MainWindow::deconnexion()
 {
     C->deconnexion();
-}
-
-QString MainWindow::user_name()
-{
-    return ui->Nom_utilisateur->text();
 }
 
 void MainWindow::get_list_metadata()

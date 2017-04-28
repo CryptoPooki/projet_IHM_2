@@ -26,7 +26,10 @@ public slots :
 
     void play_f();
     void pause_f();
-
+<<<<<<< HEAD
+=======
+    //    void pause_f();
+>>>>>>> 0ed17a4ef327723570aa3a28510e78c3a7101a02
     void chgtVolume(int value);
     void mute();
     void chgtMusique(QString nom);
