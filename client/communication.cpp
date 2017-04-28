@@ -46,9 +46,6 @@ bool Communication::writeData(QString dataString)
         return false;
 }
 
-
-
-
 QString Communication::readyRead()
 {
     QTcpSocket *socket = static_cast<QTcpSocket*>(sender());

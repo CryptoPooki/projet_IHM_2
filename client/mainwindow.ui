@@ -40,10 +40,13 @@
         </layout>
        </item>
        <item>
-        <widget class="QLineEdit" name="Nom_utilisateur"/>
-       </item>
-       <item>
         <widget class="QRadioButton" name="Connexion">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string>Connecté</string>
          </property>
@@ -64,42 +67,10 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="Liste">
-         <item>
-          <property name="text">
-           <string>Liste1</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Liste2</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Liste3</string>
-          </property>
-         </item>
-        </widget>
+        <widget class="QListWidget" name="Liste"/>
        </item>
        <item>
-        <widget class="QListWidget" name="Morceaux">
-         <item>
-          <property name="text">
-           <string>music1</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>music2</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>music3</string>
-          </property>
-         </item>
-        </widget>
+        <widget class="QListWidget" name="Morceaux"/>
        </item>
       </layout>
      </item>

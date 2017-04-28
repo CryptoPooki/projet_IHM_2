@@ -25,7 +25,7 @@ public slots :
 
     void play_f();
     void pause_f();
-//    void pause_f();
+    //    void pause_f();
     void chgtVolume(int value);
     void mute();
     void chgtMusique(QString Name);
