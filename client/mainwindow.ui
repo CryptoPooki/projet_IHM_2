@@ -27,17 +27,17 @@
      <item>
       <layout class="QHBoxLayout" name="Infos_connexion">
        <item>
-        <layout class="QVBoxLayout" name="LoadLayout">
-         <property name="spacing">
-          <number>0</number>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
          </property>
-         <property name="leftMargin">
-          <number>0</number>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
          </property>
-         <property name="rightMargin">
-          <number>400</number>
-         </property>
-        </layout>
+        </spacer>
        </item>
        <item>
         <widget class="QRadioButton" name="Connexion">
@@ -162,11 +162,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QSlider" name="Volume">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+        <layout class="QVBoxLayout" name="VolumeLayout">
+         <property name="rightMargin">
+          <number>0</number>
          </property>
-        </widget>
+        </layout>
        </item>
       </layout>
      </item>

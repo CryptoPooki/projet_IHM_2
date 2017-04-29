@@ -80,7 +80,7 @@ private:
   Communication* C;
   void InitConnexion();
 
-
+<<<<<<< HEAD
   void initInfo(QString S);
 
 
@@ -90,7 +90,8 @@ public slots:
   // Messages reçus de l'automate
   void setPhase(phase p, bool on, int param);
   void message(signalType, bool, int param1, int param2);
-
+=======
+>>>>>>> 9605f7e0dbffc13b498695f7a01b2516b010d0b2
 };
 
 #endif // MAINWINDOW_H

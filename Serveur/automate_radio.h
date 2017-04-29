@@ -18,29 +18,28 @@ public:
     explicit Automate_radio(QObject *parent = 0);
 
 private:
-
   // La machine
   QStateMachine *machine;
 
   // Les états élémentaires
+  QState *begin;
   QState *play;
   QState *pause;
-  QFinalState *deconnecte;
+  QFinalState *end;
 
   // Et leurs historiques
   QHistoryState *playHistory;
   QHistoryState *pauseHistory;
 
   // Et puis nous avons des transitions.
+  QSignalTransition *Begin_to_Play;
   QSignalTransition *Play_to_Pause;
   QSignalTransition *Pause_to_Play;
-  QSignalTransition *Play_to_Deconnecte;
-  QSignalTransition *Pause_to_Deconnecte;
+  QSignalTransition *Play_to_Final;
+  QSignalTransition *Pause_to_Final;
 
   // Les messages envoyés à l'UI
   void setupMessages();
-
-  void cleanup();
   void initDebug();
 
 signals:
@@ -50,14 +49,14 @@ signals:
   // Internal
   void signalPause();
   void signalPlay();
-  void signalConnect();
-  void signalDeconnect();
+  void signalBegin();
+  void signalFinal();
   void signalModeMorceaux();
 
 public slots:
   void setPlay(bool play);
-  void setConnect(bool on);
-  void setMode(bool mode);
+  void setBegin(bool begin);
+  void changeMode(bool morceaux);
 };
 
 #endif // AUTOMATE_RADIO_H

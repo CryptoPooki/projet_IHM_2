@@ -6,7 +6,8 @@
         <file>rewind.png</file>
         <file>sound.png</file>
         <file>music.png</file>
-        <file>load.png</file>
         <file>play.jpg</file>
+        <file>vu_h.png</file>
+        <file>radio.png</file>
     </qresource>
 </RCC>
