@@ -1,12 +1,13 @@
 #include "automate_morceaux.h"
 
-
 Automate_morceaux::Automate_morceaux(QObject *parent) : QObject(parent)
 {
   // Une machine
   machine =new QStateMachine(this);
 
-  // 2 états + 1 état final
+  // Un état initial "begin"
+  begin = new QState(machine);
+
   // Un état "play"
   play = new QState(machine);
   playHistory = new QHistoryState(play);
@@ -15,25 +16,24 @@ Automate_morceaux::Automate_morceaux(QObject *parent) : QObject(parent)
   pause = new QState(machine);
   pauseHistory = new QHistoryState(pause);
 
-  // Un état final "déconnecté"
-  deconnecte = new QFinalState(machine);
+  // Un état final
+  Final = new QFinalState(machine);
 
   // Nos transitions
+  Begin_to_Play = (QSignalTransition*) begin->addTransition(play);
   Play_to_Pause = (QSignalTransition*) play->addTransition(pause);
   Pause_to_Play = (QSignalTransition*) pause->addTransition(play);
-  Play_to_Deconnecte = (QSignalTransition*) play->addTransition(deconnecte);
-  Pause_to_Deconnecte = (QSignalTransition*) pause->addTransition(deconnecte);
+  Play_to_Final = (QSignalTransition*) play->addTransition(Final);
+  Pause_to_Final = (QSignalTransition*) pause->addTransition(Final);
 
 
-  QObject::connect(deconnecte, &QState::entered, [this](){
-      qDebug()<<"Déconnection";
+  QObject::connect(Final, &QState::entered, [this](){
+      qDebug()<<"Arrêt de mpv";
       emit signalMachine(kSignalPhase, false, KPhaseEndCycle);
-      cleanup();
     });
 
   // J'enverrai des messages à l'UI
   setupMessages();
-
   initDebug();
 }
 
@@ -56,9 +56,6 @@ void Automate_morceaux::setupMessages()
     });
 }
 
-/*
- * Quelques debugs utiles
- */
 void Automate_morceaux::initDebug()
 {
   machine->setObjectName("machine") ;
@@ -87,28 +84,18 @@ void Automate_morceaux::initDebug()
     });
 }
 
-void Automate_morceaux::cleanup()
+void Automate_morceaux::setBegin(bool begin)
 {
-  // On remet tout à zéro
-  // A revoir
-}
-
-void Automate_morceaux::setConnect(bool on)
-{
-  if (!on)
+  if (!begin)
   {
       // On arrête la machine
       machine->stop();
-      cleanup();
       return;
   }
 
-  // On va commencer par l'état pause le temps que la musique se charge
-  machine->setInitialState(pause);
+  // On va commencer par l'état initial
+  machine->setInitialState(begin);
   machine->start();
-
-  //Une fois que les informations sont chargées, on passe à l'état play
-  //A coder
 }
 
 void Automate_morceaux::setPlay(bool play)
