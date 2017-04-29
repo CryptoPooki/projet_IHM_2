@@ -10,7 +10,6 @@ class volume_widget : public QWidget
 {
     Q_OBJECT
 //Attibuts
-private:
     QPixmap image;                                          //Image chargée
     int Nb_DEL;                                             //Nombre de diodes
     int Nb_DEL_on;                                          //Nombre de diodes allumées
@@ -23,10 +22,19 @@ public:
     //Destructeur
     ~volume_widget();
     //Comportement souris
-    void mousePressEvent(QMouseEvent *);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *);
     void wheelEvent(QWheelEvent *event);
     //Les fonctions de redimensionnement sont héritées de la classe QWidget
+    int get_volume();
+    void set_volume(int volume);
+    int get_Nb_DEL();
+    int get_Nb_DEL_on();
+    void set_Nb_DEL_on(int n);
+
+signals:
+    void signal_volume();
 
 //Fonctions de QPainter pour afficher les Widget
 protected:

@@ -162,11 +162,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QSlider" name="Volume">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+        <layout class="QVBoxLayout" name="Volume">
+         <property name="rightMargin">
+          <number>0</number>
          </property>
-        </widget>
+        </layout>
        </item>
       </layout>
      </item>

@@ -24,8 +24,6 @@ public:
     ~MainWindow();
 
 private slots:
-  //"void on_mode_clicked()"; ==> On utilise des QActions
-  //"void on_language_clicked()"; ==> On utilise des QActions
     void on_Connexion_toggled(bool checked);
     void on_Progression_sliderMoved(int position);
     void on_Rewind_pressed();
@@ -36,7 +34,6 @@ private slots:
     void on_Foward_pressed();
     void on_Foward_released();
     void on_Mute_clicked();
-    void on_Volume_sliderMoved(int position);
     void orderParser(QString S);
 
 
@@ -45,7 +42,7 @@ private:
   volume_widget* volume;
   QPixmap pix_rewind, pix_previous, pix_play, pix_next, pix_foward, pix_sound, pix_music;
   QIcon icon_rewind, icon_previous, icon_play, icon_next, icon_foward, icon_sound;
-  QSize size;
+  QSize size_pic, size_button;
 
   void change_languages(int language_id);   //Fonction qui change le langage d'affichage
   void change_mode(bool radio);             //Fonction que change le mode de lecture et d'affichage
@@ -66,7 +63,7 @@ private:
                                             //         qui joue la chaine de radio suivante
 
   void foward(int speed);                   //Fonction qui fait une avance rapide sur le morceau
-  int mute();                        //Fonction gère le mute
+  int mute();                               //Fonction gère le mute
   void setVolume(int volume);               //Fonction qui change le volume
   bool flag_mute;                           //Booléen permettant de savoir si l'interface est en mode mute
   int memVolume;

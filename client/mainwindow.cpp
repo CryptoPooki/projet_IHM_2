@@ -20,48 +20,55 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->actionMorceaux, &QAction::triggered, this, [this] { change_mode(false); });
     QObject::connect(ui->actionRadio, &QAction::triggered, this, [this] { change_mode(true); });
 
-    //Définition d'une norme (arbitraire) de taille de boutons : 70x50 pixels
-    size.setWidth(50); size.setHeight(70);
+    //Définition d'une norme (arbitraire) de taille des icones : 70x50 pixels
+    size_pic.setWidth(50); size_pic.setHeight(70);
+
+    //Définition d'une norme (arbitraire) de taille des boutons : 70x120 pixels
+    size_button.setWidth(100); size_button.setHeight(70);
 
     //Redimensionnement des boutons
     pix_rewind.load(":/pics/rewind.png");
     icon_rewind.addPixmap(pix_rewind);
     ui->Rewind->setIcon(icon_rewind);
-    ui->Rewind->setIconSize(size);
+    ui->Rewind->setIconSize(size_pic);
+    ui->Rewind->setFixedSize(size_button);
 
     pix_previous.load(":/pics/previous.png");
     icon_previous.addPixmap(pix_previous);
     ui->Previous->setIcon(icon_previous);
-    ui->Previous->setIconSize(size);
+    ui->Previous->setIconSize(size_pic);
+    ui->Previous->setFixedSize(size_button);
 
     pix_play.load(":/pics/play.jpg");
     icon_play.addPixmap(pix_play);
     ui->Play_pause->setIcon(icon_play);
-    ui->Play_pause->setIconSize(size);
-
+    ui->Play_pause->setIconSize(size_pic);
+    ui->Play_pause->setFixedSize(size_button);
 
     pix_next.load(":/pics/previous.png");
     //Rotation de 180° d'une flèche allant de droite à gauche = une flèche de gauche à droite
     QTransform transform_next; transform_next.rotate(180); pix_next = pix_next.transformed(transform_next);
     icon_next.addPixmap(pix_next);
     ui->Next->setIcon(icon_next);
-    ui->Next->setIconSize(size);
-
+    ui->Next->setIconSize(size_pic);
+    ui->Next->setFixedSize(size_button);
 
     pix_foward.load(":/pics/rewind.png");
     //Rotation de 180° d'une flèche allant de droite à gauche = une flèche de gauche à droite
     QTransform transform_foward; transform_foward.rotate(180); pix_foward = pix_foward.transformed(transform_foward);
     icon_foward.addPixmap(pix_foward);
     ui->Foward->setIcon(icon_foward);
-    ui->Foward->setIconSize(size);
+    ui->Foward->setIconSize(size_pic);
+    ui->Foward->setFixedSize(size_button);
 
     pix_sound.load(":/pics/sound.png");
     icon_sound.addPixmap(pix_sound);
     ui->Mute->setIcon(icon_sound);
-    ui->Mute->setIconSize(size);
+    ui->Mute->setIconSize(size_pic);
+    ui->Mute->setFixedSize(size_button);
 
     QSize main_size; main_size.setHeight(330); main_size.setWidth(330);
-    ui->Image->setFixedSize(size);
+    ui->Image->setFixedSize(main_size);
     pix_music.load(":/pics/music.png");
     pix_music = pix_music.scaled(330,330);
     ui->Image->setPixmap(pix_music);
@@ -70,9 +77,9 @@ MainWindow::MainWindow(QWidget *parent) :
     //Définition initiale du volume
     //Utiliser des automates
     memVolume = 50;
-    //volume = new volume_widget();
-    //ui->LoadLayout->addWidget(loading);
-    ui->Volume->setValue(memVolume);
+    volume = new volume_widget();
+    ui->Volume->addWidget(volume);
+    //QObject::connect(volume, &QAction::changed, this, [this] { setVolume(volume->get_volume()); });
 
     flag_play = false;
     flag_mute = false;
@@ -91,7 +98,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    //SegFault quand on delete les automates
     delete ui;
 }
 
@@ -191,7 +197,7 @@ void MainWindow::playResponse()
     pix_play.load(":/pics/play.jpg"); //Bug incompréhensible les images ne veulent plus se charger une fois que play.jpg est chargé
     icon_play.addPixmap(pix_play);
     ui->Play_pause->setIcon(icon_play);
-    ui->Play_pause->setIconSize(size);
+    ui->Play_pause->setIconSize(size_pic);
 }
 
 void MainWindow::pauseResponse()
@@ -204,7 +210,7 @@ void MainWindow::pauseResponse()
     pix_play.load(":/pics/pause.jpg");      //Bug : Ne s'affiche pas
     icon_play.addPixmap(pix_play);
     ui->Play_pause->setIcon(icon_play);
-    ui->Play_pause->setIconSize(size);
+    ui->Play_pause->setIconSize(size_pic);
 }
 
 void MainWindow::on_Next_clicked()
@@ -239,14 +245,6 @@ void MainWindow::on_Foward_released()
 void MainWindow::on_Mute_clicked()
 {
     C->writeData("mute");
-}
-
-
-void MainWindow::on_Volume_sliderMoved(int position)
-{
-    qDebug() << "Je change le volume";
-    QString S = QString::fromStdString("setVolume ") + QString::number(position);
-    C->writeData(S);
 }
 
 void MainWindow::change_languages(int language_id)
@@ -327,7 +325,7 @@ void MainWindow::change_mode(bool radio)
         ui->Foward->show();
 
         QSize main_size; main_size.setHeight(330); main_size.setWidth(330);
-        ui->Image->setFixedSize(size);
+        ui->Image->setFixedSize(main_size);
         pix_music.load(":/pics/music.png");
         pix_music = pix_music.scaled(330,330);
         ui->Image->setPixmap(pix_music);
@@ -352,7 +350,7 @@ void MainWindow::change_mode(bool radio)
         ui->Morceaux->hide();
 
         QSize main_size; main_size.setHeight(360); main_size.setWidth(360);
-        ui->Image->setFixedSize(size);
+        ui->Image->setFixedSize(main_size);
         pix_music.load(":/pics/radio.png");
         pix_music = pix_music.scaled(360,360);
         ui->Image->setPixmap(pix_music);
@@ -450,7 +448,6 @@ void MainWindow::foward(int speed)
 
 int MainWindow::mute()
 {
-
     if (flag_mute)                      //Si le mode mute est activé
     {
         //MAJ de l'état de lecture
@@ -460,13 +457,14 @@ int MainWindow::mute()
         pix_sound.load(":/pics/sound.png");
         icon_sound.addPixmap(pix_sound);
         ui->Mute->setIcon(icon_sound);
-        ui->Mute->setIconSize(size);
+        ui->Mute->setIconSize(size_pic);
 
         //Restauration du volume
         setVolume(memVolume);
 
-        //Repositionnement de la barre
-        ui->Volume->setValue(memVolume);
+        //Repositionnement des diodes
+        volume->set_volume(memVolume);
+        repaint();
 
     } else                          //Le mute est désactivé
     {
@@ -477,20 +475,25 @@ int MainWindow::mute()
         pix_sound.load(":/pics/mute.jpg");
         icon_sound.addPixmap(pix_sound);
         ui->Mute->setIcon(icon_sound);
-        ui->Mute->setIconSize(size);
+        ui->Mute->setIconSize(size_pic);
 
         //Stockage de la valeur du volume
-        memVolume = ui->Volume->value();
+        memVolume = volume->get_volume();
 
         //Repositionnement de la barre
-        ui->Volume->setValue(0);
+        volume->set_volume(0);
+        repaint();
     }
 
    return -1; //Retour par défaut tant que la fonction n'est pas programmée et pour éviter les bugs de compilation
 }
 
-void MainWindow::setVolume(int volume)
+void MainWindow::setVolume(int vol)
 {
+    qDebug() << "Je change le volume";
+    QString S = QString::fromStdString("setVolume ") + QString::number(vol);
+    C->writeData(S);
+
     if (flag_mute)                        //Si le mode mute est activé, il devient désactivé automatiquement
     {
         //Déclenchement de la fonction mute
@@ -503,11 +506,10 @@ void MainWindow::setVolume(int volume)
         pix_sound.load(":/pics/sound.png");
         icon_sound.addPixmap(pix_sound);
         ui->Mute->setIcon(icon_sound);
-        ui->Mute->setIconSize(size);
+        ui->Mute->setIconSize(size_pic);
 
     } else                                //Si le mode mute n'est pas activé
     {
-
         if (volume == 0)
         {
             flag_mute = true;
@@ -516,10 +518,8 @@ void MainWindow::setVolume(int volume)
             pix_sound.load(":/pics/mute.jpg");
             icon_sound.addPixmap(pix_sound);
             ui->Mute->setIcon(icon_sound);
-            ui->Mute->setIconSize(size);
+            ui->Mute->setIconSize(size_pic);
         }
-        ui->Volume->setValue(volume);
-
     }
 }
 
