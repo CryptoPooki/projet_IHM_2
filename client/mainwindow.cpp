@@ -20,21 +20,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->actionMorceaux, &QAction::triggered, this, [this] { change_mode(false); });
     QObject::connect(ui->actionRadio, &QAction::triggered, this, [this] { change_mode(true); });
 
-    //Bug
-    ui->Connexion->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
-
-    loading = new Loadwidget();
-    ui->LoadLayout->addWidget(loading);
-    loading->hide();
-    /*
-    QTransform t; t.rotate(30);
-    while(true)
-    {
-        image = image.transformed(t);
-        painter->drawPixmap(0,0,image);
-    }
-    */
-
     //Définition d'une norme (arbitraire) de taille de boutons : 70x50 pixels
     size.setWidth(50); size.setHeight(70);
 
@@ -85,6 +70,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //Définition initiale du volume
     //Utiliser des automates
     memVolume = 50;
+    //volume = new volume_widget();
+    //ui->LoadLayout->addWidget(loading);
     ui->Volume->setValue(memVolume);
 
     flag_play = false;
@@ -99,17 +86,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->Next->setEnabled(false);
     ui->Mute->setEnabled(false);
     ui->Volume->setEnabled(false);
-
-    Automate_morceaux *automate_morceaux = new Automate_morceaux();
-    Automate_radio *automate_radio = new Automate_radio();
-    Automate_son *automate_son = new Automate_son();
-
-    // On se connecte à l'automate morceaux
-    QObject::connect(automate_morceaux, SIGNAL(signalMachine(signalType,bool,int,int)), this, SLOT(message(signalType,bool,int,int)));
-    // On se connecte à l'automate radio
-    QObject::connect(automate_radio, SIGNAL(signalMachine(signalType,bool,int,int)), this, SLOT(message(signalType,bool,int,int)));
-    // On se connecte à l'automate son
-    QObject::connect(automate_son, SIGNAL(signalMachine(signalType,bool,int,int)), this, SLOT(message(signalType,bool,int,int)));
 }
 
 
@@ -133,7 +109,6 @@ void MainWindow::on_Connexion_toggled(bool checked)
         ui->Next->setEnabled(false);
         ui->Mute->setEnabled(false);
         ui->Volume->setEnabled(false);
-        loading->hide();
     } else                            // Si l'utilisateur n'est pas connecté
     {
         connexion();                  //On lance la connexion
@@ -145,7 +120,6 @@ void MainWindow::on_Connexion_toggled(bool checked)
         ui->Next->setEnabled(true);
         ui->Mute->setEnabled(true);
         ui->Volume->setEnabled(true);
-        loading->show();
         qDebug() << "Je vais me connecter au serveur";
     }
 }
@@ -352,6 +326,13 @@ void MainWindow::change_mode(bool radio)
         ui->Rewind->show();
         ui->Foward->show();
 
+        QSize main_size; main_size.setHeight(330); main_size.setWidth(330);
+        ui->Image->setFixedSize(size);
+        pix_music.load(":/pics/music.png");
+        pix_music = pix_music.scaled(330,330);
+        ui->Image->setPixmap(pix_music);
+        ui->Image->setFixedSize(main_size);
+
         //MAJ du flag
         flag_radio = false;
 
@@ -368,6 +349,14 @@ void MainWindow::change_mode(bool radio)
         ui->Temps_restant->hide();
         ui->Rewind->hide();
         ui->Foward->hide();
+        ui->Morceaux->hide();
+
+        QSize main_size; main_size.setHeight(360); main_size.setWidth(360);
+        ui->Image->setFixedSize(size);
+        pix_music.load(":/pics/radio.png");
+        pix_music = pix_music.scaled(360,360);
+        ui->Image->setPixmap(pix_music);
+        ui->Image->setFixedSize(main_size);
 
         //MAJ du flag
         flag_radio = true;
@@ -537,36 +526,5 @@ void MainWindow::setVolume(int volume)
 void MainWindow::setPosition_lecture(int position)
 {
 
-}
-
-void MainWindow::setPhase(phase p, bool on, int param) //A revoir
-{
-  switch(p)
-  {
-    case kPhasePlay:
-
-      break;
-    case kPhasePause:
-
-      break;
-    case kPhaseMute:
-
-      break;
-    case kPhaseSound:
-
-      break;
-  }
-}
-
-void MainWindow::message(signalType sig, bool switchOn, int param1, int param2) //A revoir
-{
-    switch(sig)
-    {
-      case kSignalPhase:
-        setPhase((phase)param1, switchOn, param2);
-        break;
-      default:
-        break;
-      }
 }
 

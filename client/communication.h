@@ -21,8 +21,8 @@ public:
     QTcpSocket * m_socket; // Sert pour communiquer avec le serveur
 
 private:
-
     bool connectToHost (QString host) ;
+
 public slots:
     QString readyRead();
     void deconnexion();
