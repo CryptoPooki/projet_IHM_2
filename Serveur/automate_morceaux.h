@@ -39,7 +39,7 @@ private:
   QState *begin;
   QState *play;
   QState *pause;
-  QFinalState *Final;
+  QFinalState *end;
 
   // Et leurs historiques
   QHistoryState *playHistory;

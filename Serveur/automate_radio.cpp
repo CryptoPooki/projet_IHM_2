@@ -17,17 +17,17 @@ Automate_radio::Automate_radio(QObject *parent) : QObject(parent)
   pauseHistory = new QHistoryState(pause);
 
   // Un état final
-  Final = new QFinalState(machine);
+  end = new QFinalState(machine);
 
   // Nos transitions
   Begin_to_Play = (QSignalTransition*) begin->addTransition(play);
   Play_to_Pause = (QSignalTransition*) play->addTransition(pause);
   Pause_to_Play = (QSignalTransition*) pause->addTransition(play);
-  Play_to_Final = (QSignalTransition*) play->addTransition(Final);
-  Pause_to_Final = (QSignalTransition*) pause->addTransition(Final);
+  Play_to_Final = (QSignalTransition*) play->addTransition(end);
+  Pause_to_Final = (QSignalTransition*) pause->addTransition(end);
 
 
-  QObject::connect(Final, &QState::entered, [this](){
+  QObject::connect(end, &QState::entered, [this](){
       qDebug()<<"Arrêt de mpv";
       emit signalMachine(kSignalPhase, false, KPhaseEndCycle);
     });
@@ -109,7 +109,7 @@ void Automate_radio::setPlay(bool play)
   }
 }
 
-void Automate_radio::setMode(bool morceaux)
+void Automate_radio::changeMode(bool morceaux)
 {
     if(morceaux)
     {
