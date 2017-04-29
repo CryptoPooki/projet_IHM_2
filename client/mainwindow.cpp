@@ -1,3 +1,5 @@
+#include <QTime>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -132,14 +134,25 @@ void MainWindow::on_Connexion_toggled(bool checked)
 
 void MainWindow::on_Progression_sliderMoved(int position)
 {
-    //Pause de la lecture
-    pause();
+    C->writeData(QString::fromStdString("move ") + QString::number(position));
+}
 
-    //Déplacement de la lecture
-    setPosition_lecture(position);
+void MainWindow::move(QString order)
+{
+    QStringList L = order.split(" ");
+    ui->Progression->setValue( L.at(1).toFloat());
+    int heures = L.at(3).toFloat()/3600;
+    int min = (L.at(3).toFloat() - heures*3600  )/60;
+    int sec = (L.at(3).toFloat() - heures*3600 - min*60 );
+    QString S = QString::number(heures) + QString::fromStdString(":") + QString::number(min) + QString::fromStdString(":")+ QString::number(sec);
+    ui->Temps_lu->setText( S  );
 
-    //Lancement de la lecture
-    play();
+    heures = L.at(2).toFloat()/3600;
+    min = (L.at(2).toFloat() - heures*3600  )/60;
+    sec = (L.at(2).toFloat() - heures*3600 - min*60 );
+
+    S = QString::number(heures) + QString::fromStdString(":") + QString::number(min) + QString::fromStdString(":")+ QString::number(sec);
+    ui->Temps_restant->setText( S );
 }
 
 void MainWindow::on_Rewind_pressed()
@@ -162,8 +175,9 @@ void MainWindow::on_Rewind_released()
 }
 
 void MainWindow::on_Previous_clicked()
-{
+{    
     //Envoi de la demande de previous au serveur
+    C->writeData("previous");
 }
 
 void MainWindow::on_Play_pause_clicked()
@@ -209,14 +223,7 @@ void MainWindow::pauseResponse()
 
 void MainWindow::on_Next_clicked()
 {
-    //Pause de la lecture
-    pause();
-
-    //Envoi de la demande de next au serveur
-    next();
-
-    //Lancement de la lecture du morceau précédent
-    play();
+    C->writeData("next");
 }
 
 void MainWindow::on_Foward_pressed()
@@ -389,6 +396,8 @@ void MainWindow::orderParser(QString S)
         initInfo(S);
     else if(L[0].compare("playList") == 0)
         setPlayList(S.remove(0,9));
+    else if(L[0].compare("move") == 0)
+        move(S);
 }
 
 void MainWindow::deconnexion()
@@ -471,6 +480,7 @@ int MainWindow::mute()
 
      } else                          //Le mute est désactivé
      {
+         volume->set_volume(0);
          //MAJ de l'état de lecture
          flag_mute = true;
 
@@ -484,7 +494,6 @@ int MainWindow::mute()
          memVolume = volume->get_volume();
 
          //Repositionnement de la barre
-         volume->set_volume(0);
          repaint();
      }
 
@@ -503,9 +512,6 @@ void MainWindow::slot_volume()
 
 void MainWindow::setVolume(int vol)
 {
-    qDebug() << "Je mets le volume à " + QString::number(vol);
-    QString S = QString::fromStdString("setVolume ") + QString::number(vol);
-    C->writeData(S);
 
     if (flag_mute)                        //Si le mode mute est activé, il devient désactivé automatiquement
     {

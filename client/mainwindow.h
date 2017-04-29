@@ -75,6 +75,7 @@ private:
   int memVolume;
   void change_sound(int pourcentage);       //Fonction qui modifie le son en fonction de sa puissance maximale
   void setPosition_lecture(int position);
+  void move(QString order);
 
   // Connexion avec le serveur
   Communication* C;

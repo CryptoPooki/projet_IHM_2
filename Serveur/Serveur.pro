@@ -32,11 +32,13 @@ SOURCES += main.cpp\
     serveur.cpp \
     #automate_radio.cpp \
     #automate_morceaux.cpp
+    miseajourthread.cpp
 
 HEADERS  += mainwindow.h \
     serveur.h \
     #automate_radio.h \
     #automate_morceaux.h
+    miseajourthread.h
 
 FORMS    += mainwindow.ui
 

@@ -11,6 +11,8 @@
 #include <QPair>
 #include <QStringList>
 
+#include "miseajourthread.h"
+
 class Serveur: public QObject
 {
     Q_OBJECT
@@ -40,7 +42,11 @@ public slots :
     QStringList ListePLaylists();
     QStringList ListePLaylistMusics( QString Folder);
     void writeDataToClient(int id, QString Data);
-
+    QString getPlayedSeconds();
+    QString getRemainingSeconds();
+    void MusiquePosition();
+    void previousMusic();
+    void nextMusic();
 
 
 private:
@@ -61,6 +67,7 @@ private:
     */
     bool m_running;
     bool mute_flag;
+    QThread* T;
 
 
 };

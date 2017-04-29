@@ -31,7 +31,7 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     communication.h \
-    volume_widget.h \
+    volume_widget.h
 
 FORMS    += mainwindow.ui
 

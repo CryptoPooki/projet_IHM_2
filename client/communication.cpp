@@ -101,6 +101,10 @@ QString Communication::readyRead()
         {
             qDebug() << "forward";
         }
+        else if( L[0].compare("move") == 0)
+        {
+            qDebug() << "move";
+        }
         else
         {
             qDebug() << "aucune correspondance trouvée";

@@ -14,6 +14,7 @@
 #include <taglib/fileref.h>
 #include <QDirIterator>
 #include "serveur.h"
+#include "miseajourthread.h"
 
 Serveur::Serveur(QObject *parent) :
     QObject(parent),
@@ -38,21 +39,17 @@ Serveur::Serveur(QObject *parent) :
     m_server->listen(QHostAddress::Any,3000); // regarde sur toutes ses interfaces sur le port 3000
     mute_flag = false;
 
-    int i;
-/*    QStringList L = ListePLaylists();
-    for(i = 0 ; i <L.size() ; i++ )
-    {
-        ListePLaylistMusics(L.at(i));
-    } */
+    T =new MiseAJourThread();
+    connect(T, SIGNAL(miseAJour()), this ,SLOT(MusiquePosition()) );
 
-    //QTimer * t = new QTimer();
-    //t->start(5000);
-    //connect(t, SIGNAL(timeout()), this , SLOT(cible()) );
-    //sendRequestToMPV();
-        //chgtEndroitMusique(100);
-    //QThread::sleep(3);
-    //mute();
 
+}
+
+void Serveur::MusiquePosition()
+{
+    QString pos = QString::number( getPlayedSeconds().toFloat()/(getPlayedSeconds().toFloat()+getRemainingSeconds().toFloat()) *100) ;
+    QString response = QString::fromStdString("move ")+ pos + QString::fromStdString(" ") + getPlayedSeconds()  +QString::fromStdString(" ") + getRemainingSeconds();
+    writeEveryone(response );
 }
 
 void Serveur::newConnection()
@@ -147,9 +144,41 @@ void Serveur::readyRead()
             avanceMusique();
             writeEveryone("avance");
         }
+        else if (L[0].compare("move") == 0)
+        {
+            qDebug() << QString::fromStdString("Pourcentage") + QString::number(L.at(1).toFloat());
+            qDebug() << getRemainingSeconds();
+            qDebug() << QString::number(L.at(1).toFloat() *  ( getPlayedSeconds().toFloat() + getRemainingSeconds().toFloat() ) /100);
+            chgtEndroitMusique(L.at(1).toFloat() * (getPlayedSeconds().toFloat()+getRemainingSeconds().toFloat()) / 100);
+            QString response = QString::fromStdString("move")+ L.at(1) + QString::fromStdString(" ") + getPlayedSeconds()  +QString::fromStdString(" ") + getRemainingSeconds();
+            qDebug () << "La réponse  " + response;
+            writeEveryone( response) ;
+        }
+        else if( L[0].compare("previous")==0)
+        {
+            previousMusic();
+        }
+        else if( L[0].compare("next") == 0)
+        {
+            nextMusic();
+        }
 
     }
 }
+
+// ICI FAUT METTRE LE CHANGEMENT POUR ALLER A LA MUSIQUE D'AVANT
+// CHANGER DE MUSIQUE -> chgtMusique
+// CHANGER DE VOLUME -> chgtVolume
+void Serveur::previousMusic()
+{
+
+}
+
+void Serveur::nextMusic()
+{
+
+}
+
 
 void Serveur::writeDataToClient(int id, QString Data)
 {
@@ -213,6 +242,7 @@ void Serveur::play_f()
     pause = false;
     P.waitForFinished();
     qDebug() << "play";
+    T->start();
 }
 
 void Serveur::pause_f()
@@ -222,6 +252,7 @@ void Serveur::pause_f()
     pause = true;
     P.waitForFinished();
     qDebug() << "pause";
+    T->quit();
 }
 
 /*
@@ -277,12 +308,13 @@ void Serveur::chgtMusique(QString nom)
       mpv->write(bytes.data(), bytes.length());
       mpv->flush();
     }
+    T->start();
     //TagLib::FileRef f(QFile::encodeName("/home/wilhelm/mus.mp3").constData());
 
 
 }
 
-void Serveur::avanceMusique()
+QString Serveur::getPlayedSeconds()
 {
     QProcess P;
     QString time = "";
@@ -306,37 +338,49 @@ void Serveur::avanceMusique()
         time.append(sortie.at(i));
         i++;
     }
+    return time;
+}
+
+QString Serveur::getRemainingSeconds()
+{
+    QProcess P;
+    QString time = "";
+    int i=0;
+    P.start("sh", QStringList() << "-c" <<  QString::fromStdString("echo '{\"command\":[ \"get_property\",\"time-remaining\"] }' | socat - /tmp/mpv-socket"));
+    P.waitForFinished();
+    QString sortie = P.readAllStandardOutput();
+    while( !(sortie.at(i) >= '0' && sortie.at(i)<='9') )
+    {
+        i++;
+    }
+    while ( sortie.at(i) != '.')
+    {
+        time.append(sortie.at(i));
+        i++;
+    }
+    time.append(sortie.at(i));
+    i++;
+    while (sortie.at(i) >= '0' && sortie.at(i) <='9')
+    {
+        time.append(sortie.at(i));
+        i++;
+    }
+    return time;
+}
+
+void Serveur::avanceMusique()
+{
+    QString time = getPlayedSeconds();
     chgtEndroitMusique( time.toFloat() + 5.0);
 }
 
 void Serveur::reculeMusique()
 {
-    QProcess P;
-    QString time = "";
-    int i=0;
-    P.start("sh", QStringList() << "-c" <<  QString::fromStdString("echo '{\"command\":[ \"get_property\",\"time-pos\"] }' | socat - /tmp/mpv-socket"));
-    P.waitForFinished();
-    QString sortie = P.readAllStandardOutput();
-    while( !(sortie.at(i) >= '0' && sortie.at(i)<='9') )
-    {
-        i++;
-    }
-    while ( sortie.at(i) != '.')
-    {
-        time.append(sortie.at(i));
-        i++;
-    }
-    time.append(sortie.at(i));
-    i++;
-    while (sortie.at(i) >= '0' && sortie.at(i) <='9')
-    {
-        time.append(sortie.at(i));
-        i++;
-    }
+    QString time = getPlayedSeconds();
     chgtEndroitMusique( fmax(time.toFloat() - 5.0,0.0));
 }
 
-void Serveur::chgtEndroitMusique(float time) // marche pas ça bug
+void Serveur::chgtEndroitMusique(float time)
 {
     QProcess P;
     P.start("sh", QStringList() << "-c" <<  QString::fromStdString("echo '{\"command\":[ \"set_property\",\"time-pos\",")+ QString::number(time) +QString::fromStdString("] }' | socat - /tmp/mpv-socket"));
