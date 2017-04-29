@@ -238,44 +238,9 @@ void MainWindow::on_Foward_released()
 
 void MainWindow::on_Mute_clicked()
 {
-    if (flag_mute)                      //Si le mode mute est activé
-    {
-        //MAJ de l'état de lecture
-        flag_mute = false;
-
-        //Changement de l'icône du bouton
-        pix_sound.load(":/pics/sound.png");
-        icon_sound.addPixmap(pix_sound);
-        ui->Mute->setIcon(icon_sound);
-        ui->Mute->setIconSize(size_pic);
-
-        //Restauration du volume
-        setVolume(memVolume);
-
-        //Repositionnement des diodes
-        volume->set_volume(memVolume);
-        repaint();
-
-    } else                          //Le mute est désactivé
-    {
-        //MAJ de l'état de lecture
-        flag_mute = true;
-
-        //Changement de l'icône du bouton
-        pix_sound.load(":/pics/mute.jpg");
-        icon_sound.addPixmap(pix_sound);
-        ui->Mute->setIcon(icon_sound);
-        ui->Mute->setIconSize(size_pic);
-
-        //Stockage de la valeur du volume
-        memVolume = volume->get_volume();
-
-        //Repositionnement de la barre
-        volume->set_volume(0);
-        repaint();
-    }
-    mute();
+    C->writeData("mute");
 }
+
 
 void MainWindow::change_languages(int language_id)
 {
@@ -430,6 +395,8 @@ void MainWindow::deconnexion()
     C->deconnexion();
 }
 
+
+
 void MainWindow::get_list_metadata()
 {
     //A définir une fois que la structure des métadatas sont comprises
@@ -480,15 +447,56 @@ void MainWindow::foward(int speed)
     //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
 }
 
-void MainWindow::mute()
+int MainWindow::mute()
 {
-    C->writeData("mute");
+
+     if (flag_mute)                      //Si le mode mute est activé
+     {
+         //MAJ de l'état de lecture
+         flag_mute = false;
+
+         //Changement de l'icône du bouton
+         pix_sound.load(":/pics/sound.png");
+         icon_sound.addPixmap(pix_sound);
+         ui->Mute->setIcon(icon_sound);
+         ui->Mute->setIconSize(size);
+
+         //Restauration du volume
+         setVolume(memVolume);
+
+         //Repositionnement de la barre
+         ui->Volume->setValue(memVolume);
+
+     } else                          //Le mute est désactivé
+     {
+         //MAJ de l'état de lecture
+         flag_mute = true;
+
+         //Changement de l'icône du bouton
+         pix_sound.load(":/pics/mute.jpg");
+         icon_sound.addPixmap(pix_sound);
+         ui->Mute->setIcon(icon_sound);
+         ui->Mute->setIconSize(size);
+
+         //Stockage de la valeur du volume
+         memVolume = ui->Volume->value();
+
+         //Repositionnement de la barre
+         ui->Volume->setValue(0);
+     }
+
+    return -1; //Retour par défaut tant que la fonction n'est pas programmée et pour éviter les bugs de compilation
 }
+
+
+
 
 void MainWindow::slot_volume()
 {
-    setVolume(volume->get_volume());
-}
+    qDebug() << "Change le volume";
+    QString S = QString::fromStdString("setVolume ") + QString::number(volume->get_volume());
+    C->writeData(S);
+  }
 
 void MainWindow::setVolume(int vol)
 {

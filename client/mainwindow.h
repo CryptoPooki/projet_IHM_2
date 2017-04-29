@@ -69,7 +69,7 @@ private:
                                             //         qui joue la chaine de radio suivante
 
   void foward(int speed);                   //Fonction qui fait une avance rapide sur le morceau
-  void mute();                               //Fonction gère le mute
+  int mute();                               //Fonction gère le mute
   void setVolume(int volume);               //Fonction qui change le volume
   bool flag_mute;                           //Booléen permettant de savoir si l'interface est en mode mute
   int memVolume;
