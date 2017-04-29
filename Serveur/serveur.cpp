@@ -39,17 +39,16 @@ Serveur::Serveur(QObject *parent) :
     mute_flag = false;
 
     int i;
-    QStringList L = ListePLaylists();
+/*    QStringList L = ListePLaylists();
     for(i = 0 ; i <L.size() ; i++ )
     {
         ListePLaylistMusics(L.at(i));
-    }
+    } */
 
     //QTimer * t = new QTimer();
     //t->start(5000);
     //connect(t, SIGNAL(timeout()), this , SLOT(cible()) );
     //sendRequestToMPV();
-        chgtMusique("Smells Like Teen Spirit.mp3");
         //chgtEndroitMusique(100);
     //QThread::sleep(3);
     //mute();
@@ -66,6 +65,8 @@ void Serveur::newConnection()
         qDebug() << VClient.size();
         connect(socket, SIGNAL(readyRead()), SLOT(readyRead()));
         writeData(QString::fromStdString("identifiant ") + QString::number(nextId),socket);
+        QThread::msleep(100);
+        writeData( QString::fromStdString("initInfo ") + ListePLaylists().join("|"), socket);
         nextId ++;
     }
 }
@@ -110,7 +111,7 @@ void Serveur::readyRead()
         else if( L[0].compare("chgtMusique")== 0)
         {
             qDebug() << "Demande de Musique";
-            chgtMusique(L[1]);
+            chgtMusique(jsonObject.value("txt").toString().remove(0,12));
         }
         else if (L[0].compare("setVolume") == 0)
         {
@@ -126,7 +127,41 @@ void Serveur::readyRead()
             qDebug() << QString::fromStdString("Suppression du client ") + QString::number(id);
             supprimeClient(id);
         }
+        else if (L[0].compare("getList") == 0)
+        {
+            qDebug() << "Demande de liste";
+            QString tmp = L.at(1);
+            QStringList List = ListePLaylistMusics(L.at(2));
+            QString L = List.join("|");
+            writeDataToClient(tmp.toInt(), QString::fromStdString("playList ") + L);
+        }
+        else if (L[0].compare("rewind") == 0)
+        {
+            qDebug() << "Recule";
+            reculeMusique();
+            writeEveryone("rewind");
+        }
+        else if (L[0].compare("forward") == 0)
+        {
+            qDebug() << "Avance";
+            avanceMusique();
+            writeEveryone("avance");
+        }
 
+    }
+}
+
+void Serveur::writeDataToClient(int id, QString Data)
+{
+    qDebug() << QString::fromStdString("Write to client") + QString::number(id);
+    int i;
+    for (i = 0; i < VClient.size() ; i++)
+    {
+        if( VClient.at(i).first == id)
+        {
+            writeData( Data, VClient.at(i).second );
+            return;
+        }
     }
 }
 
@@ -234,9 +269,9 @@ void Serveur::chgtMusique(QString nom)
     QJsonObject jsonObject ;
     QJsonArray a ;
     a.append("loadfile");
-    a.append( "/home/wilhelm/"+ nom  ); //donner le nom de fichier à lancer
+    a.append( "/home/wilhelm/ProjetIHM2/projet_IHM_2/Musique/"+ nom  ); //donner le nom de fichier à lancer
     jsonObject["command"]=a;
-
+    qDebug() << jsonObject["command"];
     QByteArray bytes = QJsonDocument(jsonObject).toJson(QJsonDocument::Compact)+"\n";
     if (mpv!=NULL) {
       mpv->write(bytes.data(), bytes.length());
@@ -249,20 +284,65 @@ void Serveur::chgtMusique(QString nom)
 
 void Serveur::avanceMusique()
 {
-
+    QProcess P;
+    QString time = "";
+    int i=0;
+    P.start("sh", QStringList() << "-c" <<  QString::fromStdString("echo '{\"command\":[ \"get_property\",\"time-pos\"] }' | socat - /tmp/mpv-socket"));
+    P.waitForFinished();
+    QString sortie = P.readAllStandardOutput();
+    while( !(sortie.at(i) >= '0' && sortie.at(i)<='9') )
+    {
+        i++;
+    }
+    while ( sortie.at(i) != '.')
+    {
+        time.append(sortie.at(i));
+        i++;
+    }
+    time.append(sortie.at(i));
+    i++;
+    while (sortie.at(i) >= '0' && sortie.at(i) <='9')
+    {
+        time.append(sortie.at(i));
+        i++;
+    }
+    chgtEndroitMusique( time.toFloat() + 5.0);
 }
 
 void Serveur::reculeMusique()
 {
-
+    QProcess P;
+    QString time = "";
+    int i=0;
+    P.start("sh", QStringList() << "-c" <<  QString::fromStdString("echo '{\"command\":[ \"get_property\",\"time-pos\"] }' | socat - /tmp/mpv-socket"));
+    P.waitForFinished();
+    QString sortie = P.readAllStandardOutput();
+    while( !(sortie.at(i) >= '0' && sortie.at(i)<='9') )
+    {
+        i++;
+    }
+    while ( sortie.at(i) != '.')
+    {
+        time.append(sortie.at(i));
+        i++;
+    }
+    time.append(sortie.at(i));
+    i++;
+    while (sortie.at(i) >= '0' && sortie.at(i) <='9')
+    {
+        time.append(sortie.at(i));
+        i++;
+    }
+    chgtEndroitMusique( fmax(time.toFloat() - 5.0,0.0));
 }
 
-void Serveur::chgtEndroitMusique(int time) // marche pas ça bug
+void Serveur::chgtEndroitMusique(float time) // marche pas ça bug
 {
     QProcess P;
-    P.start("sh", QStringList() << "-c" <<" echo '{ \"command\": [\"set_property\",\"playback-time\"," + QString::number(time) +"] }' | socat - /tmp/mpv-socket"); //active mute
+    P.start("sh", QStringList() << "-c" <<  QString::fromStdString("echo '{\"command\":[ \"set_property\",\"time-pos\",")+ QString::number(time) +QString::fromStdString("] }' | socat - /tmp/mpv-socket"));
+         //   " echo '{ \"command\": [\"set_property\",\"playback-time\"," + QString::number(time) +"] }' | socat - /tmp/mpv-socket"); //active mute
     P.waitForFinished();
-    qDebug() << "mute activé";
+    qDebug() <<QString::fromStdString( "echo \"{\"command\":[ \"set_property\",\"time-pos\",")+ QString::number(time) +QString::fromStdString("] }' | socat - /tmp/mpv-socket" );
 
 }
 
@@ -288,6 +368,7 @@ QStringList Serveur::ListePLaylists ()
 
 QStringList Serveur::ListePLaylistMusics( QString Folder)
 {
+    qDebug() << Folder;
     QStringList L;
     QStringList tmp;
     QString nextList;

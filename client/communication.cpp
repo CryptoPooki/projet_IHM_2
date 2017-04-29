@@ -32,6 +32,7 @@ void Communication::deconnexion()
 
 bool Communication::writeData(QString dataString)
 {
+    qDebug()<< dataString;
     QJsonObject jsonObject;
     jsonObject["txt"] = dataString;
     QByteArray bytes = QJsonDocument(jsonObject).toJson(QJsonDocument::Compact);
@@ -83,6 +84,27 @@ QString Communication::readyRead()
         else if ( L[0].compare("mute") == 0)
         {
             qDebug() << "mute";
+        }
+        else if ( L[0].compare("initInfo") == 0)
+        {
+            qDebug() << "initInfo";
+        }
+        else if ( L[0].compare("playList") == 0)
+        {
+            qDebug() << "playList";
+        }
+        else if( L[0].compare("previous") == 0)
+        {
+            qDebug() << "previous";
+        }
+        else if( L[0].compare("forward") == 0)
+        {
+            qDebug() << "forward";
+        }
+        else
+        {
+            qDebug() << "aucune correspondance trouvée";
+            qDebug() << L[0];
         }
         emit orderToWindow(jsonObject.value("txt").toString());
     }

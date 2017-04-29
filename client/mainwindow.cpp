@@ -172,7 +172,8 @@ void MainWindow::on_Rewind_pressed()
         if (i < 6) i++;
         //Déplacement de la barre
     }*/
-    rewind(1);
+    C->writeData("rewind");
+
 }
 
 void MainWindow::on_Rewind_released()
@@ -182,14 +183,7 @@ void MainWindow::on_Rewind_released()
 
 void MainWindow::on_Previous_clicked()
 {
-    //Pause de la lecture
-    pause();
-
     //Envoi de la demande de previous au serveur
-    previous();
-
-    //Lancement de la lecture du morceau précédent
-    play();
 }
 
 void MainWindow::on_Play_pause_clicked()
@@ -254,12 +248,12 @@ void MainWindow::on_Foward_pressed()
         QThread::sleep(speed_factors[i]);         //Attente de speed_factors[i] secondes avant d'augmenter la vitesse
         if (i < 6) i++;
     }*/
-    foward(1);
+    C->writeData("forward");
 }
 
 void MainWindow::on_Foward_released()
 {
-    C->writeData("forward");
+    //
 }
 
 void MainWindow::on_Mute_clicked()
@@ -402,6 +396,10 @@ void MainWindow::orderParser(QString S)
         setVolume( L[1].toInt());
     else if(L[0].compare("mute") == 0)
         mute();
+    else if(L[0].compare("initInfo") == 0)
+        initInfo(S);
+    else if(L[0].compare("playList") == 0)
+        setPlayList(S.remove(0,9));
 }
 
 void MainWindow::deconnexion()
@@ -534,6 +532,28 @@ void MainWindow::setVolume(int volume)
     }
 }
 
+void MainWindow::initInfo(QString S)
+{
+    int i;
+    for (i = 0 ; S[i] != " " ; i++)
+    {}
+    QString sousMot = S.remove(0,i+1);
+    QStringList L = sousMot.split("|");
+    for( i=0 ; i < L.size(); i++)
+        ui->Liste->addItem(L.at(i));
+}
+
+void MainWindow::setPlayList( QString S)
+{
+    QStringList L = S.split("|");
+    int i;
+    ui->Morceaux->clear();
+    for( i = 0; i < L.size() ; i ++)
+    {
+        ui->Morceaux->addItem(L.at(i));
+    }
+}
+
 void MainWindow::setPosition_lecture(int position)
 {
 
@@ -570,3 +590,15 @@ void MainWindow::message(signalType sig, bool switchOn, int param1, int param2) 
       }
 }
 
+
+void MainWindow::on_Liste_clicked(const QModelIndex &index)
+{
+    qDebug() << ui->Liste->currentItem()->text();
+    C->writeData(QString::fromStdString("getList ")+ QString::number(C->id) +" " + ui->Liste->currentItem()->text());
+}
+
+void MainWindow::on_Morceaux_clicked(const QModelIndex &index)
+{
+    qDebug() << "Lance une nouvelle musique";
+    C->writeData(QString::fromStdString("chgtMusique ") + ui->Liste->currentItem()->text() + QString::fromStdString("/")+ ui->Morceaux->currentItem()->text());
+}

@@ -43,6 +43,11 @@ private slots:
     void orderParser(QString S);
 
 
+    void on_Liste_clicked(const QModelIndex &index);
+    void setPlayList( QString S);
+
+    void on_Morceaux_clicked(const QModelIndex &index);
+
 private:
   Ui::MainWindow *ui;
   Loadwidget* loading;
@@ -92,6 +97,8 @@ private:
   // Connexion avec le serveur
   Communication* C;
   void InitConnexion();
+
+  void initInfo(QString S);
 
 
 
