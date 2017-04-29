@@ -162,7 +162,7 @@
         </widget>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="Volume">
+        <layout class="QVBoxLayout" name="VolumeLayout">
          <property name="rightMargin">
           <number>0</number>
          </property>

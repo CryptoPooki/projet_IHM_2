@@ -26,7 +26,7 @@ public:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *);
     void wheelEvent(QWheelEvent *event);
-    //Les fonctions de redimensionnement sont héritées de la classe QWidget
+
     int get_volume();
     void set_volume(int volume);
     int get_Nb_DEL();

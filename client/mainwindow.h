@@ -35,6 +35,7 @@ private slots:
     void on_Foward_released();
     void on_Mute_clicked();
     void orderParser(QString S);
+    void slot_volume();
 
 
 private:
@@ -63,7 +64,7 @@ private:
                                             //         qui joue la chaine de radio suivante
 
   void foward(int speed);                   //Fonction qui fait une avance rapide sur le morceau
-  int mute();                               //Fonction gère le mute
+  void mute();                               //Fonction gère le mute
   void setVolume(int volume);               //Fonction qui change le volume
   bool flag_mute;                           //Booléen permettant de savoir si l'interface est en mode mute
   int memVolume;

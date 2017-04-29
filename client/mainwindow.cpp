@@ -78,8 +78,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //Utiliser des automates
     memVolume = 50;
     volume = new volume_widget();
-    ui->Volume->addWidget(volume);
-    //QObject::connect(volume, &QAction::changed, this, [this] { setVolume(volume->get_volume()); });
+    ui->VolumeLayout->addWidget(volume);
+    QObject::connect(volume, SIGNAL(signal_volume()), this, SLOT(slot_volume()));
 
     flag_play = false;
     flag_mute = false;
@@ -92,7 +92,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->Foward->setEnabled(false);
     ui->Next->setEnabled(false);
     ui->Mute->setEnabled(false);
-    ui->Volume->setEnabled(false);
+    volume->setEnabled(false);
 }
 
 
@@ -114,7 +114,7 @@ void MainWindow::on_Connexion_toggled(bool checked)
         ui->Foward->setEnabled(false);
         ui->Next->setEnabled(false);
         ui->Mute->setEnabled(false);
-        ui->Volume->setEnabled(false);
+        volume->setEnabled(false);
     } else                            // Si l'utilisateur n'est pas connecté
     {
         connexion();                  //On lance la connexion
@@ -125,7 +125,7 @@ void MainWindow::on_Connexion_toggled(bool checked)
         ui->Foward->setEnabled(true);
         ui->Next->setEnabled(true);
         ui->Mute->setEnabled(true);
-        ui->Volume->setEnabled(true);
+        volume->setEnabled(true);
         qDebug() << "Je vais me connecter au serveur";
     }
 }
@@ -244,7 +244,43 @@ void MainWindow::on_Foward_released()
 
 void MainWindow::on_Mute_clicked()
 {
-    C->writeData("mute");
+    if (flag_mute)                      //Si le mode mute est activé
+    {
+        //MAJ de l'état de lecture
+        flag_mute = false;
+
+        //Changement de l'icône du bouton
+        pix_sound.load(":/pics/sound.png");
+        icon_sound.addPixmap(pix_sound);
+        ui->Mute->setIcon(icon_sound);
+        ui->Mute->setIconSize(size_pic);
+
+        //Restauration du volume
+        setVolume(memVolume);
+
+        //Repositionnement des diodes
+        volume->set_volume(memVolume);
+        repaint();
+
+    } else                          //Le mute est désactivé
+    {
+        //MAJ de l'état de lecture
+        flag_mute = true;
+
+        //Changement de l'icône du bouton
+        pix_sound.load(":/pics/mute.jpg");
+        icon_sound.addPixmap(pix_sound);
+        ui->Mute->setIcon(icon_sound);
+        ui->Mute->setIconSize(size_pic);
+
+        //Stockage de la valeur du volume
+        memVolume = volume->get_volume();
+
+        //Repositionnement de la barre
+        volume->set_volume(0);
+        repaint();
+    }
+    mute();
 }
 
 void MainWindow::change_languages(int language_id)
@@ -446,51 +482,18 @@ void MainWindow::foward(int speed)
     //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
 }
 
-int MainWindow::mute()
+void MainWindow::mute()
 {
-    if (flag_mute)                      //Si le mode mute est activé
-    {
-        //MAJ de l'état de lecture
-        flag_mute = false;
-
-        //Changement de l'icône du bouton
-        pix_sound.load(":/pics/sound.png");
-        icon_sound.addPixmap(pix_sound);
-        ui->Mute->setIcon(icon_sound);
-        ui->Mute->setIconSize(size_pic);
-
-        //Restauration du volume
-        setVolume(memVolume);
-
-        //Repositionnement des diodes
-        volume->set_volume(memVolume);
-        repaint();
-
-    } else                          //Le mute est désactivé
-    {
-        //MAJ de l'état de lecture
-        flag_mute = true;
-
-        //Changement de l'icône du bouton
-        pix_sound.load(":/pics/mute.jpg");
-        icon_sound.addPixmap(pix_sound);
-        ui->Mute->setIcon(icon_sound);
-        ui->Mute->setIconSize(size_pic);
-
-        //Stockage de la valeur du volume
-        memVolume = volume->get_volume();
-
-        //Repositionnement de la barre
-        volume->set_volume(0);
-        repaint();
-    }
-
-   return -1; //Retour par défaut tant que la fonction n'est pas programmée et pour éviter les bugs de compilation
+    C->writeData("mute");
+}
+void MainWindow::slot_volume()
+{
+    setVolume(volume->get_volume());
 }
 
 void MainWindow::setVolume(int vol)
 {
-    qDebug() << "Je change le volume";
+    qDebug() << "Je mets le volume à " + QString::number(vol);
     QString S = QString::fromStdString("setVolume ") + QString::number(vol);
     C->writeData(S);
 
@@ -510,7 +513,7 @@ void MainWindow::setVolume(int vol)
 
     } else                                //Si le mode mute n'est pas activé
     {
-        if (volume == 0)
+        if (vol == 0)
         {
             flag_mute = true;
 
