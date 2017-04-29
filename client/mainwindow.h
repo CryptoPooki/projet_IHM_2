@@ -80,10 +80,7 @@ private:
   Communication* C;
   void InitConnexion();
 
-
   void initInfo(QString S);
-
-
 };
 
 #endif // MAINWINDOW_H

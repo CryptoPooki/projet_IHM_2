@@ -26,10 +26,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
+    volume_widget.cpp \
     communication.cpp
 
 HEADERS  += mainwindow.h \
-    communication.h
+    communication.h \
+    volume_widget.h \
 
 FORMS    += mainwindow.ui
 

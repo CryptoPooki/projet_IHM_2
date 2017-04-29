@@ -484,6 +484,7 @@ void MainWindow::mute()
 {
     C->writeData("mute");
 }
+
 void MainWindow::slot_volume()
 {
     setVolume(volume->get_volume());
@@ -549,4 +550,16 @@ void MainWindow::setPlayList( QString S)
 void MainWindow::setPosition_lecture(int position)
 {
 
+}
+
+void MainWindow::on_Liste_clicked(const QModelIndex &index)
+{
+    qDebug() << ui->Liste->currentItem()->text();
+    C->writeData(QString::fromStdString("getList ")+ QString::number(C->id) +" " + ui->Liste->currentItem()->text());
+}
+
+void MainWindow::on_Morceaux_clicked(const QModelIndex &index)
+{
+    qDebug() << "Lance une nouvelle musique";
+    C->writeData(QString::fromStdString("chgtMusique ") + ui->Liste->currentItem()->text() + QString::fromStdString("/")+ ui->Morceaux->currentItem()->text());
 }
