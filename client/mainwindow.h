@@ -84,13 +84,6 @@ private:
   void initInfo(QString S);
 
 
-
-
-public slots:
-  // Messages reçus de l'automate
-  void setPhase(phase p, bool on, int param);
-  void message(signalType, bool, int param1, int param2);
-
 };
 
 #endif // MAINWINDOW_H
