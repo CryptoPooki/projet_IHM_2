@@ -239,6 +239,7 @@ void MainWindow::on_Foward_released()
 void MainWindow::on_Mute_clicked()
 {
     C->writeData("mute");
+    mute();
 }
 
 
@@ -459,13 +460,14 @@ int MainWindow::mute()
          pix_sound.load(":/pics/sound.png");
          icon_sound.addPixmap(pix_sound);
          ui->Mute->setIcon(icon_sound);
-         ui->Mute->setIconSize(size);
+         ui->Mute->setIconSize(size_pic);
 
          //Restauration du volume
          setVolume(memVolume);
 
          //Repositionnement de la barre
-         ui->Volume->setValue(memVolume);
+         volume->set_volume(memVolume);
+         repaint();
 
      } else                          //Le mute est désactivé
      {
@@ -476,13 +478,14 @@ int MainWindow::mute()
          pix_sound.load(":/pics/mute.jpg");
          icon_sound.addPixmap(pix_sound);
          ui->Mute->setIcon(icon_sound);
-         ui->Mute->setIconSize(size);
+         ui->Mute->setIconSize(size_pic);
 
          //Stockage de la valeur du volume
-         memVolume = ui->Volume->value();
+         memVolume = volume->get_volume();
 
          //Repositionnement de la barre
-         ui->Volume->setValue(0);
+         volume->set_volume(0);
+         repaint();
      }
 
     return -1; //Retour par défaut tant que la fonction n'est pas programmée et pour éviter les bugs de compilation
