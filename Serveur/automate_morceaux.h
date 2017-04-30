@@ -31,7 +31,6 @@ class Automate_morceaux : public QObject
 public:
     explicit Automate_morceaux(QObject *parent = 0);
 
-private:
   // La machine
   QStateMachine *machine;
 

@@ -17,7 +17,6 @@ class Automate_radio : public QObject
 public:
     explicit Automate_radio(QObject *parent = 0);
 
-private:
   // La machine
   QStateMachine *machine;
 

@@ -3,20 +3,19 @@
 
 #include <QObject>
 
-class musicfile
+class musicfile : public QObject
 {
     Q_OBJECT
-//Attributs
-private:
+
+public:
+    musicfile();
+    ~musicfile();
+
     QString path;
     QString name;
     int volume;
     float pos;
     bool mute;
-
-public:
-    musicfile();
-    ~musicfile();
 
     //Get & Set
     QString get_path();

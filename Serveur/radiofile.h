@@ -3,18 +3,17 @@
 
 #include <QObject>
 
-class radiofile
+class radiofile : public QObject
 {
     Q_OBJECT
-private:
+public:
+    radiofile();
+    ~radiofile();
+
     QString url;
     QString name;
     int volume;
     bool mute;
-
-public:
-    radiofile();
-    ~radiofile();
 
     //Get & Set
     QString get_url();

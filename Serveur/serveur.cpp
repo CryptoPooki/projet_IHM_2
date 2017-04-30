@@ -53,27 +53,27 @@ Serveur::Serveur(QObject *parent) :
     radio = new radiofile();
 
     //Initialisation des automates
-    automate_morceaux->play->assignProperty(musique->path, "path", "/home/wilhelm/ProjetIHM2/projet_IHM_2/Musique/");
-    automate_morceaux->play->assignProperty(musique->name, "name", "");
-    automate_morceaux->play->assignProperty(musique->volume, "volume", 50);
-    automate_morceaux->play->assignProperty(musique->pos, "pos", 0);
-    automate_morceaux->play->assignProperty(musique->mute, "mute", false);
+    automate_morceaux->play->assignProperty(musique, "path", "/home/wilhelm/ProjetIHM2/projet_IHM_2/Musique/");
+    automate_morceaux->play->assignProperty(musique, "name", "");
+    automate_morceaux->play->assignProperty(musique, "volume", 50);
+    automate_morceaux->play->assignProperty(musique, "pos", 0);
+    automate_morceaux->play->assignProperty(musique, "mute", false);
 
-    automate_morceaux->pause->assignProperty(musique->path, "path", "/home/wilhelm/ProjetIHM2/projet_IHM_2/Musique/");
-    automate_morceaux->pause->assignProperty(musique->name, "name", "");
-    automate_morceaux->pause->assignProperty(musique->volume, "volume", 50);
-    automate_morceaux->pause->assignProperty(musique->pos, "pos", 0);
-    automate_morceaux->pause->assignProperty(musique->mute, "mute", false);
+    automate_morceaux->pause->assignProperty(musique, "path", "/home/wilhelm/ProjetIHM2/projet_IHM_2/Musique/");
+    automate_morceaux->pause->assignProperty(musique, "name", "");
+    automate_morceaux->pause->assignProperty(musique, "volume", 50);
+    automate_morceaux->pause->assignProperty(musique, "pos", 0);
+    automate_morceaux->pause->assignProperty(musique, "mute", false);
 
-    automate_radio->play->assignProperty(musique->url, "url", "");
-    automate_radio->play->assignProperty(musique->name, "name", "");
-    automate_radio->play->assignProperty(musique->volume, "volume", 50);
-    automate_radio->play->assignProperty(musique->mute, "mute", false);
+    automate_radio->play->assignProperty(musique, "url", "");
+    automate_radio->play->assignProperty(musique, "name", "");
+    automate_radio->play->assignProperty(musique, "volume", 50);
+    automate_radio->play->assignProperty(musique, "mute", false);
 
-    automate_radio->pause->assignProperty(musique->url, "url", "");
-    automate_radio->pause->assignProperty(musique->name, "name", "");
-    automate_radio->pause->assignProperty(musique->volume, "volume", 50);
-    automate_radio->pause->assignProperty(musique->mute, "mute", false);
+    automate_radio->pause->assignProperty(musique, "url", "");
+    automate_radio->pause->assignProperty(musique, "name", "");
+    automate_radio->pause->assignProperty(musique, "volume", 50);
+    automate_radio->pause->assignProperty(musique, "mute", false);
 
 }
 
