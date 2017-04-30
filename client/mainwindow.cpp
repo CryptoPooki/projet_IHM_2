@@ -240,7 +240,7 @@ void MainWindow::on_Foward_pressed()
 
 void MainWindow::on_Foward_released()
 {
-    //
+    play();
 }
 
 void MainWindow::on_Mute_clicked()
@@ -459,7 +459,6 @@ void MainWindow::foward(int speed)
 
 int MainWindow::mute()
 {
-
      if (flag_mute)                      //Si le mode mute est activé
      {
          //MAJ de l'état de lecture
@@ -480,7 +479,7 @@ int MainWindow::mute()
 
      } else                          //Le mute est désactivé
      {
-         volume->set_volume(0);
+
          //MAJ de l'état de lecture
          flag_mute = true;
 
@@ -492,6 +491,7 @@ int MainWindow::mute()
 
          //Stockage de la valeur du volume
          memVolume = volume->get_volume();
+         volume->set_volume(0);
 
          //Repositionnement de la barre
          repaint();
@@ -500,19 +500,15 @@ int MainWindow::mute()
     return -1; //Retour par défaut tant que la fonction n'est pas programmée et pour éviter les bugs de compilation
 }
 
-
-
-
 void MainWindow::slot_volume()
 {
     qDebug() << "Change le volume";
     QString S = QString::fromStdString("setVolume ") + QString::number(volume->get_volume());
     C->writeData(S);
-  }
+}
 
 void MainWindow::setVolume(int vol)
 {
-
     if (flag_mute)                        //Si le mode mute est activé, il devient désactivé automatiquement
     {
         //Déclenchement de la fonction mute
