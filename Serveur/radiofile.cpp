@@ -19,6 +19,11 @@ QString radiofile::get_name()
     return name;
 }
 
+bool radiofile::get_play()
+{
+    return play;
+}
+
 int radiofile::get_volume()
 {
     return volume;
@@ -37,6 +42,11 @@ void radiofile::set_url(QString u)
 void radiofile::set_name(QString n)
 {
     name = n;
+}
+
+void radiofile::set_play(bool p)
+{
+    play = p;
 }
 
 void radiofile::set_volume(int v)

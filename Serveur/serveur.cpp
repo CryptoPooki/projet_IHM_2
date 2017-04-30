@@ -42,7 +42,6 @@ Serveur::Serveur(QObject *parent) :
     connect(m_server,SIGNAL(newConnection()), SLOT(newConnection()));
     m_server->listen(QHostAddress::Any,3000); // regarde sur toutes ses interfaces sur le port 3000
     mute_flag = false;
-    play_flag = false;
 
     T =new MiseAJourThread();
     connect(T, SIGNAL(miseAJour()), this ,SLOT(MusiquePosition()) );
@@ -53,45 +52,32 @@ Serveur::Serveur(QObject *parent) :
     radio = new radiofile();
 
     //Initialisation des automates
-    automate_morceaux->play->assignProperty(musique, "path", "/home/wilhelm/ProjetIHM2/projet_IHM_2/Musique/");
-    automate_morceaux->play->assignProperty(musique, "name", "");
-    automate_morceaux->play->assignProperty(musique, "volume", 50);
-    automate_morceaux->play->assignProperty(musique, "pos", 0);
-    automate_morceaux->play->assignProperty(musique, "mute", false);
+    automate_morceaux->go->assignProperty(musique, "path", "/home/wilhelm/ProjetIHM2/projet_IHM_2/Musique/");
+    automate_morceaux->go->assignProperty(musique, "name", "");
+    automate_morceaux->go->assignProperty(musique, "play", false);
+    automate_morceaux->go->assignProperty(musique, "volume", 50);
+    automate_morceaux->go->assignProperty(musique, "pos", 0);
+    automate_morceaux->go->assignProperty(musique, "mute", false);
 
-    automate_morceaux->pause->assignProperty(musique, "path", "/home/wilhelm/ProjetIHM2/projet_IHM_2/Musique/");
-    automate_morceaux->pause->assignProperty(musique, "name", "");
-    automate_morceaux->pause->assignProperty(musique, "volume", 50);
-    automate_morceaux->pause->assignProperty(musique, "pos", 0);
-    automate_morceaux->pause->assignProperty(musique, "mute", false);
+    automate_morceaux->setBegin(true);
 
-    automate_radio->play->assignProperty(musique, "url", "");
-    automate_radio->play->assignProperty(musique, "name", "");
-    automate_radio->play->assignProperty(musique, "volume", 50);
-    automate_radio->play->assignProperty(musique, "mute", false);
+    automate_radio->go->assignProperty(radio, "url", "");
+    automate_radio->go->assignProperty(radio, "name", "");
+    automate_radio->go->assignProperty(radio, "play", false);
+    automate_radio->go->assignProperty(radio, "volume", 50);
+    automate_radio->go->assignProperty(radio, "mute", false);
 
-    automate_radio->pause->assignProperty(musique, "url", "");
-    automate_radio->pause->assignProperty(musique, "name", "");
-    automate_radio->pause->assignProperty(musique, "volume", 50);
-    automate_radio->pause->assignProperty(musique, "mute", false);
+    automate_radio->setBegin(true);
 
 }
 
 void Serveur::MusiquePosition()
 {
-    if (play_flag)
-    {
-        //Mise à jour de l'état play
-        automate_morceaux->play->setProperty("position", getPlayedSeconds().toFloat()/(getPlayedSeconds().toFloat()+getRemainingSeconds().toFloat()) *100);
+    //Mise à jour de l'état play
+    automate_morceaux->go->setProperty("position", getPlayedSeconds().toFloat()/(getPlayedSeconds().toFloat()+getRemainingSeconds().toFloat()) *100);
 
-        //Mise à jour de l'historique
-    } else
-    {
-        //Mise à jour de l'état pause
-        automate_morceaux->pause->setProperty("position", getPlayedSeconds().toFloat()/(getPlayedSeconds().toFloat()+getRemainingSeconds().toFloat()) *100);
-
-        //Mise à jour de l'historique
-    }
+    //Mise à jour de l'historique
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("position", getPlayedSeconds().toFloat()/(getPlayedSeconds().toFloat()+getRemainingSeconds().toFloat()) *100);
 
     QString pos = QString::number( getPlayedSeconds().toFloat()/(getPlayedSeconds().toFloat()+getRemainingSeconds().toFloat()) *100) ;
     QString response = QString::fromStdString("move ")+ pos + QString::fromStdString(" ") + getPlayedSeconds()  +QString::fromStdString(" ") + getRemainingSeconds();
@@ -216,15 +202,49 @@ void Serveur::readyRead()
 // CHANGER DE MUSIQUE -> chgtMusique
 // CHANGER DE VOLUME -> chgtVolume
 
-//J'y travaille
 void Serveur::previousMusic()
 {
+    automate_morceaux->HS_index--;
+    if (automate_morceaux->HS_index != 0)
+    {
+        //On a trouvé la musique précédente
+        qDebug() << "J'ai joue la musique précédente";
+        //Je la change
+        chgtMusique(automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->property("name").toString());
+        //Je la mets au bon endroit
+        chgtEndroitMusique(automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->property("pos").toFloat());
+        //je mets le bon volume
+        chgtVolume(automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->property("volume").toInt());
+        return;
+
+    } else //on a atteint le fond de la pile
+    {
+        qDebug() << "J'ai atteint le fond de la pile";
+        return;
+    }
 
 }
 
 void Serveur::nextMusic()
 {
+    automate_morceaux->HS_index++;
+    if (automate_morceaux->HS_index != automate_morceaux->HS_length)
+    {
+        //On a trouvé la musique précédente
+        qDebug() << "J'ai joue la musique précédente";
+        //Je la change
+        chgtMusique(automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->property("name").toString());
+        //Je la mets au bon endroit
+        chgtEndroitMusique(automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->property("pos").toFloat());
+        //je mets le bon volume
+        chgtVolume(automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->property("volume").toInt());
+        return;
 
+    } else //on a atteint le plafond de la pile
+    {
+        qDebug() << "J'ai atteint le plafond de la pile";
+        return;
+    }
 }
 
 
@@ -286,9 +306,10 @@ bool Serveur::writeData(QString dataString, QTcpSocket *socket)
 void Serveur::play_f()
 {
     //Rentrer en état play
-    automate_morceaux->setPlay(true);
+    automate_morceaux->go->setProperty("play", true);
 
-    //Note : Vérifier la musique sélectionnée (délicat)
+    //Mise à jour de l'historique
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("play", true);
 
     QProcess P;
     P.start("sh", QStringList() << "-c" <<" echo '{ \"command\": [\"set_property\", \"pause\", false] }' | socat - /tmp/mpv-socket");
@@ -300,10 +321,12 @@ void Serveur::play_f()
 
 void Serveur::pause_f()
 {
-    //Rentrer en état play
-    automate_morceaux->setPlay(false);
+    //Rentrer en état pause
+    automate_morceaux->go->setProperty("play", false);
 
-    //Note : Vérifier la musique sélectionnée (délicat)
+    //Mise à jour de l'historique
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("play", false);
+
     QProcess P;
     P.start("sh", QStringList() << "-c" <<" echo '{ \"command\": [\"set_property\", \"pause\", true] }' | socat - /tmp/mpv-socket");
     pause = true;
@@ -328,19 +351,11 @@ void Serveur::pause_f()
 
 void Serveur::chgtVolume(int value)
 {
-    if (play_flag)
-    {
-        //Mise à jour de l'état play
-        automate_morceaux->play->setProperty("volume", value);
+    //Mise à jour de l'état
+    automate_morceaux->go->setProperty("volume", value);
 
-        //Mise à jour de l'historique
-    } else
-    {
-        //Mise à jour de l'état pause
-        automate_morceaux->pause->setProperty("volume", value);
-
-        //Mise à jour de l'historique
-    }
+    //Mise à jour de l'historique
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("volume", value);
 
     QProcess P;
     P.start("sh", QStringList() << "-c" <<" echo '{ \"command\": [\"set_property\",\"volume\"," + QString::number(value) + "] }' | socat - /tmp/mpv-socket");
@@ -353,19 +368,11 @@ void Serveur::mute()
     QProcess P;
     if(!mute_flag)
     {
-        if (play_flag)
-        {
-            //Mise à jour de l'état play
-            automate_morceaux->play->setProperty("mute", true);
+        //Mise à jour de l'état play
+        automate_morceaux->go->setProperty("mute", true);
 
-            //Mise à jour de l'historique
-        } else
-        {
-            //Mise à jour de l'état pause
-            automate_morceaux->pause->setProperty("mute", true);
-
-            //Mise à jour de l'historique
-        }
+        //Mise à jour de l'historique
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty("mute", true);
 
         P.start("sh", QStringList() << "-c" <<" echo '{ \"command\": [\"set_property\",\"mute\",\"yes\"] }' | socat - /tmp/mpv-socket"); //active mute
         qDebug() << "mute activé";
@@ -373,19 +380,11 @@ void Serveur::mute()
     }
     else
     {
-        if (play_flag)
-        {
-            //Mise à jour de l'état play
-            automate_morceaux->play->setProperty("mute", false);
+        //Mise à jour de l'état play
+        automate_morceaux->go->setProperty("mute", false);
 
-            //Mise à jour de l'historique
-        } else
-        {
-            //Mise à jour de l'état pause
-            automate_morceaux->pause->setProperty("mute", false);
-
-            //Mise à jour de l'historique
-        }
+        //Mise à jour de l'historique
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty("mute", false);
 
         P.start("sh", QStringList() << "-c" <<"echo '{ \"command\": [\"set_property\",\"mute\",\"no\"] }' | socat - /tmp/mpv-socket"); // désactive mute
         qDebug() << "mute désactivé";
@@ -396,12 +395,22 @@ void Serveur::mute()
 
 void Serveur::chgtMusique(QString nom)
 {
-    //Mise à jour du nom
-    automate_morceaux->play->setProperty("nom", nom);
-
-    //Mise à jour de l'historique
-
+    if (!automate_morceaux->machine->configuration().contains(automate_morceaux->go))
+    {
+        automate_morceaux->setGo();
+    }
     //Est-ce que ça play automatiquement quand on change de musique ?
+    //Mise à jour du nom
+    automate_morceaux->go->setProperty("nom", nom);
+
+    //Mise à jour de l'historique / Ajout (ou réécriture) de la musique lue
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index] = new QState(automate_morceaux->machine);
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index] = automate_morceaux->go;
+    automate_morceaux->HS_index++;
+    if (automate_morceaux->HS_index != automate_morceaux->HS_length)
+    {
+        automate_morceaux->HS_length++;
+    }
 
     QJsonObject jsonObject ;
     QJsonArray a ;
@@ -477,30 +486,31 @@ QString Serveur::getRemainingSeconds()
 void Serveur::avanceMusique()
 {
     QString time = getPlayedSeconds();
+    //Mise à jour de l'état
+    automate_morceaux->go->setProperty("position", time.toFloat() + 5.0);
+    //Mise à jour de l'historique
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("position", time.toFloat() + 5.0);
     chgtEndroitMusique( time.toFloat() + 5.0);
 }
 
 void Serveur::reculeMusique()
 {
     QString time = getPlayedSeconds();
+    //Mise à jour de l'état
+    automate_morceaux->go->setProperty("position", fmax(time.toFloat() - 5.0,0.0));
+    //Mise à jour de l'historique
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("position", fmax(time.toFloat() - 5.0,0.0));
     chgtEndroitMusique( fmax(time.toFloat() - 5.0,0.0));
 }
 
 void Serveur::chgtEndroitMusique(float time)
 {
-    if (play_flag)
-    {
-        //Mise à jour de l'état play
-        automate_morceaux->play->setProperty("position", time);
+    //Mise à jour de l'état play
+    automate_morceaux->go->setProperty("position", time);
 
-        //Mise à jour de l'historique
-    } else
-    {
-        //Mise à jour de l'état pause
-        automate_morceaux->pause->setProperty("position", time);
+    //Mise à jour de l'historique
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("position", time);
 
-        //Mise à jour de l'historique
-    }
     QProcess P;
     P.start("sh", QStringList() << "-c" <<  QString::fromStdString("echo '{\"command\":[ \"set_property\",\"time-pos\",")+ QString::number(time) +QString::fromStdString("] }' | socat - /tmp/mpv-socket"));
          //   " echo '{ \"command\": [\"set_property\",\"playback-time\"," + QString::number(time) +"] }' | socat - /tmp/mpv-socket"); //active mute

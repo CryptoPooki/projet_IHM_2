@@ -75,7 +75,6 @@ private:
     */
     bool m_running;
     bool mute_flag;
-    bool play_flag;
     QThread* T;
 
 
