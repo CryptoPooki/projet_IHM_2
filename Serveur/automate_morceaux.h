@@ -64,11 +64,11 @@ signals:
   void signalPlay();
   void signalBegin();
   void signalFinal();
-  void signalModeMorceaux();
+  void signalModeRadio();
 
 public slots:
   void setPlay(bool play);
-  void setBegin(bool begin);
+  void setBegin(bool b);
   void changeMode(bool radio);
 };
 

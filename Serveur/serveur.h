@@ -12,6 +12,10 @@
 #include <QStringList>
 
 #include "miseajourthread.h"
+#include "musicfile.h"
+#include "radiofile.h"
+#include "automate_morceaux.h"
+#include "automate_radio.h"
 
 class Serveur: public QObject
 {
@@ -53,6 +57,10 @@ private:
     QLocalSocket *mpv=NULL;
     QVector<QPair<int ,QTcpSocket*>> VClient;
     QTcpServer * m_server;
+    Automate_morceaux *automate_morceaux;
+    Automate_radio *automate_radio;
+    musicfile *musique;
+    radiofile *radio;
     QString URL_radio[6] = {
         "http://www.skyrock.fm/stream.php/tunein16_128mp3.mp3",
         "http://cdn.nrjaudio.fm/audio1/fr/30001/mp3_128.mp3?origine=fluxradios",
@@ -67,6 +75,7 @@ private:
     */
     bool m_running;
     bool mute_flag;
+    bool play_flag;
     QThread* T;
 
 

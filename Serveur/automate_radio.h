@@ -55,7 +55,7 @@ signals:
 
 public slots:
   void setPlay(bool play);
-  void setBegin(bool begin);
+  void setBegin(bool b);
   void changeMode(bool morceaux);
 };
 

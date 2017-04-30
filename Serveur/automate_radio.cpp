@@ -84,9 +84,9 @@ void Automate_radio::initDebug()
     });
 }
 
-void Automate_radio::setBegin(bool begin)
+void Automate_radio::setBegin(bool b)
 {
-  if (!begin)
+  if (!b)
   {
       // On arrête la machine
       machine->stop();
@@ -113,6 +113,6 @@ void Automate_radio::changeMode(bool morceaux)
 {
     if(morceaux)
     {
-        emit signalModeRadio();
+        emit signalModeMorceaux();
     }
 }

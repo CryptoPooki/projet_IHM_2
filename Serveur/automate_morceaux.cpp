@@ -17,17 +17,17 @@ Automate_morceaux::Automate_morceaux(QObject *parent) : QObject(parent)
   pauseHistory = new QHistoryState(pause);
 
   // Un état final
-  Final = new QFinalState(machine);
+  end = new QFinalState(machine);
 
   // Nos transitions
   Begin_to_Play = (QSignalTransition*) begin->addTransition(play);
   Play_to_Pause = (QSignalTransition*) play->addTransition(pause);
   Pause_to_Play = (QSignalTransition*) pause->addTransition(play);
-  Play_to_Final = (QSignalTransition*) play->addTransition(Final);
-  Pause_to_Final = (QSignalTransition*) pause->addTransition(Final);
+  Play_to_Final = (QSignalTransition*) play->addTransition(end);
+  Pause_to_Final = (QSignalTransition*) pause->addTransition(end);
 
 
-  QObject::connect(Final, &QState::entered, [this](){
+  QObject::connect(end, &QState::entered, [this](){
       qDebug()<<"Arrêt de mpv";
       emit signalMachine(kSignalPhase, false, KPhaseEndCycle);
     });
@@ -84,9 +84,9 @@ void Automate_morceaux::initDebug()
     });
 }
 
-void Automate_morceaux::setBegin(bool begin)
+void Automate_morceaux::setBegin(bool b)
 {
-  if (!begin)
+  if (!b)
   {
       // On arrête la machine
       machine->stop();
@@ -109,9 +109,9 @@ void Automate_morceaux::setPlay(bool play)
   }
 }
 
-void Automate_morceaux::setMode(bool radio)
+void Automate_morceaux::changeMode(bool r)
 {
-    if(radio)
+    if(r)
     {
         emit signalModeRadio();
     }
