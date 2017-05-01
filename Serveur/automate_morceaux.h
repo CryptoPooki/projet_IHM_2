@@ -11,7 +11,6 @@
 
 // Types de signaux envoyés à l'UI
 enum signalType {
-  //kSignalAction,
   kSignalPhase,
   kSignalEndOfPhase
 };
@@ -44,6 +43,8 @@ public:
   // Les messages envoyés à l'UI
   void setupMessages();
   void initDebug();
+
+  QSignalTransition *s;
 
 signals:
   // Le format de communication vers l'UI

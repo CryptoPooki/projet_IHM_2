@@ -7,12 +7,27 @@ Automate_radio::Automate_radio(QObject *parent) : QObject(parent)
 
   // Un état initial "begin"
   begin = new QState(machine);
-  begin->addTransition(this, SIGNAL(signalGo()), go);
 
   // Un état "go"
   go = new QState(machine);
-  go->addTransition(this, SIGNAL(signalFinal()), end);
   HS_index = 0; HS_length = 0;
+
+  /* MAIS PUTAIN DE BORDEL DE MERDE !!!!
+   * POURQUOI ÇA
+   *
+   * // On ajoute la pause
+   * fonction->addTransition(this, SIGNAL(signalPause()), pause);
+   * pause->addTransition(this, SIGNAL(signalPause()), fonctionHistory);
+   *
+   * ÇA MARCHE ET POURQUOI ÇA
+   *
+   * begin->addTransition(this, SIGNAL(signalGo()), go);
+   * go->addTransition(this, SIGNAL(signalFinal()), end);
+   * ÇA NE MARCHE PAS !!!!
+   *
+   * FAIS CHIER !!!!
+   * LA CALOTTE DE SES MORTS !!!!
+   */
 
   // Un état final
   end = new QFinalState(machine);
