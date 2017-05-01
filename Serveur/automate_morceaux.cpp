@@ -7,11 +7,11 @@ Automate_morceaux::Automate_morceaux(QObject *parent) : QObject(parent)
 
   // Un état initial "begin"
   begin = new QState(machine);
-  begin->addTransition(machine, SIGNAL(signalGo()), go);
+  begin->addTransition(sender(), SIGNAL(signalGo()), go);
 
   // Un état "go"
   go = new QState(machine);
-  go->addTransition(machine, SIGNAL(signalFinal()), end);
+  go->addTransition(sender(), SIGNAL(signalFinal()), end);
   HS_index = 0; HS_length = 0;
 
   // Un état final
