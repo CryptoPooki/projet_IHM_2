@@ -12,7 +12,7 @@ Automate_radio::Automate_radio(QObject *parent) : QObject(parent)
   go = new QState(machine);
   HS_index = 0; HS_length = 0;
 
-  /* MAIS PUTAIN DE BORDEL DE MERDE !!!!
+  /*
    * POURQUOI ÇA
    *
    * // On ajoute la pause
@@ -25,8 +25,6 @@ Automate_radio::Automate_radio(QObject *parent) : QObject(parent)
    * go->addTransition(this, SIGNAL(signalFinal()), end);
    * ÇA NE MARCHE PAS !!!!
    *
-   * FAIS CHIER !!!!
-   * LA CALOTTE DE SES MORTS !!!!
    */
 
   // Un état final

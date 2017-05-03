@@ -20,6 +20,8 @@
 #include "automate_morceaux.h"
 #include "automate_radio.h"
 
+#define PATH "/home/peyret/Bureau/projet_IHM_2/Musique/"
+
 Serveur::Serveur(QObject *parent) :
     QObject(parent),
     mpv(new QLocalSocket(this)),
@@ -52,7 +54,7 @@ Serveur::Serveur(QObject *parent) :
     radio = new radiofile();
 
     //Initialisation des automates
-    automate_morceaux->go->assignProperty(musique, "path", "/home/wilhelm/ProjetIHM2/projet_IHM_2/Musique/");
+    automate_morceaux->go->assignProperty(musique, "path", PATH);
     automate_morceaux->go->assignProperty(musique, "name", "");
     automate_morceaux->go->assignProperty(musique, "play", false);
     automate_morceaux->go->assignProperty(musique, "volume", 50);
@@ -415,7 +417,7 @@ void Serveur::chgtMusique(QString nom)
     QJsonObject jsonObject ;
     QJsonArray a ;
     a.append("loadfile");
-    a.append( "/home/wilhelm/ProjetIHM2/projet_IHM_2/Musique/"+ nom  ); //donner le nom de fichier à lancer
+    a.append(PATH + nom  ); //donner le nom de fichier à lancer
     jsonObject["command"]=a;
     qDebug() << jsonObject["command"];
     QByteArray bytes = QJsonDocument(jsonObject).toJson(QJsonDocument::Compact)+"\n";
@@ -524,7 +526,7 @@ QStringList Serveur::ListePLaylists ()
     QStringList L;
     QStringList tmp;
     QString nextList;
-    QDirIterator *it = new QDirIterator("/home/wilhelm/ProjetIHM2/projet_IHM_2/Musique");
+    QDirIterator *it = new QDirIterator(PATH);
     while(it->hasNext())
     {
         nextList = it->next();
@@ -545,7 +547,7 @@ QStringList Serveur::ListePLaylistMusics( QString Folder)
     QStringList L;
     QStringList tmp;
     QString nextList;
-    QDirIterator *it = new QDirIterator(QString::fromStdString("/home/wilhelm/ProjetIHM2/projet_IHM_2/Musique/") + Folder);
+    QDirIterator *it = new QDirIterator(QString::fromStdString(PATH) + Folder);
     qDebug() << QString::fromStdString("Folder : ") + Folder;
     while(it->hasNext())
     {
