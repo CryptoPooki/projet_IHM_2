@@ -11,17 +11,13 @@
 
 // Types de signaux envoyés à l'UI
 enum signalType {
-  //kSignalAction,
   kSignalPhase,
   kSignalEndOfPhase
 };
 
 // Phases, communiquées à l'UI
 enum phase {
-  kPhasePlay,
-  kPhasePause,
-  kPhaseMute,
-  kPhaseSound,
+  kPhase,
   KPhaseEndCycle
 };
 
@@ -31,44 +27,36 @@ class Automate_morceaux : public QObject
 public:
     explicit Automate_morceaux(QObject *parent = 0);
 
-private:
   // La machine
   QStateMachine *machine;
 
   // Les états élémentaires
   QState *begin;
-  QState *play;
-  QState *pause;
+  QState *go;
   QFinalState *end;
 
   // Et leurs historiques
-  QHistoryState *playHistory;
-  QHistoryState *pauseHistory;
-
-  // Et puis nous avons des transitions.
-  QSignalTransition *Begin_to_Play;
-  QSignalTransition *Play_to_Pause;
-  QSignalTransition *Pause_to_Play;
-  QSignalTransition *Play_to_Final;
-  QSignalTransition *Pause_to_Final;
+  QState *HistoryStack[1000];
+  int HS_index;
 
   // Les messages envoyés à l'UI
   void setupMessages();
   void initDebug();
 
+  QSignalTransition *s;
+
 signals:
   // Le format de communication vers l'UI
   void signalMachine(signalType, bool on=true, int param1=0, int param2=0);
 
-  void signalPause();
-  void signalPlay();
-  void signalBegin();
+  void signalGo();
   void signalFinal();
-  void signalModeMorceaux();
+  void signalModeRadio();
 
 public slots:
-  void setPlay(bool play);
-  void setBegin(bool begin);
+  void setBegin(bool b);
+  void setGo();
+  void setFinal();
   void changeMode(bool radio);
 };
 

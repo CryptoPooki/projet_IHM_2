@@ -8,23 +8,14 @@ Automate_radio::Automate_radio(QObject *parent) : QObject(parent)
   // Un état initial "begin"
   begin = new QState(machine);
 
-  // Un état "play"
-  play = new QState(machine);
-  playHistory = new QHistoryState(play);
-
-  // Un état "pause"
-  pause = new QState(machine);
-  pauseHistory = new QHistoryState(pause);
+  // Un état "go"
+  go = new QState(machine);
+  begin->addTransition(this, SIGNAL(signalGo()), go);
+  HS_index = 0;
 
   // Un état final
   end = new QFinalState(machine);
-
-  // Nos transitions
-  Begin_to_Play = (QSignalTransition*) begin->addTransition(play);
-  Play_to_Pause = (QSignalTransition*) play->addTransition(pause);
-  Pause_to_Play = (QSignalTransition*) pause->addTransition(play);
-  Play_to_Final = (QSignalTransition*) play->addTransition(end);
-  Pause_to_Final = (QSignalTransition*) pause->addTransition(end);
+  go->addTransition(this, SIGNAL(signalFinal()), end);
 
 
   QObject::connect(end, &QState::entered, [this](){
@@ -42,51 +33,36 @@ Automate_radio::Automate_radio(QObject *parent) : QObject(parent)
  */
 void Automate_radio::setupMessages()
 {
-  QObject::connect(play, &QState::entered, [this](){
-      emit signalMachine(kSignalPhase, true, kPhasePlay);
+  QObject::connect(go, &QState::entered, [this](){
+      emit signalMachine(kSignalPhase, true, kPhase);
     });
-  QObject::connect(play, &QState::exited, [this](){
-      emit signalMachine(kSignalPhase, false, kPhasePlay);
-    });
-  QObject::connect(pause, &QState::entered, [this](){
-      emit signalMachine(kSignalPhase, true, kPhasePause);
-    });
-  QObject::connect(pause, &QState::exited, [this](){
-      emit signalMachine(kSignalPhase, false, kPhasePause);
+  QObject::connect(go, &QState::exited, [this](){
+      emit signalMachine(kSignalPhase, false, kPhase);
     });
 }
 
 void Automate_radio::initDebug()
 {
   machine->setObjectName("machine") ;
-  play->setObjectName("play");
-  playHistory->setObjectName("playHistory");
-  pause->setObjectName("pause");
-  pauseHistory->setObjectName("pauseHistory");
+  go->setObjectName("go");
 
   QObject::connect(machine, &QStateMachine::started, [this](){
-      qDebug()<<"Machine started";
+      qDebug()<<"Machine radio started";
     });
   QObject::connect(machine, &QStateMachine::stopped, [this](){
-      qDebug()<<"Machine stopped";
+      qDebug()<<"Machine radio stopped";
     });
-  QObject::connect(play, &QState::entered, [this](){
-      qDebug()<<"play entered";
+  QObject::connect(go, &QState::entered, [this](){
+      qDebug()<<"go radio entered";
     });
-  QObject::connect(play, &QState::exited, [this](){
-      qDebug()<<"Play exited";
-    });
-  QObject::connect(pause, &QState::entered, [this](){
-      qDebug()<<"Pause entered";
-    });
-  QObject::connect(pause, &QState::exited, [this](){
-      qDebug()<<"Pause exited";
+  QObject::connect(go, &QState::exited, [this](){
+      qDebug()<<"go radio exited";
     });
 }
 
-void Automate_radio::setBegin(bool begin)
+void Automate_radio::setBegin(bool b)
 {
-  if (!begin)
+  if (!b)
   {
       // On arrête la machine
       machine->stop();
@@ -98,21 +74,23 @@ void Automate_radio::setBegin(bool begin)
   machine->start();
 }
 
-void Automate_radio::setPlay(bool play)
+void Automate_radio::setGo()
 {
-  if (play)
-  {
-      emit signalPlay();
-  } else
-  {
-      emit signalPause();
-  }
+    emit signalGo();
+}
+
+void Automate_radio::setFinal()
+{
+    emit signalFinal();
 }
 
 void Automate_radio::changeMode(bool morceaux)
 {
     if(morceaux)
     {
-        emit signalModeRadio();
+        emit signalModeMorceaux();
+    } else
+    {
+        return;
     }
 }

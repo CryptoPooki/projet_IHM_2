@@ -69,10 +69,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->Mute->setIconSize(size_pic);
     ui->Mute->setFixedSize(size_button);
 
-    QSize main_size; main_size.setHeight(330); main_size.setWidth(330);
+    QSize main_size; main_size.setHeight(300); main_size.setWidth(300);
     ui->Image->setFixedSize(main_size);
     pix_music.load(":/pics/music.png");
-    pix_music = pix_music.scaled(330,330);
+    pix_music = pix_music.scaled(300,300);
     ui->Image->setPixmap(pix_music);
     ui->Image->setFixedSize(main_size);
 
@@ -117,6 +117,8 @@ void MainWindow::on_Connexion_toggled(bool checked)
         ui->Next->setEnabled(false);
         ui->Mute->setEnabled(false);
         volume->setEnabled(false);
+        ui->Morceaux->clear();
+        ui->Liste->clear();
     } else                            // Si l'utilisateur n'est pas connecté
     {
         connexion();                  //On lance la connexion
@@ -184,11 +186,21 @@ void MainWindow::on_Play_pause_clicked()
 {
     if (flag_play)                      //Si un morceau est joué, l'image de pause est affichée
     {
+        pix_play.load(":/pics/play.jpg");
+        icon_play.addPixmap(pix_play);
+        ui->Play_pause->setIcon(icon_play);
+        ui->Play_pause->setIconSize(size_pic);
+
         //Arrêt de la lecture
         pause();
         std::cout << "J'arrête la lecture" << std::endl;
     } else                              //Le lecteur est en pause, l'image de play est affichée
     {
+        pix_play.load(":/pics/pause.jpg");
+        icon_play.addPixmap(pix_play);
+        ui->Play_pause->setIcon(icon_play);
+        ui->Play_pause->setIconSize(size_pic);
+
         //Lancement de la lecture
         play();
         std::cout << "Je lance la lecture" << std::endl;
@@ -240,7 +252,7 @@ void MainWindow::on_Foward_pressed()
 
 void MainWindow::on_Foward_released()
 {
-    //
+    play();
 }
 
 void MainWindow::on_Mute_clicked()
@@ -326,11 +338,12 @@ void MainWindow::change_mode(bool radio)
         ui->Temps_restant->show();
         ui->Rewind->show();
         ui->Foward->show();
+        ui->Morceaux->show();
 
-        QSize main_size; main_size.setHeight(330); main_size.setWidth(330);
+        QSize main_size; main_size.setHeight(300); main_size.setWidth(300);
         ui->Image->setFixedSize(main_size);
         pix_music.load(":/pics/music.png");
-        pix_music = pix_music.scaled(330,330);
+        pix_music = pix_music.scaled(300,300);
         ui->Image->setPixmap(pix_music);
         ui->Image->setFixedSize(main_size);
 
@@ -352,10 +365,10 @@ void MainWindow::change_mode(bool radio)
         ui->Foward->hide();
         ui->Morceaux->hide();
 
-        QSize main_size; main_size.setHeight(360); main_size.setWidth(360);
+        QSize main_size; main_size.setHeight(330); main_size.setWidth(330);
         ui->Image->setFixedSize(main_size);
         pix_music.load(":/pics/radio.png");
-        pix_music = pix_music.scaled(360,360);
+        pix_music = pix_music.scaled(330,330);
         ui->Image->setPixmap(pix_music);
         ui->Image->setFixedSize(main_size);
 
@@ -459,7 +472,6 @@ void MainWindow::foward(int speed)
 
 int MainWindow::mute()
 {
-
      if (flag_mute)                      //Si le mode mute est activé
      {
          //MAJ de l'état de lecture
@@ -480,7 +492,7 @@ int MainWindow::mute()
 
      } else                          //Le mute est désactivé
      {
-         volume->set_volume(0);
+
          //MAJ de l'état de lecture
          flag_mute = true;
 
@@ -492,6 +504,7 @@ int MainWindow::mute()
 
          //Stockage de la valeur du volume
          memVolume = volume->get_volume();
+         volume->set_volume(0);
 
          //Repositionnement de la barre
          repaint();
@@ -500,19 +513,16 @@ int MainWindow::mute()
     return -1; //Retour par défaut tant que la fonction n'est pas programmée et pour éviter les bugs de compilation
 }
 
-
-
-
 void MainWindow::slot_volume()
 {
     qDebug() << "Change le volume";
     QString S = QString::fromStdString("setVolume ") + QString::number(volume->get_volume());
     C->writeData(S);
-  }
+    setVolume(volume->get_volume()); //Mise à jour de l'affichage du son
+}
 
 void MainWindow::setVolume(int vol)
 {
-
     if (flag_mute)                        //Si le mode mute est activé, il devient désactivé automatiquement
     {
         //Déclenchement de la fonction mute
@@ -547,6 +557,8 @@ void MainWindow::initInfo(QString S)
     int i;
     for (i = 0 ; S[i] != " " ; i++)
     {}
+    qDebug() << "la string est ";
+    qDebug() << S;
     QString sousMot = S.remove(0,i+1);
     QStringList L = sousMot.split("|");
     for( i=0 ; i < L.size(); i++)

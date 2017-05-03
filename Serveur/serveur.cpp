@@ -15,6 +15,12 @@
 #include <QDirIterator>
 #include "serveur.h"
 #include "miseajourthread.h"
+#include "musicfile.h"
+#include "radiofile.h"
+#include "automate_morceaux.h"
+#include "automate_radio.h"
+
+#define PATH "/home/wilhelm/ProjetIHM2/projet_IHM_2/Musique"
 
 Serveur::Serveur(QObject *parent) :
     QObject(parent),
@@ -42,11 +48,39 @@ Serveur::Serveur(QObject *parent) :
     T =new MiseAJourThread();
     connect(T, SIGNAL(miseAJour()), this ,SLOT(MusiquePosition()) );
 
+    automate_morceaux = new Automate_morceaux();
+    automate_radio = new Automate_radio();
+    musique = new musicfile();
+    radio = new radiofile();
+
+    //Initialisation des automates
+    automate_morceaux->go->assignProperty(musique, "path", PATH);
+    automate_morceaux->go->assignProperty(musique, "name", "");
+    automate_morceaux->go->assignProperty(musique, "play", false);
+    automate_morceaux->go->assignProperty(musique, "volume", 50);
+    automate_morceaux->go->assignProperty(musique, "pos", 0);
+    automate_morceaux->go->assignProperty(musique, "mute", false);
+
+    automate_morceaux->setBegin(true);
+
+    automate_radio->go->assignProperty(radio, "url", "");
+    automate_radio->go->assignProperty(radio, "name", "");
+    automate_radio->go->assignProperty(radio, "play", false);
+    automate_radio->go->assignProperty(radio, "volume", 50);
+    automate_radio->go->assignProperty(radio, "mute", false);
+
+    automate_radio->setBegin(true);
 
 }
 
 void Serveur::MusiquePosition()
 {
+    //Mise à jour de l'état play
+    automate_morceaux->go->setProperty("position", getPlayedSeconds().toFloat()/(getPlayedSeconds().toFloat()+getRemainingSeconds().toFloat()) *100);
+
+    //Mise à jour de l'historique
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("position", getPlayedSeconds().toFloat()/(getPlayedSeconds().toFloat()+getRemainingSeconds().toFloat()) *100);
+
     QString pos = QString::number( getPlayedSeconds().toFloat()/(getPlayedSeconds().toFloat()+getRemainingSeconds().toFloat()) *100) ;
     QString response = QString::fromStdString("move ")+ pos + QString::fromStdString(" ") + getPlayedSeconds()  +QString::fromStdString(" ") + getRemainingSeconds();
     writeEveryone(response );
@@ -166,17 +200,41 @@ void Serveur::readyRead()
     }
 }
 
-// ICI FAUT METTRE LE CHANGEMENT POUR ALLER A LA MUSIQUE D'AVANT
-// CHANGER DE MUSIQUE -> chgtMusique
-// CHANGER DE VOLUME -> chgtVolume
 void Serveur::previousMusic()
 {
+    automate_morceaux->HS_index--;
+    if (automate_morceaux->HS_index < 0)
+    {
+        //On a trouvé la musique précédente
+        qDebug() << "J'ai joue la musique précédente";
+        //Je la change
+        chgtMusique(automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->property("name").toString());
+        //Je la mets au bon endroit
+        chgtEndroitMusique(automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->property("pos").toFloat());
+        //je mets le bon volume
+        chgtVolume(automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->property("volume").toInt());
+        return;
+    } else
+    {
+        qDebug() << "Le fond de la pile a été atteint";
+    }
+
 
 }
 
 void Serveur::nextMusic()
 {
+    automate_morceaux->HS_index++;
 
+    //On a trouvé la musique précédente
+    qDebug() << "J'ai joue la musique précédente";
+    //Je la change
+    chgtMusique(automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->property("name").toString());
+    //Je la mets au bon endroit
+    chgtEndroitMusique(automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->property("pos").toFloat());
+    //je mets le bon volume
+    chgtVolume(automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->property("volume").toInt());
+    return;
 }
 
 
@@ -237,6 +295,12 @@ bool Serveur::writeData(QString dataString, QTcpSocket *socket)
 
 void Serveur::play_f()
 {
+    //Rentrer en état play
+    automate_morceaux->go->setProperty("play", true);
+
+    //Mise à jour de l'historique
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("play", true);
+
     QProcess P;
     P.start("sh", QStringList() << "-c" <<" echo '{ \"command\": [\"set_property\", \"pause\", false] }' | socat - /tmp/mpv-socket");
     pause = false;
@@ -247,6 +311,12 @@ void Serveur::play_f()
 
 void Serveur::pause_f()
 {
+    //Rentrer en état pause
+    automate_morceaux->go->setProperty("play", false);
+
+    //Mise à jour de l'historique
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("play", false);
+
     QProcess P;
     P.start("sh", QStringList() << "-c" <<" echo '{ \"command\": [\"set_property\", \"pause\", true] }' | socat - /tmp/mpv-socket");
     pause = true;
@@ -271,6 +341,12 @@ void Serveur::pause_f()
 
 void Serveur::chgtVolume(int value)
 {
+    //Mise à jour de l'état
+    automate_morceaux->go->setProperty("volume", value);
+
+    //Mise à jour de l'historique
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("volume", value);
+
     QProcess P;
     P.start("sh", QStringList() << "-c" <<" echo '{ \"command\": [\"set_property\",\"volume\"," + QString::number(value) + "] }' | socat - /tmp/mpv-socket");
     P.waitForFinished();
@@ -282,12 +358,24 @@ void Serveur::mute()
     QProcess P;
     if(!mute_flag)
     {
+        //Mise à jour de l'état play
+        automate_morceaux->go->setProperty("mute", true);
+
+        //Mise à jour de l'historique
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty("mute", true);
+
         P.start("sh", QStringList() << "-c" <<" echo '{ \"command\": [\"set_property\",\"mute\",\"yes\"] }' | socat - /tmp/mpv-socket"); //active mute
         qDebug() << "mute activé";
         mute_flag = !mute_flag;
     }
     else
     {
+        //Mise à jour de l'état play
+        automate_morceaux->go->setProperty("mute", false);
+
+        //Mise à jour de l'historique
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty("mute", false);
+
         P.start("sh", QStringList() << "-c" <<"echo '{ \"command\": [\"set_property\",\"mute\",\"no\"] }' | socat - /tmp/mpv-socket"); // désactive mute
         qDebug() << "mute désactivé";
         mute_flag = !mute_flag;
@@ -297,10 +385,28 @@ void Serveur::mute()
 
 void Serveur::chgtMusique(QString nom)
 {
+    if (!automate_morceaux->machine->configuration().contains(automate_morceaux->go))
+    {
+        automate_morceaux->setGo();
+    }
+    //Est-ce que ça play automatiquement quand on change de musique ?
+    //Mise à jour du nom
+    automate_morceaux->go->setProperty("nom", nom);
+
+    //Mise à jour de l'historique / Ajout (ou réécriture) de la musique lue
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index%1000] = new QState(automate_morceaux->machine);
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index%1000]->assignProperty(musique, "path", PATH);
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index%1000]->assignProperty(musique, "name", automate_morceaux->go->property("name"));
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index%1000]->assignProperty(musique, "play", automate_morceaux->go->property("play"));
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index%1000]->assignProperty(musique, "volume", automate_morceaux->go->property("volume"));
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index%1000]->assignProperty(musique, "pos", automate_morceaux->go->property("volume"));
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index%1000]->assignProperty(musique, "mute", automate_morceaux->go->property("mute"));
+    automate_morceaux->HS_index++;
+
     QJsonObject jsonObject ;
     QJsonArray a ;
     a.append("loadfile");
-    a.append( "/home/wilhelm/ProjetIHM2/projet_IHM_2/Musique/"+ nom  ); //donner le nom de fichier à lancer
+    a.append(PATH +QString::fromStdString("/")+ nom  ); //donner le nom de fichier à lancer
     jsonObject["command"]=a;
     qDebug() << jsonObject["command"];
     QByteArray bytes = QJsonDocument(jsonObject).toJson(QJsonDocument::Compact)+"\n";
@@ -371,17 +477,31 @@ QString Serveur::getRemainingSeconds()
 void Serveur::avanceMusique()
 {
     QString time = getPlayedSeconds();
+    //Mise à jour de l'état
+    automate_morceaux->go->setProperty("position", time.toFloat() + 5.0);
+    //Mise à jour de l'historique
+    //automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("position", time.toFloat() + 5.0);
     chgtEndroitMusique( time.toFloat() + 5.0);
 }
 
 void Serveur::reculeMusique()
 {
     QString time = getPlayedSeconds();
+    //Mise à jour de l'état
+    automate_morceaux->go->setProperty("position", fmax(time.toFloat() - 5.0,0.0));
+    //Mise à jour de l'historique
+    //automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("position", fmax(time.toFloat() - 5.0,0.0));
     chgtEndroitMusique( fmax(time.toFloat() - 5.0,0.0));
 }
 
 void Serveur::chgtEndroitMusique(float time)
 {
+    //Mise à jour de l'état play
+    automate_morceaux->go->setProperty("position", time);
+
+    //Mise à jour de l'historique
+    //automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("position", time);
+
     QProcess P;
     P.start("sh", QStringList() << "-c" <<  QString::fromStdString("echo '{\"command\":[ \"set_property\",\"time-pos\",")+ QString::number(time) +QString::fromStdString("] }' | socat - /tmp/mpv-socket"));
          //   " echo '{ \"command\": [\"set_property\",\"playback-time\"," + QString::number(time) +"] }' | socat - /tmp/mpv-socket"); //active mute
@@ -395,7 +515,7 @@ QStringList Serveur::ListePLaylists ()
     QStringList L;
     QStringList tmp;
     QString nextList;
-    QDirIterator *it = new QDirIterator("/home/wilhelm/ProjetIHM2/projet_IHM_2/Musique");
+    QDirIterator *it = new QDirIterator(PATH);
     while(it->hasNext())
     {
         nextList = it->next();
@@ -416,10 +536,11 @@ QStringList Serveur::ListePLaylistMusics( QString Folder)
     QStringList L;
     QStringList tmp;
     QString nextList;
-    QDirIterator *it = new QDirIterator(QString::fromStdString("/home/wilhelm/ProjetIHM2/projet_IHM_2/Musique/") + Folder);
-    qDebug() << QString::fromStdString("Folder : ") + Folder;
+    QDirIterator *it = new QDirIterator( QString::fromStdString(PATH) + QString::fromStdString("/") + Folder );
+    qDebug() << QString::fromStdString("Folder : ") + QString::fromStdString(PATH) + QString::fromStdString("/") + Folder;
     while(it->hasNext())
     {
+        qDebug() << "j'AI DES ENTREE";
         nextList = it->next();
         tmp = nextList.split("/");
         nextList = tmp.at( tmp.size() -1 ) ;

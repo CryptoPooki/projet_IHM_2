@@ -97,6 +97,7 @@ void volume_widget::wheelEvent(QWheelEvent *event)
 void volume_widget::paintEvent(QPaintEvent *)
 {
     painter = new QPainter(this);
+    painter->setRenderHint(QPainter::HighQualityAntialiasing);
     painter->drawPixmap(10,25, image.width(), image.height() / Nb_DEL, image, 0, image.height() * Nb_DEL_on / Nb_DEL, image.width(), image.height() / Nb_DEL);
     delete painter;
 }

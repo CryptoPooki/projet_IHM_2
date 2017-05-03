@@ -8,26 +8,17 @@ Automate_morceaux::Automate_morceaux(QObject *parent) : QObject(parent)
   // Un état initial "begin"
   begin = new QState(machine);
 
-  // Un état "play"
-  play = new QState(machine);
-  playHistory = new QHistoryState(play);
+  // Un état "go"
+  go = new QState(machine);
+  begin->addTransition(this, SIGNAL(signalGo()), go);
 
-  // Un état "pause"
-  pause = new QState(machine);
-  pauseHistory = new QHistoryState(pause);
+  HS_index = 0;
 
   // Un état final
-  Final = new QFinalState(machine);
+  end = new QFinalState(machine);
+  go->addTransition(this, SIGNAL(signalFinal()), end);
 
-  // Nos transitions
-  Begin_to_Play = (QSignalTransition*) begin->addTransition(play);
-  Play_to_Pause = (QSignalTransition*) play->addTransition(pause);
-  Pause_to_Play = (QSignalTransition*) pause->addTransition(play);
-  Play_to_Final = (QSignalTransition*) play->addTransition(Final);
-  Pause_to_Final = (QSignalTransition*) pause->addTransition(Final);
-
-
-  QObject::connect(Final, &QState::entered, [this](){
+  QObject::connect(end, &QState::entered, [this](){
       qDebug()<<"Arrêt de mpv";
       emit signalMachine(kSignalPhase, false, KPhaseEndCycle);
     });
@@ -42,51 +33,36 @@ Automate_morceaux::Automate_morceaux(QObject *parent) : QObject(parent)
  */
 void Automate_morceaux::setupMessages()
 {
-  QObject::connect(play, &QState::entered, [this](){
-      emit signalMachine(kSignalPhase, true, kPhasePlay);
+  QObject::connect(go, &QState::entered, [this](){
+      emit signalMachine(kSignalPhase, true, kPhase);
     });
-  QObject::connect(play, &QState::exited, [this](){
-      emit signalMachine(kSignalPhase, false, kPhasePlay);
-    });
-  QObject::connect(pause, &QState::entered, [this](){
-      emit signalMachine(kSignalPhase, true, kPhasePause);
-    });
-  QObject::connect(pause, &QState::exited, [this](){
-      emit signalMachine(kSignalPhase, false, kPhasePause);
+  QObject::connect(go, &QState::exited, [this](){
+      emit signalMachine(kSignalPhase, false, kPhase);
     });
 }
 
 void Automate_morceaux::initDebug()
 {
   machine->setObjectName("machine") ;
-  play->setObjectName("play");
-  playHistory->setObjectName("playHistory");
-  pause->setObjectName("pause");
-  pauseHistory->setObjectName("pauseHistory");
+  go->setObjectName("go");
 
   QObject::connect(machine, &QStateMachine::started, [this](){
-      qDebug()<<"Machine started";
+      qDebug()<<"Machine morceaux started";
     });
   QObject::connect(machine, &QStateMachine::stopped, [this](){
-      qDebug()<<"Machine stopped";
+      qDebug()<<"Machine morceaux stopped";
     });
-  QObject::connect(play, &QState::entered, [this](){
-      qDebug()<<"play entered";
+  QObject::connect(go, &QState::entered, [this](){
+      qDebug()<<"go morceaux entered";
     });
-  QObject::connect(play, &QState::exited, [this](){
-      qDebug()<<"Play exited";
-    });
-  QObject::connect(pause, &QState::entered, [this](){
-      qDebug()<<"Pause entered";
-    });
-  QObject::connect(pause, &QState::exited, [this](){
-      qDebug()<<"Pause exited";
+  QObject::connect(go, &QState::exited, [this](){
+      qDebug()<<"go morceaux exited";
     });
 }
 
-void Automate_morceaux::setBegin(bool begin)
+void Automate_morceaux::setBegin(bool b)
 {
-  if (!begin)
+  if (!b)
   {
       // On arrête la machine
       machine->stop();
@@ -98,20 +74,19 @@ void Automate_morceaux::setBegin(bool begin)
   machine->start();
 }
 
-void Automate_morceaux::setPlay(bool play)
+void Automate_morceaux::setGo()
 {
-  if (play)
-  {
-      emit signalPlay();
-  } else
-  {
-      emit signalPause();
-  }
+    emit signalGo();
 }
 
-void Automate_morceaux::setMode(bool radio)
+void Automate_morceaux::setFinal()
 {
-    if(radio)
+    emit signalFinal();
+}
+
+void Automate_morceaux::changeMode(bool r)
+{
+    if(r)
     {
         emit signalModeRadio();
     }

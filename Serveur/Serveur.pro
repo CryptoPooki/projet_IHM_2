@@ -30,15 +30,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
         mainwindow.cpp \
     serveur.cpp \
-    #automate_radio.cpp \
-    #automate_morceaux.cpp
-    miseajourthread.cpp
+    automate_radio.cpp \
+    automate_morceaux.cpp \
+    miseajourthread.cpp \
+    musicfile.cpp \
+    radiofile.cpp
 
 HEADERS  += mainwindow.h \
     serveur.h \
-    #automate_radio.h \
-    #automate_morceaux.h
-    miseajourthread.h
+    automate_radio.h \
+    automate_morceaux.h \
+    miseajourthread.h \
+    musicfile.h \
+    radiofile.h
 
 FORMS    += mainwindow.ui
 

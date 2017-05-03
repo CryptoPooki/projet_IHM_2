@@ -17,26 +17,17 @@ class Automate_radio : public QObject
 public:
     explicit Automate_radio(QObject *parent = 0);
 
-private:
   // La machine
   QStateMachine *machine;
 
   // Les états élémentaires
   QState *begin;
-  QState *play;
-  QState *pause;
+  QState *go;
   QFinalState *end;
 
   // Et leurs historiques
-  QHistoryState *playHistory;
-  QHistoryState *pauseHistory;
-
-  // Et puis nous avons des transitions.
-  QSignalTransition *Begin_to_Play;
-  QSignalTransition *Play_to_Pause;
-  QSignalTransition *Pause_to_Play;
-  QSignalTransition *Play_to_Final;
-  QSignalTransition *Pause_to_Final;
+  QState *HistoryStack[1000];
+  int HS_index;
 
   // Les messages envoyés à l'UI
   void setupMessages();
@@ -47,15 +38,14 @@ signals:
   void signalMachine(signalType, bool on=true, int param1=0, int param2=0);
 
   // Internal
-  void signalPause();
-  void signalPlay();
-  void signalBegin();
+  void signalGo();
   void signalFinal();
   void signalModeMorceaux();
 
 public slots:
-  void setPlay(bool play);
-  void setBegin(bool begin);
+  void setBegin(bool b);
+  void setGo();
+  void setFinal();
   void changeMode(bool morceaux);
 };
 
