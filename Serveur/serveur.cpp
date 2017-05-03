@@ -200,14 +200,10 @@ void Serveur::readyRead()
     }
 }
 
-// ICI FAUT METTRE LE CHANGEMENT POUR ALLER A LA MUSIQUE D'AVANT
-// CHANGER DE MUSIQUE -> chgtMusique
-// CHANGER DE VOLUME -> chgtVolume
-
 void Serveur::previousMusic()
 {
     automate_morceaux->HS_index--;
-    if (automate_morceaux->HS_index != 0)
+    if (automate_morceaux->HS_index < 0)
     {
         //On a trouvé la musique précédente
         qDebug() << "J'ai joue la musique précédente";
@@ -218,35 +214,27 @@ void Serveur::previousMusic()
         //je mets le bon volume
         chgtVolume(automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->property("volume").toInt());
         return;
-
-    } else //on a atteint le fond de la pile
+    } else
     {
-        qDebug() << "J'ai atteint le fond de la pile";
-        return;
+        qDebug() << "Le fond de la pile a été atteint";
     }
+
 
 }
 
 void Serveur::nextMusic()
 {
     automate_morceaux->HS_index++;
-    if (automate_morceaux->HS_index != automate_morceaux->HS_length)
-    {
-        //On a trouvé la musique précédente
-        qDebug() << "J'ai joue la musique précédente";
-        //Je la change
-        chgtMusique(automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->property("name").toString());
-        //Je la mets au bon endroit
-        chgtEndroitMusique(automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->property("pos").toFloat());
-        //je mets le bon volume
-        chgtVolume(automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->property("volume").toInt());
-        return;
 
-    } else //on a atteint le plafond de la pile
-    {
-        qDebug() << "J'ai atteint le plafond de la pile";
-        return;
-    }
+    //On a trouvé la musique précédente
+    qDebug() << "J'ai joue la musique précédente";
+    //Je la change
+    chgtMusique(automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->property("name").toString());
+    //Je la mets au bon endroit
+    chgtEndroitMusique(automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->property("pos").toFloat());
+    //je mets le bon volume
+    chgtVolume(automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->property("volume").toInt());
+    return;
 }
 
 
@@ -406,13 +394,14 @@ void Serveur::chgtMusique(QString nom)
     automate_morceaux->go->setProperty("nom", nom);
 
     //Mise à jour de l'historique / Ajout (ou réécriture) de la musique lue
-    automate_morceaux->HistoryStack[automate_morceaux->HS_index] = new QState(automate_morceaux->machine);
-    automate_morceaux->HistoryStack[automate_morceaux->HS_index] = automate_morceaux->go;
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index%1000] = new QState(automate_morceaux->machine);
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index%1000]->assignProperty(musique, "path", PATH);
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index%1000]->assignProperty(musique, "name", automate_morceaux->go->property("name"));
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index%1000]->assignProperty(musique, "play", automate_morceaux->go->property("play"));
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index%1000]->assignProperty(musique, "volume", automate_morceaux->go->property("volume"));
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index%1000]->assignProperty(musique, "pos", automate_morceaux->go->property("volume"));
+    automate_morceaux->HistoryStack[automate_morceaux->HS_index%1000]->assignProperty(musique, "mute", automate_morceaux->go->property("mute"));
     automate_morceaux->HS_index++;
-    if (automate_morceaux->HS_index != automate_morceaux->HS_length)
-    {
-        automate_morceaux->HS_length++;
-    }
 
     QJsonObject jsonObject ;
     QJsonArray a ;
@@ -491,7 +480,7 @@ void Serveur::avanceMusique()
     //Mise à jour de l'état
     automate_morceaux->go->setProperty("position", time.toFloat() + 5.0);
     //Mise à jour de l'historique
-    automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("position", time.toFloat() + 5.0);
+    //automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("position", time.toFloat() + 5.0);
     chgtEndroitMusique( time.toFloat() + 5.0);
 }
 
@@ -501,7 +490,7 @@ void Serveur::reculeMusique()
     //Mise à jour de l'état
     automate_morceaux->go->setProperty("position", fmax(time.toFloat() - 5.0,0.0));
     //Mise à jour de l'historique
-    automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("position", fmax(time.toFloat() - 5.0,0.0));
+    //automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("position", fmax(time.toFloat() - 5.0,0.0));
     chgtEndroitMusique( fmax(time.toFloat() - 5.0,0.0));
 }
 
@@ -511,7 +500,7 @@ void Serveur::chgtEndroitMusique(float time)
     automate_morceaux->go->setProperty("position", time);
 
     //Mise à jour de l'historique
-    automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("position", time);
+    //automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("position", time);
 
     QProcess P;
     P.start("sh", QStringList() << "-c" <<  QString::fromStdString("echo '{\"command\":[ \"set_property\",\"time-pos\",")+ QString::number(time) +QString::fromStdString("] }' | socat - /tmp/mpv-socket"));

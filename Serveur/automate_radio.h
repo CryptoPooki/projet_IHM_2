@@ -26,9 +26,8 @@ public:
   QFinalState *end;
 
   // Et leurs historiques
-  QState *HistoryStack[];
-  unsigned long long int HS_index;
-  unsigned long long int HS_length;
+  QState *HistoryStack[1000];
+  int HS_index;
 
   // Les messages envoyés à l'UI
   void setupMessages();

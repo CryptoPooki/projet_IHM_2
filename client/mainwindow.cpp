@@ -117,6 +117,8 @@ void MainWindow::on_Connexion_toggled(bool checked)
         ui->Next->setEnabled(false);
         ui->Mute->setEnabled(false);
         volume->setEnabled(false);
+        ui->Morceaux->clear();
+        ui->Liste->clear();
     } else                            // Si l'utilisateur n'est pas connecté
     {
         connexion();                  //On lance la connexion

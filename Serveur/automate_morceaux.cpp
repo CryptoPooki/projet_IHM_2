@@ -12,7 +12,7 @@ Automate_morceaux::Automate_morceaux(QObject *parent) : QObject(parent)
   go = new QState(machine);
   begin->addTransition(this, SIGNAL(signalGo()), go);
 
-  HS_index = 0; HS_length = 0;
+  HS_index = 0;
 
   // Un état final
   end = new QFinalState(machine);
@@ -53,10 +53,10 @@ void Automate_morceaux::initDebug()
       qDebug()<<"Machine morceaux stopped";
     });
   QObject::connect(go, &QState::entered, [this](){
-      qDebug()<<"go entered";
+      qDebug()<<"go morceaux entered";
     });
   QObject::connect(go, &QState::exited, [this](){
-      qDebug()<<"go exited";
+      qDebug()<<"go morceaux exited";
     });
 }
 
