@@ -10,25 +10,13 @@ Automate_morceaux::Automate_morceaux(QObject *parent) : QObject(parent)
 
   // Un état "go"
   go = new QState(machine);
-  HS_index = 0; HS_length = 0;
+  begin->addTransition(this, SIGNAL(signalGo()), go);
 
-  /*
-   * POURQUOI ÇA
-   *
-   * // On ajoute la pause
-   * fonction->addTransition(this, SIGNAL(signalPause()), pause);
-   * pause->addTransition(this, SIGNAL(signalPause()), fonctionHistory);
-   *
-   * ÇA MARCHE ET POURQUOI ÇA
-   *
-   * begin->addTransition(this, SIGNAL(signalGo()), go);
-   * go->addTransition(this, SIGNAL(signalFinal()), end);
-   * ÇA NE MARCHE PAS !!!!
-   *
-   */
+  HS_index = 0; HS_length = 0;
 
   // Un état final
   end = new QFinalState(machine);
+  go->addTransition(this, SIGNAL(signalFinal()), end);
 
   QObject::connect(end, &QState::entered, [this](){
       qDebug()<<"Arrêt de mpv";
