@@ -58,22 +58,23 @@ Serveur::Serveur(QObject *parent) :
     radio = new radiofile();
 
     //Initialisation des automates
-    automate_morceaux->go->assignProperty(musique, "path", PATH);
-    automate_morceaux->go->assignProperty(musique, "name", "");
-    automate_morceaux->go->assignProperty(musique, "play", false);
-    automate_morceaux->go->assignProperty(musique, "volume", 50);
-    automate_morceaux->go->assignProperty(musique, "pos", 0);
-    automate_morceaux->go->assignProperty(musique, "mute", false);
+    automate_morceaux->go->setProperty("path", QVariant(PATH));
+    automate_morceaux->go->setProperty( "name", "");
+    automate_morceaux->go->setProperty( "play", false);
+    automate_morceaux->go->setProperty( "volume", 50);
+    automate_morceaux->go->setProperty( "pos", 0);
+    automate_morceaux->go->setProperty( "mute", false);
 
     automate_morceaux->setBegin(true);
 
-    automate_radio->go->assignProperty(radio, "url", "");
-    automate_radio->go->assignProperty(radio, "name", "");
-    automate_radio->go->assignProperty(radio, "play", false);
-    automate_radio->go->assignProperty(radio, "volume", 50);
-    automate_radio->go->assignProperty(radio, "mute", false);
+    automate_radio->go->setProperty( "url", "");
+    automate_radio->go->setProperty( "name", "");
+    automate_radio->go->setProperty( "play", false);
+    automate_radio->go->setProperty( "volume", 50);
+    automate_radio->go->setProperty( "mute", false);
 
     automate_radio->setBegin(true);
+
 
 }
 
@@ -396,22 +397,48 @@ void Serveur::mute()
 
 void Serveur::chgtMusique(QString nom)
 {
+    if(automate_morceaux->HistoryStack[automate_morceaux->HS_index] == NULL)
+    {
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index] = new QState(automate_morceaux->machine);
+        qDebug() <<"\t\t\t Créé une nouvelle entrée dans l'historique";
+    }
+
     if (!automate_morceaux->machine->configuration().contains(automate_morceaux->go))
     {
+        automate_morceaux->go->setProperty( "path", QVariant(PATH));
+        automate_morceaux->go->setProperty( "name", QVariant(nom));
+        automate_morceaux->go->setProperty( "play", QVariant(true));
+        automate_morceaux->go->setProperty( "volume", QVariant(50));
+        automate_morceaux->go->setProperty( "pos", QVariant(0));
+        automate_morceaux->go->setProperty( "mute", QVariant(false));
+
         automate_morceaux->setGo();
+        qDebug() <<"putaint de merde";
+        qDebug() << automate_morceaux->go->property("play").toBool();
+        qDebug() << "commence enfin ";
+
+
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index] = new QState(automate_morceaux->machine);
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty( "path", PATH);
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty( "name", automate_morceaux->go->property("name").toString());
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty( "play", automate_morceaux->go->property("play").toBool());
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty( "volume", automate_morceaux->go->property("volume").toInt());
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty( "pos", automate_morceaux->go->property("position").toInt());
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty( "mute", automate_morceaux->go->property("mute").toBool());
     }
     //Mise à jour du nom
     automate_morceaux->go->setProperty("name", nom);
-
+    qDebug()<<nom;
+    qDebug() <<automate_morceaux->HistoryStack[automate_morceaux->HS_index]->property("name").toString();
     //Mise à jour de l'historique / Ajout (ou réécriture) de la musique lue
     if (nom == automate_morceaux->HistoryStack[automate_morceaux->HS_index]->property("name").toString()) //On reste dans l'historique
     {
-        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "path", PATH);
-        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "name", automate_morceaux->go->property("name"));
-        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "play", automate_morceaux->go->property("play"));
-        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "volume", automate_morceaux->go->property("volume"));
-        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "pos", automate_morceaux->go->property("volume"));
-        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "mute", automate_morceaux->go->property("mute"));
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty( "path", PATH);
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty( "name", automate_morceaux->go->property("name").toString());
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty( "play", automate_morceaux->go->property("play").toBool());
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty( "volume", automate_morceaux->go->property("volume").toInt());
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty( "pos", automate_morceaux->go->property("position").toInt());
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty( "mute", automate_morceaux->go->property("mute").toBool());
         automate_morceaux->HS_index++;
         if (automate_morceaux->HS_index > automate_morceaux->pseudo_max) automate_morceaux->pseudo_max++;
     } else //Nouvelle branche d'historique
@@ -419,23 +446,16 @@ void Serveur::chgtMusique(QString nom)
         //suppresion des états au dessus du noeud
         for (unsigned int i = automate_morceaux->HS_index; i < automate_morceaux->pseudo_max; i++)
         {
-            automate_morceaux->HistoryStack[automate_morceaux->HS_index] = new QState(automate_morceaux->machine);
-            automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "path", PATH);
-            automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "name", automate_morceaux->go->property("name"));
-            automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "play", automate_morceaux->go->property("play"));
-            automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "volume", automate_morceaux->go->property("volume"));
-            automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "pos", automate_morceaux->go->property("volume"));
-            automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->assignProperty(musique, "mute", automate_morceaux->go->property("mute"));
-            delete  automate_morceaux->HistoryStack[automate_morceaux->HS_index];
+            delete  automate_morceaux->HistoryStack[i];
         }
         automate_morceaux->pseudo_max = automate_morceaux->HS_index;
         automate_morceaux->HistoryStack[automate_morceaux->HS_index] = new QState(automate_morceaux->machine);
-        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "path", PATH);
-        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "name", automate_morceaux->go->property("name"));
-        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "play", automate_morceaux->go->property("play"));
-        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "volume", automate_morceaux->go->property("volume"));
-        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "pos", automate_morceaux->go->property("volume"));
-        automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->assignProperty(musique, "mute", automate_morceaux->go->property("mute"));
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty( "path", PATH);
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty( "name", automate_morceaux->go->property("name").toString());
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty( "play", automate_morceaux->go->property("play").toInt());
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty( "volume", automate_morceaux->go->property("volume").toInt());
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty( "pos", automate_morceaux->go->property("position").toInt());
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty( "mute", automate_morceaux->go->property("mute").toBool());
         automate_morceaux->HS_index++;
         if (automate_morceaux->HS_index > automate_morceaux->pseudo_max) automate_morceaux->pseudo_max++;
 
@@ -473,15 +493,24 @@ void Serveur::sendMusiqueInfo()
 {
     QString Played_seconds = getPlayedSeconds();
     QString volume = getVolume();
+    QString otherInfo ;
     QMap<QString,QString> map = getTags(PATH +QString::fromStdString("/")+ mName );
-/*    QList<QString> valList = map.keys();
+    QList<QString> valList = map.keys();
+    int i = 0;
 
     foreach(QString key,map.keys())
     {
         qDebug()<<key;
+        if(i == 3 )
+            break;
+        else
+        {
+
+        }
+
     };
 
-    QMap<QString,QString>::iterator i;
+/*    QMap<QString,QString>::iterator i;
     for(i = extensions.begin(); i != extensions.end(); ++i)
     {
         qDebug() << *i[0];
@@ -649,21 +678,17 @@ QStringList Serveur::ListePLaylists ()
 
 QStringList Serveur::ListePLaylistMusics( QString Folder)
 {
-    qDebug() << Folder;
     QStringList L;
     QStringList tmp;
     QString nextList;
     QDirIterator *it = new QDirIterator( QString::fromStdString(PATH) + QString::fromStdString("/") + Folder );
-    qDebug() << QString::fromStdString("Folder : ") + QString::fromStdString(PATH) + QString::fromStdString("/") + Folder;
     while(it->hasNext())
     {
-        qDebug() << "j'AI DES ENTREE";
         nextList = it->next();
         tmp = nextList.split("/");
         nextList = tmp.at( tmp.size() -1 ) ;
         if ( nextList.compare(".") != 0 && nextList.compare("..") != 0)
         {
-            qDebug() << QString::fromStdString("    ") +nextList;
             L.append(nextList);
         }
     }

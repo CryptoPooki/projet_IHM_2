@@ -12,7 +12,7 @@ volume_widget::volume_widget()
     image.load(":/pics/vu_h.png");
     image = image.scaled(2*image.width(), 2*image.height());
     Nb_DEL = 34;
-    Nb_DEL_on= 17;
+    Nb_DEL_on= 33;
     isSelected = false;
 }
 

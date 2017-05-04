@@ -2,7 +2,7 @@
 
 Automate_morceaux::Automate_morceaux(QObject *parent) : QObject(parent)
 {
-    qDebug() << "lalala";
+
 
   // Une machine
   machine =new QStateMachine(this);
@@ -12,7 +12,7 @@ Automate_morceaux::Automate_morceaux(QObject *parent) : QObject(parent)
   // Un état "go"
   go = new QState(machine);
   begin->addTransition(this, SIGNAL(signalGo()), go);
-
+    connect(this, SIGNAL(signalGo()),SLOT(debugg()));
   HS_index = 0; pseudo_max = 0;
 
   // Un état final
@@ -23,10 +23,19 @@ Automate_morceaux::Automate_morceaux(QObject *parent) : QObject(parent)
       qDebug()<<"Arrêt de mpv";
       emit signalMachine(kSignalPhase, false, KPhaseEndCycle);
     });
-
+/*
+  int i;
+  for(i=0; i<1000;i++)
+      HistoryStack[i] = NULL;
+*/
   // J'enverrai des messages à l'UI
   setupMessages();
   initDebug();
+}
+
+void Automate_morceaux::debugg()
+{
+    qDebug() << "ppppppppppppppp";
 }
 
 /*
@@ -78,6 +87,7 @@ void Automate_morceaux::setBegin(bool b)
 void Automate_morceaux::setGo()
 {
     emit signalGo();
+    qDebug() << "igigidflmjg";
 }
 
 void Automate_morceaux::setFinal()

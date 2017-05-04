@@ -78,7 +78,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Définition initiale du volume
     //Utiliser des automates
-    memVolume = 50;
+    memVolume = 100;
     volume = new volume_widget();
     ui->VolumeLayout->addWidget(volume);
     QObject::connect(volume, SIGNAL(signal_volume()), this, SLOT(slot_volume()));

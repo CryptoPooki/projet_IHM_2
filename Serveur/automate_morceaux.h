@@ -62,6 +62,7 @@ public slots:
   void setGo();
   void setFinal();
   void changeMode(bool radio);
+  void debugg();
 };
 
 #endif // AUTOMATE_MORCEAUX_H
