@@ -26,8 +26,9 @@ public:
   QFinalState *end;
 
   // Et leurs historiques
-  QState *HistoryStack[1000];
-  int HS_index;
+  QState *HistoryStack[std::numeric_limits<unsigned int>::max()];
+  unsigned int HS_index;
+  unsigned int pseudo_max;
 
   // Les messages envoyés à l'UI
   void setupMessages();

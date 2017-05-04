@@ -27,6 +27,7 @@ public:
     void mouseReleaseEvent(QMouseEvent *);
     void wheelEvent(QWheelEvent *event);
 
+    //Get & Set
     int get_volume();
     void set_volume(int volume);
     int get_Nb_DEL();
@@ -36,7 +37,7 @@ public:
 signals:
     void signal_volume();
 
-//Fonctions de QPainter pour afficher les Widget
+//Fonctions de QPainter pour afficher le Widget
 protected:
     void paintEvent(QPaintEvent *);
     QPainter* painter;

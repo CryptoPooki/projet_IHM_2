@@ -74,7 +74,6 @@ private:
     };
     /*Note: pour écouter la radio avec mpv
         ->mpv 'url_de_la_radio'
-    (+2 points sur le projet)
     */
     bool m_running;
     bool mute_flag;
