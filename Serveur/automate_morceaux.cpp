@@ -2,12 +2,13 @@
 
 Automate_morceaux::Automate_morceaux(QObject *parent) : QObject(parent)
 {
+    qDebug() << "lalala";
+
   // Une machine
   machine =new QStateMachine(this);
 
   // Un état initial "begin"
   begin = new QState(machine);
-
   // Un état "go"
   go = new QState(machine);
   begin->addTransition(this, SIGNAL(signalGo()), go);

@@ -95,6 +95,52 @@
       </layout>
      </item>
      <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="MusiqueLabel">
+         <property name="text">
+          <string>Musique :</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="Musique">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="ArtisteLabel">
+         <property name="text">
+          <string>Artiste</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="Artiste">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="AlbumLabel">
+         <property name="text">
+          <string>Album</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="Album">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
       <layout class="QHBoxLayout" name="Infos_temps_lecture">
        <item>
         <widget class="QLabel" name="Temps_restant">
@@ -179,7 +225,7 @@
      <x>0</x>
      <y>0</y>
      <width>1005</width>
-     <height>28</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuModes">

@@ -51,7 +51,7 @@ Serveur::Serveur(QObject *parent) :
 
     T =new MiseAJourThread();
     connect(T, SIGNAL(miseAJour()), this ,SLOT(MusiquePosition()) );
-
+    qDebug() << "lksjfkjlsdfsj";
     automate_morceaux = new Automate_morceaux();
     automate_radio = new Automate_radio();
     musique = new musicfile();
@@ -104,7 +104,7 @@ void Serveur::newConnection()
         writeData( QString::fromStdString("initInfo ") + ListePLaylists().join("|"), socket);
         QThread::msleep(100); // nécessaire sinon les messages entrent en colision ?
         if( !pause) // une musique est en train d'être jouée -> Il faut envoyer au client = volume mute + taglib
-            ; // faut encore faire
+            sendMusiqueInfo();
         nextId ++;
     }
 }
@@ -462,6 +462,14 @@ void Serveur::chgtMusique(QString nom)
     }
 }
 
+void Serveur::sendMusiqueInfo()
+{
+    QString Played_seconds = getPlayedSeconds();
+    QString volume = getVolume();
+
+
+
+}
 
 QMap<QString, QString> Serveur::getTags(QString fileName)
 {
@@ -480,6 +488,35 @@ QMap<QString, QString> Serveur::getTags(QString fileName)
     }
     return tagMap;
 }
+
+QString Serveur::getVolume()
+{
+    QProcess P;
+    QString volume = "";
+    int i=0;
+    P.start("sh", QStringList() << "-c" <<  QString::fromStdString("echo '{\"command\":[ \"get_property\",\"volume\"] }' | socat - /tmp/mpv-socket"));
+    P.waitForFinished();
+    QString sortie = P.readAllStandardOutput();
+    while( !(sortie.at(i) >= '0' && sortie.at(i)<='9') )
+    {
+        i++;
+    }
+    while ( sortie.at(i) != '.')
+    {
+        volume.append(sortie.at(i));
+        i++;
+    }
+    volume.append(sortie.at(i));
+    i++;
+    while (sortie.at(i) >= '0' && sortie.at(i) <='9')
+    {
+        volume.append(sortie.at(i));
+        i++;
+    }
+    return volume;
+}
+
+
 
 QString Serveur::getPlayedSeconds()
 {

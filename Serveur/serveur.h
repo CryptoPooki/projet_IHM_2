@@ -54,7 +54,8 @@ public slots :
     void previousMusic();                   //Slot qui joue la musique précédente dans l'historique
     void nextMusic();                       //Slot qui joue la musique suivante dans l'historique
     QMap<QString, QString> getTags(QString fileName); //Récupération des données de tags avec Taglib
-
+    void sendMusiqueInfo();
+    QString getVolume();
 
 
 private:
