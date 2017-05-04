@@ -11,7 +11,7 @@ Automate_radio::Automate_radio(QObject *parent) : QObject(parent)
   // Un état "go"
   go = new QState(machine);
   begin->addTransition(this, SIGNAL(signalGo()), go);
-  HS_index = 0;
+  HS_index = 0; pseudo_max = 0;
 
   // Un état final
   end = new QFinalState(machine);

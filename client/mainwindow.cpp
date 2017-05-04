@@ -103,7 +103,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
 void MainWindow::on_Connexion_clicked()
 {
     if ( !ui->Connexion->isChecked())                      // Si l'utilisateur est déjà connecté
@@ -139,9 +138,6 @@ void MainWindow::on_Connexion_clicked()
     }
 
 }
-
-
-
 
 void MainWindow::on_Progression_sliderMoved(int position)
 {
@@ -268,7 +264,6 @@ void MainWindow::on_Mute_clicked()
 {
     C->writeData("mute");
 }
-
 
 void MainWindow::change_languages(int language_id)
 {
@@ -430,9 +425,7 @@ void MainWindow::deconnexion()
     C->deconnexion();
 }
 
-
-
-void MainWindow::get_list_metadata()
+/*void MainWindow::get_list_metadata()
 {
     //A définir une fois que la structure des métadatas sont comprises
 }
@@ -460,7 +453,7 @@ void MainWindow::rewind(int speed)
 void MainWindow::previous()
 {
     //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
-}
+}*/
 
 void MainWindow::play()
 {
@@ -472,7 +465,7 @@ void MainWindow::pause()
     C->writeData("pause");
 }
 
-void MainWindow::next()
+/*void MainWindow::next()
 {
     //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
 }
@@ -480,7 +473,7 @@ void MainWindow::next()
 void MainWindow::foward(int speed)
 {
     //A définir une fois que le système de messages sera établi et que le fonctionnement audio sera assimilé
-}
+}*/
 
 int MainWindow::mute()
 {
@@ -589,18 +582,13 @@ void MainWindow::setPlayList( QString S)
     }
 }
 
-void MainWindow::setPosition_lecture(int position)
-{
-
-}
-
-void MainWindow::on_Liste_clicked(const QModelIndex &index)
+void MainWindow::on_Liste_clicked()
 {
     qDebug() << ui->Liste->currentItem()->text();
     C->writeData(QString::fromStdString("getList ")+ QString::number(C->id) +" " + ui->Liste->currentItem()->text());
 }
 
-void MainWindow::on_Morceaux_clicked(const QModelIndex &index)
+void MainWindow::on_Morceaux_clicked()
 {
     qDebug() << "Lance une nouvelle musique";
     C->writeData(QString::fromStdString("chgtMusique ") + ui->Liste->currentItem()->text() + QString::fromStdString("/")+ ui->Morceaux->currentItem()->text());

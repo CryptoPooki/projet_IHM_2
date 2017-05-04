@@ -37,10 +37,10 @@ private slots:
     void slot_volume();
 
 
-    void on_Liste_clicked(const QModelIndex &index);
+    void on_Liste_clicked();
     void setPlayList( QString S);
 
-    void on_Morceaux_clicked(const QModelIndex &index);
+    void on_Morceaux_clicked();
 
     void on_Connexion_clicked();
 
@@ -56,26 +56,25 @@ private:
   bool flag_radio;                          //Booléen permettant de savoir si l'interface est en mode radio
   bool connexion();                         //Fonction de connexion au serveur
   void deconnexion();                       //Fonction qui déconnecte le client de serveur
-  void get_list_metadata();                 //Fonction qui demande les métadonnées des listes proposées
-  void get_music_metadata();                //Finction qui demande les métadonnées d'un morceau
-  void show_list_metadata();                //Fonction qui affiche les métadonnées d'une liste
-  void show_music_metadata();               //Fonction qui affiche les métadonnées d'un morceau
-  void rewind(int speed);                   //Fonction qui fait un retour en arrière sur le morceau
-  void previous();                          //Fonction qui joue le morceau précédent au morceau actuellement lu dans la liste
+  //void get_list_metadata();                 //Fonction qui demande les métadonnées des listes proposées
+  //void get_music_metadata();                //Finction qui demande les métadonnées d'un morceau
+  //void show_list_metadata();                //Fonction qui affiche les métadonnées d'une liste
+  //void show_music_metadata();               //Fonction qui affiche les métadonnées d'un morceau
+  //void rewind(int speed);                   //Fonction qui fait un retour en arrière sur le morceau
+  //void previous();                          //Fonction qui joue le morceau précédent au morceau actuellement lu dans la liste
                                             //         qui joue la chaine de radio précédente dans la liste
   void play();                              //Fonction qui joue un morceau sélectionné
   void pause();                             //Fonction qui arrête de jouer le morceau actuellement joué
   bool flag_play;                           //Booléen permettant de savoir si l'interface est dans l'état play ou pause
-  void next();                              //Fonction qui joue le morceau suivant au morceau actuellement lu dans la liste
+  //void next();                              //Fonction qui joue le morceau suivant au morceau actuellement lu dans la liste
                                             //         qui joue la chaine de radio suivante
 
-  void foward(int speed);                   //Fonction qui fait une avance rapide sur le morceau
+  //void foward(int speed);                   //Fonction qui fait une avance rapide sur le morceau
   int mute();                               //Fonction gère le mute
   void setVolume(int volume);               //Fonction qui change le volume
   bool flag_mute;                           //Booléen permettant de savoir si l'interface est en mode mute
   int memVolume;
   void change_sound(int pourcentage);       //Fonction qui modifie le son en fonction de sa puissance maximale
-  void setPosition_lecture(int position);
   void move(QString order);
 
   // Connexion avec le serveur

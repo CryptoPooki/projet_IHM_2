@@ -65,9 +65,7 @@ void volume_widget::mousePressEvent(QMouseEvent *event)
    {
        if (event->x() < image.width() && (event->x() - 10) > 0)
        {
-           int pos = event->x() - 10;
-           int l = image.width() / 34;
-           Nb_DEL_on = (int) pos / l;
+           Nb_DEL_on = (int) round((event->x() - 10) / (image.width() / 34));
            repaint();
            emit signal_volume();
        }
