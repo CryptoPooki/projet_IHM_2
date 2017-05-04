@@ -37,7 +37,7 @@ public:
   QFinalState *end;
 
   // Et leurs historiques
-  QState *HistoryStack[std::numeric_limits<unsigned int>::max()];
+  QState *HistoryStack[4294967296];
   unsigned int HS_index;
   unsigned int pseudo_max;
 
@@ -52,6 +52,7 @@ signals:
   // Le format de communication vers l'UI
   void signalMachine(signalType, bool on=true, int param1=0, int param2=0);
 
+  //Signaux de transition vers d'autres états et d'autres modes
   void signalGo();
   void signalFinal();
   void signalModeRadio();

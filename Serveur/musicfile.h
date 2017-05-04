@@ -3,20 +3,26 @@
 
 #include <QObject>
 
+/* Afin de attribuer des propriétés à un état, il faut attribuer un Q_Object auquel
+ * nous associons des propriétés, d'où le rôle de musicfile.
+ */
+
 class musicfile : public QObject
 {
     Q_OBJECT
 
 public:
+    //Constructeur & Destructeur
     musicfile();
     ~musicfile();
 
-    QString path;
-    QString name;
-    bool play;
-    int volume;
-    float pos;
-    bool mute;
+    //Propriétés
+    QString path;   //Chemin d'accès de la musique
+    QString name;   //Nom de la musique
+    bool play;      //Flag indiquant si le morceau est joué
+    int volume;     //Volume
+    float pos;      //Position (absolue) de lecture
+    bool mute;      //Flag indiquant si le morceau est muté
 
     //Get & Set
     QString get_path();
