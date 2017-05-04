@@ -103,8 +103,8 @@ void Serveur::newConnection()
         QThread::msleep(100); // nécessaire sinon les messages entrent en colision ?
         writeData( QString::fromStdString("initInfo ") + ListePLaylists().join("|"), socket);
         QThread::msleep(100); // nécessaire sinon les messages entrent en colision ?
-        if( !pause) // une musique est en train d'être jouée -> Il faut envoyer au client = volume mute + taglib
-            sendMusiqueInfo();
+        //if( !pause) // une musique est en train d'être jouée -> Il faut envoyer au client = volume mute + taglib
+         //   sendMusiqueInfo();
         nextId ++;
     }
 }
@@ -446,7 +446,7 @@ void Serveur::chgtMusique(QString nom)
       mpv->flush();
     }
     T->start();
-
+    mName = nom;
 
 
     QMap<QString,QString> extensions = getTags(PATH +QString::fromStdString("/")+ nom );
@@ -466,8 +466,20 @@ void Serveur::sendMusiqueInfo()
 {
     QString Played_seconds = getPlayedSeconds();
     QString volume = getVolume();
+    QMap<QString,QString> map = getTags(PATH +QString::fromStdString("/")+ mName );
+/*    QList<QString> valList = map.keys();
 
+    foreach(QString key,map.keys())
+    {
+        qDebug()<<key;
+    };
 
+    QMap<QString,QString>::iterator i;
+    for(i = extensions.begin(); i != extensions.end(); ++i)
+    {
+        qDebug() << *i[0];
+    }
+*/
 
 }
 

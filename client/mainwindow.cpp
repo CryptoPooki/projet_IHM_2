@@ -69,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->Mute->setIconSize(size_pic);
     ui->Mute->setFixedSize(size_button);
 
-    QSize main_size; main_size.setHeight(300); main_size.setWidth(300);
+    QSize main_size; main_size.setHeight(275); main_size.setWidth(275);
     ui->Image->setFixedSize(main_size);
     pix_music.load(":/pics/music.png");
     pix_music = pix_music.scaled(300,300);

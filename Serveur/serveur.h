@@ -80,6 +80,7 @@ private:
     bool m_running;                         //Flag indiquant si le serveur tourne ou pas
     bool mute_flag;                         //Flag indiquant si le serveur est mute ou pas
     QThread* T;                             //Thread pour la mise à jour régulière du serveur
+    QString mName;
 
 
 

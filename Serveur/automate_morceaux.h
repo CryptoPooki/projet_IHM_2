@@ -37,7 +37,7 @@ public:
   QFinalState *end;
 
   // Et leurs historiques
-  QState *HistoryStack[4294967296];
+  QState *HistoryStack[1000];
   unsigned int HS_index;
   unsigned int pseudo_max;
 
