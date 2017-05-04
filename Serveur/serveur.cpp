@@ -430,7 +430,7 @@ void Serveur::chgtMusique(QString nom)
     QMap<QString,QString> extensions = getTags(PATH +QString::fromStdString("/")+ nom );
     for(auto e : extensions)
     {
-        qDebug() << e <<"," << extensions.value(e) << "\n";
+        qDebug() << e <<"," << extensions.value(e) << "\n"; //1er album 2 ème Artiste
     }
 }
 
