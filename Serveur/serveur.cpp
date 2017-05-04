@@ -401,7 +401,7 @@ void Serveur::chgtMusique(QString nom)
         automate_morceaux->setGo();
     }
     //Mise à jour du nom
-    automate_morceaux->go->setProperty("nom", nom);
+    automate_morceaux->go->setProperty("name", nom);
 
     //Mise à jour de l'historique / Ajout (ou réécriture) de la musique lue
     if (nom == automate_morceaux->HistoryStack[automate_morceaux->HS_index]->property("name").toString()) //On reste dans l'historique
@@ -419,6 +419,13 @@ void Serveur::chgtMusique(QString nom)
         //suppresion des états au dessus du noeud
         for (unsigned int i = automate_morceaux->HS_index; i < automate_morceaux->pseudo_max; i++)
         {
+            automate_morceaux->HistoryStack[automate_morceaux->HS_index] = new QState(automate_morceaux->machine);
+            automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "path", PATH);
+            automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "name", automate_morceaux->go->property("name"));
+            automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "play", automate_morceaux->go->property("play"));
+            automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "volume", automate_morceaux->go->property("volume"));
+            automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "pos", automate_morceaux->go->property("volume"));
+            automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->assignProperty(musique, "mute", automate_morceaux->go->property("mute"));
             delete  automate_morceaux->HistoryStack[automate_morceaux->HS_index];
         }
         automate_morceaux->pseudo_max = automate_morceaux->HS_index;
@@ -428,7 +435,7 @@ void Serveur::chgtMusique(QString nom)
         automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "play", automate_morceaux->go->property("play"));
         automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "volume", automate_morceaux->go->property("volume"));
         automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "pos", automate_morceaux->go->property("volume"));
-        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->assignProperty(musique, "mute", automate_morceaux->go->property("mute"));
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->assignProperty(musique, "mute", automate_morceaux->go->property("mute"));
         automate_morceaux->HS_index++;
         if (automate_morceaux->HS_index > automate_morceaux->pseudo_max) automate_morceaux->pseudo_max++;
 
