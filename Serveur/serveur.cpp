@@ -448,8 +448,14 @@ void Serveur::chgtMusique(QString nom)
     T->start();
 
 
-    //TagLib::FileRef f(QFile::encodeName("/home/wilhelm/mus.mp3").constData());
+
     QMap<QString,QString> extensions = getTags(PATH +QString::fromStdString("/")+ nom );
+    QMap<QString,QString>::iterator i;
+    for(i = extensions.begin(); i != extensions.end(); ++i)
+    {
+        qDebug() << *i;
+    }
+
     for(auto e : extensions)
     {
         qDebug() << e <<"," << extensions.value(e) << "\n"; //1er album 2 ème Artiste
