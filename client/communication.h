@@ -19,6 +19,7 @@ public:
     bool writeData(QString dataString) ;
     int id ; // identifiant pour que le serveur puisse le virer de sa liste une fois la connexion terminée
     QTcpSocket * m_socket; // Sert pour communiquer avec le serveur
+    bool connected;
 
 private:
     bool connectToHost (QString host) ;

@@ -9,9 +9,13 @@
 #include <QString>
 #include <QPair>
 #include <QStringList>
+#include <QMap>
+
 
 #include <taglib/taglib.h>
 #include <taglib/fileref.h>
+#include <taglib/tpropertymap.h>
+
 #include <QDirIterator>
 #include "serveur.h"
 #include "miseajourthread.h"
@@ -96,8 +100,11 @@ void Serveur::newConnection()
         qDebug() << VClient.size();
         connect(socket, SIGNAL(readyRead()), SLOT(readyRead()));
         writeData(QString::fromStdString("identifiant ") + QString::number(nextId),socket);
-        QThread::msleep(100);
+        QThread::msleep(100); // nécessaire sinon les messages entrent en colision ?
         writeData( QString::fromStdString("initInfo ") + ListePLaylists().join("|"), socket);
+        QThread::msleep(100); // nécessaire sinon les messages entrent en colision ?
+        if( !pause) // une musique est en train d'être jouée -> Il faut envoyer au client = volume mute + taglib
+            ; // faut encore faire
         nextId ++;
     }
 }
@@ -355,6 +362,7 @@ void Serveur::chgtVolume(int value)
 
 void Serveur::mute()
 {
+    qDebug() << "Entre dans mute";
     QProcess P;
     if(!mute_flag)
     {
@@ -362,7 +370,7 @@ void Serveur::mute()
         automate_morceaux->go->setProperty("mute", true);
 
         //Mise à jour de l'historique
-        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty("mute", true);
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("mute", true);
 
         P.start("sh", QStringList() << "-c" <<" echo '{ \"command\": [\"set_property\",\"mute\",\"yes\"] }' | socat - /tmp/mpv-socket"); //active mute
         qDebug() << "mute activé";
@@ -374,13 +382,14 @@ void Serveur::mute()
         automate_morceaux->go->setProperty("mute", false);
 
         //Mise à jour de l'historique
-        automate_morceaux->HistoryStack[automate_morceaux->HS_index]->setProperty("mute", false);
+        automate_morceaux->HistoryStack[automate_morceaux->HS_index-1]->setProperty("mute", false);
 
         P.start("sh", QStringList() << "-c" <<"echo '{ \"command\": [\"set_property\",\"mute\",\"no\"] }' | socat - /tmp/mpv-socket"); // désactive mute
         qDebug() << "mute désactivé";
         mute_flag = !mute_flag;
     }
     P.waitForFinished();
+    qDebug() << "Fin du mute";
 }
 
 void Serveur::chgtMusique(QString nom)
@@ -415,9 +424,33 @@ void Serveur::chgtMusique(QString nom)
       mpv->flush();
     }
     T->start();
+
+
     //TagLib::FileRef f(QFile::encodeName("/home/wilhelm/mus.mp3").constData());
+    QMap<QString,QString> extensions = getTags(PATH +QString::fromStdString("/")+ nom );
+    for(auto e : extensions)
+    {
+        qDebug() << e <<"," << extensions.value(e) << "\n";
+    }
+}
 
 
+QMap<QString, QString> Serveur::getTags(QString fileName)
+{
+    QMap <QString, QString> tagMap;
+    TagLib::FileRef f(fileName.toLatin1().data());
+    if(!f.isNull() && f.tag())
+    {
+        TagLib::PropertyMap tags = f.file()->properties();
+        for(TagLib::PropertyMap::ConstIterator i=tags.begin(); i != tags.end(); ++i)
+        {
+            for(TagLib::StringList::ConstIterator j=i->second.begin();j!=i->second.end(); ++j)
+            {
+                tagMap[QString::fromStdString(i->first.to8Bit(true))] =QString::fromStdString(j->to8Bit(true));
+            }
+        }
+    }
+    return tagMap;
 }
 
 QString Serveur::getPlayedSeconds()

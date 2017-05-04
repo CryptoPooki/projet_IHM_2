@@ -10,6 +10,7 @@
 #include <QTcpServer>
 #include <QPair>
 #include <QStringList>
+#include <QMap>
 
 #include "miseajourthread.h"
 #include "musicfile.h"
@@ -51,6 +52,8 @@ public slots :
     void MusiquePosition();
     void previousMusic();
     void nextMusic();
+    QMap<QString, QString> getTags(QString fileName);
+
 
 
 private:

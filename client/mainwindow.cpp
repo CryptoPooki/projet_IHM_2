@@ -103,9 +103,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_Connexion_toggled(bool checked)
+
+void MainWindow::on_Connexion_clicked()
 {
-    if (!checked)                      // Si l'utilisateur est déjà connecté
+    if ( !ui->Connexion->isChecked())                      // Si l'utilisateur est déjà connecté
     {
         deconnexion();                //On interrompt la connexion avec le serveur
         qDebug() << "Je me suis déconnecté";
@@ -121,7 +122,11 @@ void MainWindow::on_Connexion_toggled(bool checked)
         ui->Liste->clear();
     } else                            // Si l'utilisateur n'est pas connecté
     {
-        connexion();                  //On lance la connexion
+        if(!connexion())                //On lance la connexion
+        {
+            ui->Connexion->setChecked(false);
+            return;
+        }
         ui->Progression->setEnabled(true);
         ui->Previous->setEnabled(true);
         ui->Rewind->setEnabled(true);
@@ -132,7 +137,11 @@ void MainWindow::on_Connexion_toggled(bool checked)
         volume->setEnabled(true);
         qDebug() << "Je vais me connecter au serveur";
     }
+
 }
+
+
+
 
 void MainWindow::on_Progression_sliderMoved(int position)
 {
@@ -146,15 +155,15 @@ void MainWindow::move(QString order)
     int heures = L.at(3).toFloat()/3600;
     int min = (L.at(3).toFloat() - heures*3600  )/60;
     int sec = (L.at(3).toFloat() - heures*3600 - min*60 );
-    QString S = QString::number(heures) + QString::fromStdString(":") + QString::number(min) + QString::fromStdString(":")+ QString::number(sec);
-    ui->Temps_lu->setText( S  );
+    QTime *T = new QTime(heures,min,sec);
+    ui->Temps_lu->setText( T->toString("hh:mm:ss")  );
 
     heures = L.at(2).toFloat()/3600;
     min = (L.at(2).toFloat() - heures*3600  )/60;
     sec = (L.at(2).toFloat() - heures*3600 - min*60 );
 
-    S = QString::number(heures) + QString::fromStdString(":") + QString::number(min) + QString::fromStdString(":")+ QString::number(sec);
-    ui->Temps_restant->setText( S );
+    T = new QTime(heures,min,sec);
+    ui->Temps_restant->setText( T->toString("hh:mm:ss") );
 }
 
 void MainWindow::on_Rewind_pressed()
@@ -258,7 +267,6 @@ void MainWindow::on_Foward_released()
 void MainWindow::on_Mute_clicked()
 {
     C->writeData("mute");
-    mute();
 }
 
 
@@ -386,17 +394,21 @@ void MainWindow::change_mode(bool radio)
 // Fonction qui initie la connexion avec le serveur
 // Se connecte au serveur et fait que le serveur puisse se connecter au client
 // qui est également un serveur qui réceptionne des informations du serveur
-void MainWindow::connexion()
+bool MainWindow::connexion()
 {
     C = new Communication();
+    if( !C->connected )
+        return false;
     // Fait le connect pour recevoir des ordres
     connect(C,SIGNAL(orderToWindow(QString)), this,SLOT(orderParser(QString)));
+    return true;
 }
 
 void MainWindow::orderParser(QString S)
 {
     QStringList L = S.split(" ");
-    qDebug() << "J'ai reçu l'ordre " +S;
+    if ( ! (L[0].compare("move")  == 0))
+        qDebug() << "J'ai reçu l'ordre " +S;
     if( L[0].compare("play") == 0)
         playResponse();
     else if(L[0].compare("pause") == 0)
@@ -501,6 +513,7 @@ int MainWindow::mute()
          icon_sound.addPixmap(pix_sound);
          ui->Mute->setIcon(icon_sound);
          ui->Mute->setIconSize(size_pic);
+         qDebug() << "hihi passe par la";
 
          //Stockage de la valeur du volume
          memVolume = volume->get_volume();

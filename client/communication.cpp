@@ -10,7 +10,12 @@ Communication::Communication():
     m_socket(new QTcpSocket(this))
 {
     if(!connectToHost("localhost"))
+    {
+        connected = false;
         qDebug() << "Fail connexion to serveur";
+    }
+    else
+        connected =true;
 }
 
 bool Communication::connectToHost (QString host)
@@ -27,6 +32,7 @@ void Communication::deconnexion()
 
     m_socket->~QTcpSocket();
     m_socket=NULL;
+    connected = false;
 
 }
 
@@ -54,15 +60,16 @@ QString Communication::readyRead()
     QJsonParseError error;
     QJsonDocument jDoc;
     QJsonObject jsonObject;
-    qDebug() << "Nouveau message";
     while (socket->bytesAvailable() > 0)
     {
         buffer->append(socket->readAll());
         jDoc = QJsonDocument::fromJson(*buffer, &error);
         jsonObject = jDoc.object();
-        qDebug() << "Le message envoyé est " + jsonObject.value("txt").toString();
 
         QStringList L = jsonObject.value("txt").toString().split(" ");
+        if ( ! (L[0].compare("move")  == 0))
+            qDebug() << "Le message envoyé est " + jsonObject.value("txt").toString();
+
         if( L[0].compare("identifiant") == 0)
         {
             bool ok;
