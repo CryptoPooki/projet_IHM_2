@@ -48,8 +48,8 @@ FORMS    += mainwindow.ui
 
 
 
-INCLUDEPATH += $$PWD/../../taglib-1.11/taglib
-LIBS += -L$$PWD/../../taglib-1.11/taglib -ltag
+#INCLUDEPATH += $$PWD/../../taglib-1.11/taglib
+#LIBS += -L$$PWD/../../taglib-1.11/taglib -ltag
 
 #win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../taglib-1.11.1/taglib/release/libtag.a
 #else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../../taglib-1.11.1/taglib/debug/libtag.a
